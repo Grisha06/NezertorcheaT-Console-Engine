@@ -11,20 +11,18 @@ del module
 a = add_matrix()
 print_matrix(a)
 
-behs = []
-
 for i in Behavior.__subclasses__():
-    behs.append(i())
+    ObjList.addObj(i(False))
 
-for i in behs:
+for i in ObjList.getObjs():
     i.start()
 
 while True:
-    NTETime.Time += 1
+    NTETime.addTime()
 
     cls()
 
-    for i in behs:
+    for i in ObjList.getObjs():
         i.update(a)
 
     print_matrix(a)

@@ -4,11 +4,16 @@ from NTEngineClasses import *
 
 
 class Enemy(Behavior):
-    gameobject = Obj('$', 5, 2)
+    def __init__(self, o: bool):
+        self.gameobject = Obj('$', 5, 2)
+        self.isInstantiated = o
 
     def start(self):
         ui.add(
             f"Snake: x:{self.gameobject.tr.position.x}; y:{self.gameobject.tr.position.y}; z:{self.gameobject.tr.position.z}",
+            True)
+        ui.add(
+            f"",
             True)
 
     def update(self, a):

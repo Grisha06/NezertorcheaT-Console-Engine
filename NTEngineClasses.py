@@ -2,6 +2,7 @@ import math
 import os
 from math import fabs
 
+import ObjList
 from globalSettings import *
 
 
@@ -175,8 +176,9 @@ class Obj:
 
 
 class Behavior:
-    gameobject = Obj('0', 0, 0)
-    collider = None
+    def __init__(self, o: bool, s: str, V: Vec3):
+        self.gameobject = Obj(s, V.x, V.y)
+        self.isInstantiated = o
 
     def moweDir(self, Dir: Vec3):
         self.gameobject.tr.position = Vec3.sum(self.gameobject.tr.position, Dir)
@@ -186,3 +188,10 @@ class Behavior:
 
     def start(self):
         pass
+
+
+def instantiate(beh, pos=Vec3.zero()):
+    b = beh(True)
+    b.isInstantiated = True
+    b.gameobject.tr.position = pos
+    ObjList.addObj(b)
