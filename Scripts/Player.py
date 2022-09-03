@@ -1,6 +1,5 @@
 import keyboard
 
-import ObjList
 import Scripts
 import Scripts.Enemy
 from NTEngineClasses import *
@@ -34,11 +33,15 @@ class Player(Behavior):
             instantiate(Scripts.Enemy.Enemy, self.gameobject.tr.position)
         if keyboard.is_pressed("q"):
             instantiate(Scripts.Wall.Wall, self.gameobject.tr.position)
+        if keyboard.is_pressed("f"):
+            p = findNearObjByPos(self.gameobject.tr.position, 2, self)
+            if p != None:
+                destroy(p)
 
         if not self.isInstantiated:
             ui.changeSpace(1,
                            f"Player: x:{self.gameobject.tr.position.x}; y:{self.gameobject.tr.position.y}; z:{self.gameobject.tr.position.z}",
                            True)
-            #ui.changeSpace(2,
+            # ui.changeSpace(2,
             #               f"Behaviors: {ObjList.getObjs()}",
             #               True)
