@@ -45,7 +45,7 @@ def clamp(num, min_value, max_value):
 
 def add_matrix():
     a = []
-    d = "."
+    d = " "
     for i in range(HEIGHT):
         a.append([])
         for j in range(WIDTH):
@@ -58,14 +58,14 @@ def print_matrix(a):
         print('│', end='')
         for y in range(len(a[0])):
             print(a[x][y], end='')
-            if y < len(a[0]) - 1:
-                print(' ', end='')
+            # if y < len(a[0]) - 1:
+            #    print(' ', end='')
         print('│')
     print('└', end='')
     for y in range(len(a[0])):
         print('─', end='')
-        if y < len(a[0]) - 1:
-            print('─', end='')
+        # if y < len(a[0]) - 1:
+        #    print('─', end='')
     print('┘')
 
 
@@ -141,6 +141,10 @@ class Vec3:
     def step(edge, v):
         return Vec3(int(edge.x > v.x), int(edge.y > v.y), int(edge.y > v.y))
 
+    @staticmethod
+    def distance(v1, v2):
+        return math.sqrt((v1.x - v2.x) ** 2 + (v1.y - v2.y) ** 2 + (v1.z - v2.z) ** 2)
+
     def sign(self):
         return Vec3(self.sign_value(self.x), self.sign_value(self.y), self.sign_value(self.z))
 
@@ -179,9 +183,16 @@ class Behavior:
     def __init__(self, o: bool, s: str, V: Vec3):
         self.gameobject = Obj(s, V.x, V.y)
         self.isInstantiated = o
+        self.collide = False
+
+    __passT = 0
+    passingT = False
+    __passingFrT = 0
 
     def moweDir(self, Dir: Vec3):
-        self.gameobject.tr.position = Vec3.sum(self.gameobject.tr.position, Dir)
+        ff = findNearObjByPos(Vec3.sum(self.gameobject.tr.position, Dir), 0.5, self)
+        if not (ff and self.collide and ff.collide):
+            self.gameobject.tr.position = Vec3.sum(self.gameobject.tr.position, Dir)
 
     def update(self, a):
         pass
@@ -189,9 +200,37 @@ class Behavior:
     def start(self):
         pass
 
+    def baceStart(self, o: bool):
+        self.isInstantiated = o
+
+    def baceUpdate(self, a):
+        self.gameobject.draw(a)
+        if self.__passT >= self.__passingFrT:
+            self.__passT = 0
+            self.passingT = False
+            self.__passingFrT = 0
+        else:
+            self.__passT += 1
+
+    def passSteps(self, frames: int):
+        self.__passT = 0
+        self.passingT = True
+        self.__passingFrT = frames
+
 
 def instantiate(beh, pos=Vec3.zero()):
     b = beh(True)
     b.isInstantiated = True
     b.gameobject.tr.position = pos
     ObjList.addObj(b)
+
+
+def findNearObjByPos(V: Vec3, f: float, b: Behavior):
+    for i in ObjList.getObjs():
+        if Vec3.distance(V, i.gameobject.tr.position) <= f and not i is b:
+            return i
+    return None
+
+
+def destroy(beh):
+    ObjList.removeObj(beh)

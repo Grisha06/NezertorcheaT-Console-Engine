@@ -19,12 +19,11 @@ for i in ObjList.getObjs():
 
 while True:
     NTETime.addTime()
-
-    cls()
-
     for i in ObjList.getObjs():
-        i.update(a)
-
+        if not i.passingT:
+            i.update(a)
+        i.baceUpdate(a)
+    cls()
     print_matrix(a)
     ui.print()
     a = add_matrix()

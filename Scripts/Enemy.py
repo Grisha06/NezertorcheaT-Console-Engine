@@ -5,18 +5,13 @@ from NTEngineClasses import *
 
 class Enemy(Behavior):
     def __init__(self, o: bool):
+        self.baceStart(o)
         self.gameobject = Obj('$', 5, 2)
-        self.isInstantiated = o
+        self.collide=True
 
-    def start(self):
-        ui.add(
-            f"Snake: x:{self.gameobject.tr.position.x}; y:{self.gameobject.tr.position.y}; z:{self.gameobject.tr.position.z}",
-            True)
-        ui.add(
-            f"",
-            True)
 
     def update(self, a):
+        self.passSteps(5)
         s = Vec3()
         if bool(getrandbits(1)):
             if self.gameobject.tr.position.y < HEIGHT:
@@ -32,7 +27,4 @@ class Enemy(Behavior):
                 s.x = -1
 
         self.moweDir(Vec3.mult_by_float(s, 1))
-        self.gameobject.draw(a)
-        ui.changeSpace(2,
-                       f"Snake: x:{self.gameobject.tr.position.x}; y:{self.gameobject.tr.position.y}; z:{self.gameobject.tr.position.z}",
-                       True)
+
