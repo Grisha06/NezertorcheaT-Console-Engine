@@ -2,12 +2,14 @@ from NTEngineClasses import *
 
 
 class FireBall(Behavior):
-    def __init__(self, o: bool):
-        self.gameobject = Obj('*', 5, 5)
-        self.baceStart(o)
-        self.gameobject.tr.collide = True
+    spawnposx = -5
+    spawnposy = -1
+    symbol = '*'
+    speed = 1
+    collide = True
+
+    def start(self):
         self.dir = Vec3(1, 0)
-        self.speed = 1
 
     def update(self, a):
         self.passSteps(2)

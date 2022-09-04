@@ -6,10 +6,10 @@ from NTEngineClasses import *
 
 
 class Player(Behavior):
-    def __init__(self, o: bool):
-        self.gameobject = Obj('@', 0, 0)
-        self.baceStart(o)
-        self.gameobject.tr.collide = True
+    spawnposx = 0
+    spawnposy = 0
+    symbol = '@'
+    collide = True
 
     def start(self):
         if not self.isInstantiated:
@@ -34,10 +34,9 @@ class Player(Behavior):
         if keyboard.is_pressed("q"):
             instantiate(Scripts.Wall.Wall, self.gameobject.tr.position)
         if keyboard.is_pressed("f"):
-            p = findNearObjByPos(self.gameobject.tr.position, 2, self)
+            p = findNearObjByPos(self.gameobject.tr.position, 2, [self])
             if p != None:
                 destroy(p)
-
         if not self.isInstantiated:
             ui.changeSpace(1,
                            f"Player: x:{self.gameobject.tr.position.x}; y:{self.gameobject.tr.position.y}; z:{self.gameobject.tr.position.z}",

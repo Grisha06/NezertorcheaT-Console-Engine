@@ -5,10 +5,10 @@ import Scripts.Player
 from NTEngineClasses import *
 
 
-class Enemy(Behavior):
+class Enemy2(Behavior):
     spawnposx = 5
     spawnposy = 2
-    symbol = '$'
+    symbol = '&'
     collide = True
 
     def update(self, a):

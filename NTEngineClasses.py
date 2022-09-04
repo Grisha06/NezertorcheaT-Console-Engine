@@ -46,9 +46,9 @@ def clamp(num, min_value, max_value):
 def add_matrix():
     a = []
     d = " "
-    for i in range(HEIGHT):
+    for i in range(settings['HEIGHT']):
         a.append([])
-        for j in range(WIDTH):
+        for j in range(settings['WIDTH']):
             a[i].append(d)
     return a
 
@@ -163,7 +163,7 @@ class Transform:
 
     def moweDir(self, Dir: Vec3):
         if self.collide:
-            ff = findNearObjByPos(Vec3.sum(self.position, Dir), 0.5, self)
+            ff = findNearObjByPos(Vec3.sum(self.position, Dir), 0.5, [self])
             if not (ff and ff.gameobject.tr.collide):
                 # self.position = Vec3.sum(self.position, Dir)
                 self.setPosition(Vec3.sum(self.position, Dir))
@@ -175,7 +175,7 @@ class Transform:
 
     def setPosition(self, V: Vec3):
         if self.collide:
-            ff = findNearObjByPos(V, 0.5, self)
+            ff = findNearObjByPos(V, 0.5, [self])
             if not (ff and ff.gameobject.tr.collide):
                 self.position = V
             else:
@@ -218,43 +218,54 @@ class Drawer:
         self.gm = gm
 
     def draw(self, a):
-        if 0 <= self.gm.tr.position.y < HEIGHT and 0 <= self.gm.tr.position.x < WIDTH:
-            a[int(clamp(self.gm.tr.position.y, 0, HEIGHT - 1))][
-                int(clamp(self.gm.tr.position.x, 0, WIDTH - 1))] = self.gm.symb
+        if 0 <= self.gm.tr.position.y < settings['HEIGHT'] and 0 <= self.gm.tr.position.x < settings['WIDTH']:
+            a[int(clamp(self.gm.tr.position.y, 0, settings['HEIGHT'] - 1))][
+                int(clamp(self.gm.tr.position.x, 0, settings['WIDTH'] - 1))] = self.gm.symb
 
 
 class Behavior:
-    def __init__(self, o: bool, s: str, V: Vec3):
-        self.gameobject = Obj(s, V.x, V.y)
-        self.baceStart(o)
+    spawnposx = 0
+    spawnposy = 0
+    symbol = '@'
+    collide = True
+
+    def __init__(self, o: bool):
+        self.isInstantiated = o
 
     __passT = 0
-    passingT = False
+    __passingT = False
     __passingFrT = 0
+    def getPassingT(self):
+        return self.__passingT
 
     def update(self, a):
         pass
 
     def start(self):
-        pass
+        self.gameobject = Obj(self.symbol, self.spawnposx, self.spawnposy)
+        self.gameobject.tr.collide = True
+        self.className = ""
 
-    def baceStart(self, o: bool):
+
+    def baceStart(self):
         self.drawer = Drawer(self.gameobject)
-        self.isInstantiated = o
         self.gameobject.tr.beh = self
 
+    def startStart(self):
+        self.gameobject = Obj(self.symbol, self.spawnposx, self.spawnposy)
+        self.gameobject.tr.collide = self.collide
     def baceUpdate(self, a):
         self.drawer.draw(a)
         if self.__passT >= self.__passingFrT:
             self.__passT = 0
-            self.passingT = False
+            self.__passingT = False
             self.__passingFrT = 0
         else:
             self.__passT += 1
 
     def passSteps(self, frames: int):
         self.__passT = 0
-        self.passingT = True
+        self.__passingT = True
         self.__passingFrT = frames
 
     def onCollide(self, collider: Transform):
@@ -264,17 +275,26 @@ class Behavior:
 def instantiate(beh, pos=Vec3()) -> int:
     b = beh(True)
     b.isInstantiated = True
-    b.gameobject.tr.position = pos
     ObjList.addObj(b)
+    b.startStart()
+    b.start()
+    b.baceStart()
+    b.gameobject.tr.position = pos
     return len(ObjList.getObjs()) - 1
 
 
-def findNearObjByPos(V: Vec3, f: float, b: Behavior):
+def findNearObjByPos(V: Vec3, f: float, b=[]):
     for i in ObjList.getObjs():
-        if (Vec3.distance(V, i.gameobject.tr.position) <= f) and (not (i is b)):
+        if (Vec3.distance(V, i.gameobject.tr.position) <= f) and (not (i in b)):
             return i
     return None
 
 
 def destroy(beh):
     ObjList.removeObj(beh)
+
+
+def getBeh(n: str):
+    for i in Behavior.__subclasses__():
+        if i.__name__ == n:
+            return i
