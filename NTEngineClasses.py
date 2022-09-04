@@ -150,11 +150,50 @@ class Vec3:
 
 
 class Transform:
+
     def __init__(self, V: Vec3):
         self.position = V
+        self.collide = False
+        self.beh = None
 
     def __init__(self, x=0, y=0):
         self.position = Vec3(x, y)
+        self.collide = False
+        self.beh = None
+
+    def moweDir(self, Dir: Vec3):
+        if self.collide:
+            ff = findNearObjByPos(Vec3.sum(self.position, Dir), 0.5, self)
+            if not (ff and ff.gameobject.tr.collide):
+                # self.position = Vec3.sum(self.position, Dir)
+                self.setPosition(Vec3.sum(self.position, Dir))
+                return
+            self.beh.onCollide(ff.gameobject.tr)
+            ff.gameobject.tr.beh.onCollide(self)
+        else:
+            self.position = Vec3.sum(self.position, Dir)
+
+    def setPosition(self, V: Vec3):
+        if self.collide:
+            ff = findNearObjByPos(V, 0.5, self)
+            if not (ff and ff.gameobject.tr.collide):
+                self.position = V
+            else:
+                sp = V
+                if self.position.x > V.x:
+                    sp = Vec3(V.x + 0.5, V.y, V.z)
+                if self.position.x < V.x:
+                    sp = Vec3(V.x - 0.5, V.y, V.z)
+                if self.position.y > V.y:
+                    sp = Vec3(V.x, V.y + 0.5, V.z)
+                if self.position.y < V.y:
+                    sp = Vec3(V.x, V.y - 0.5, V.z)
+                self.position = sp
+                if self.beh:
+                    self.beh.onCollide(ff.gameobject.tr)
+                    ff.gameobject.tr.beh.onCollide(self)
+        else:
+            self.position = V
 
 
 class Obj:
@@ -166,11 +205,6 @@ class Obj:
         self.tr = Transform(x, y)
         self.symb = symb
 
-    def draw(self, a):
-        if self.tr.position.y >= 0 and self.tr.position.y < HEIGHT and self.tr.position.x >= 0 and self.tr.position.x < WIDTH:
-            a[int(clamp(self.tr.position.y, 0, HEIGHT - 1))][
-                int(clamp(self.tr.position.x, 0, WIDTH - 1))] = self.symb
-
     @classmethod
     def __check(cls, n):
         if type(n) in (int, float):
@@ -179,20 +213,24 @@ class Obj:
             return None
 
 
+class Drawer:
+    def __init__(self, gm: Obj):
+        self.gm = gm
+
+    def draw(self, a):
+        if 0 <= self.gm.tr.position.y < HEIGHT and 0 <= self.gm.tr.position.x < WIDTH:
+            a[int(clamp(self.gm.tr.position.y, 0, HEIGHT - 1))][
+                int(clamp(self.gm.tr.position.x, 0, WIDTH - 1))] = self.gm.symb
+
+
 class Behavior:
     def __init__(self, o: bool, s: str, V: Vec3):
         self.gameobject = Obj(s, V.x, V.y)
-        self.isInstantiated = o
-        self.collide = False
+        self.baceStart(o)
 
     __passT = 0
     passingT = False
     __passingFrT = 0
-
-    def moweDir(self, Dir: Vec3):
-        ff = findNearObjByPos(Vec3.sum(self.gameobject.tr.position, Dir), 0.5, self)
-        if not (ff and self.collide and ff.collide):
-            self.gameobject.tr.position = Vec3.sum(self.gameobject.tr.position, Dir)
 
     def update(self, a):
         pass
@@ -201,10 +239,12 @@ class Behavior:
         pass
 
     def baceStart(self, o: bool):
+        self.drawer = Drawer(self.gameobject)
         self.isInstantiated = o
+        self.gameobject.tr.beh = self
 
     def baceUpdate(self, a):
-        self.gameobject.draw(a)
+        self.drawer.draw(a)
         if self.__passT >= self.__passingFrT:
             self.__passT = 0
             self.passingT = False
@@ -217,17 +257,21 @@ class Behavior:
         self.passingT = True
         self.__passingFrT = frames
 
+    def onCollide(self, collider: Transform):
+        pass
 
-def instantiate(beh, pos=Vec3.zero()):
+
+def instantiate(beh, pos=Vec3()) -> int:
     b = beh(True)
     b.isInstantiated = True
     b.gameobject.tr.position = pos
     ObjList.addObj(b)
+    return len(ObjList.getObjs()) - 1
 
 
 def findNearObjByPos(V: Vec3, f: float, b: Behavior):
     for i in ObjList.getObjs():
-        if Vec3.distance(V, i.gameobject.tr.position) <= f and not i is b:
+        if (Vec3.distance(V, i.gameobject.tr.position) <= f) and (not (i is b)):
             return i
     return None
 
