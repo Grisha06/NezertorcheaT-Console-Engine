@@ -1,4 +1,4 @@
-#NezertorcheaT Console Engine
+#NezertorcheaT Console Engine  
 ##Приветствую вас в документации по NezertorcheaT Console Engine!  
 И начнём пожалуй с того, что, чтобы работать, вам потребуется утановленный Python на компьютер, и закачаный рипозиторий самого проекта, в отдельной папке. 
 
@@ -41,8 +41,8 @@ class Name(Behavior):
         #<code>  
         if not self.isInstantiated:  
             #<ui_code>  
-```
-Объяснение методов:  
+```  
+##Объяснение методов:  
 
 1. NTETime:  
    - getTime() - возвращаеет текущий кадр  
