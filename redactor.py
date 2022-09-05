@@ -32,14 +32,15 @@ def winParamsGetName(x: int, y: int, s: Button, r=None):
     if r:
         r.destroy()
     win3 = Tk()
-    win3.geometry(f"{200}x{50}")
+    win3.geometry(f"{200}x{500}")
     win3.title(f"Set Class Name")
     win3.config(bg='#383838')
     win3.resizable(False, False)
-    ee = Entry(win3, font=ifont)
-    bb = Button(win3, text="Save Class Name", font=ifont, command=lambda x=x, y=y: winParams(x, y, ee.get(), win3, s))
-    ee.pack(fill="both", expand=1)
-    bb.pack(fill="both", expand=1)
+    Button(win3, text="None", font=ifont,
+           command=lambda x=x, y=y: winParams(x, y, "None", win3, s)).pack(fill="both", expand=1)
+    for i in Behavior.__subclasses__():
+        Button(win3, text=i.__name__, font=ifont,
+               command=lambda x=x, y=y, i=i: winParams(x, y, i.__name__, win3, s)).pack(fill="both", expand=1)
 
 
 def winParams(x: int, y: int, name: str, w: Tk, s: Button):
