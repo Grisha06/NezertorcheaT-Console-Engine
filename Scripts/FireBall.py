@@ -1,4 +1,5 @@
 from NTEngineClasses import *
+from ObjList import getObjByName
 
 
 class FireBall(Behavior):

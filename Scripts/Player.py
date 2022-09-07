@@ -13,6 +13,7 @@ class Player(Behavior):
     collide = True
 
     def start(self):
+        findNearObjByRad(self.gameobject.tr.position, 100, True, nb=[self], nbc=[Scripts.PlayerSharp.PlayerSharp])
         if not self.isInstantiated:
             ui.add(
                 f"Player: x:{self.gameobject.tr.position.x}; y:{self.gameobject.tr.position.y}; z:{self.gameobject.tr.position.z}",
@@ -33,15 +34,13 @@ class Player(Behavior):
         if keyboard.is_pressed("e"):
             instantiate(Scripts.Enemy.Enemy, self.gameobject.tr.position)
         if keyboard.is_pressed("q"):
-            instantiate(Scripts.Wall.Wall, self.gameobject.tr.position)
+            instantiate(Scripts.Wall.Wall, Vec3.int(self.gameobject.tr.position))
         if keyboard.is_pressed("f"):
-            p = findNearObjByPos(self.gameobject.tr.position, 2, [self])
-            if p is not None and not isinstance(p, Scripts.PlayerSharp.PlayerSharp):
-                destroy(p)
+            destroy(findNearObjByRad(self.gameobject.tr.position, 2, nb=[self], nbc=[Scripts.PlayerSharp.PlayerSharp]))
         if not self.isInstantiated:
             ui.changeSpace(1,
                            f"Player: x:{self.gameobject.tr.position.x}; y:{self.gameobject.tr.position.y}; z:{self.gameobject.tr.position.z}",
                            True)
-            # ui.changeSpace(2,
-            #               f"Behaviors: {ObjList.getObjs()}",
-            #               True)
+            ui.changeSpace(2,
+                          f"Near: {findNearObjByRad(self.gameobject.tr.position, 100, True, nb=[self], nbc=[Scripts.PlayerSharp.PlayerSharp]).name}",
+                          True)

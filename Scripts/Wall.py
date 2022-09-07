@@ -10,5 +10,5 @@ class Wall(Behavior):
     def update(self, a):
         self.passSteps(5)
         if self.gameobject.tr.collide:
-            if isinstance(findNearObjByPos(self.gameobject.tr.position, 0.1, [self]), type(self)):
-                destroy(findNearObjByPos(self.gameobject.tr.position, 0.1, [self]))
+            if isinstance(findNearObjByRad(self.gameobject.tr.position, 0.1, nb=[self]), type(self)):
+                destroy(findNearObjByRad(self.gameobject.tr.position, 0.1, nb=[self]))

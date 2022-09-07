@@ -16,7 +16,4 @@ class PlayerSharp(Behavior):
                 break
 
     def update(self, a):
-        for i in ObjList.getObjs():
-            if isinstance(i, Scripts.Player.Player):
-                self.gameobject.tr.position = Vec3.sum(self.pll.gameobject.tr.position, Vec3(1, 0))
-                break
+        self.gameobject.tr.position = Vec3.int(Vec3.sum(self.pll.gameobject.tr.position, Vec3(1, 0)))

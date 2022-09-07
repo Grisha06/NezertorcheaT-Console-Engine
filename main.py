@@ -21,7 +21,9 @@ for i in objMap:
 
 for i in ObjList.getObjs():
     i.startStart()
+for i in ObjList.getObjs():
     i.start()
+for i in ObjList.getObjs():
     i.baceStart()
 
 while True:

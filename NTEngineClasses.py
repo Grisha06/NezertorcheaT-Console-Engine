@@ -74,7 +74,7 @@ def print_matrix(a):
 class Vec3:
     """Трёхмерный вектор"""
 
-    def __init__(self, x=0, y=0, z=0):
+    def __init__(self, x=0.0, y=0.0, z=0.0):
         if self.__check(x) and self.__check(y) and self.__check(z):
             self.x = x
             self.y = y
@@ -165,6 +165,16 @@ class Vec3:
         return math.sqrt((v1.x - v2.x) ** 2 + (v1.y - v2.y) ** 2 + (v1.z - v2.z) ** 2)
 
     @final
+    @staticmethod
+    def int(v1):
+        return Vec3(int(v1.x), int(v1.y), int(v1.z))
+
+    @final
+    @staticmethod
+    def round(v1):
+        return Vec3(round(v1.x), round(v1.y), round(v1.z))
+
+    @final
     def sign(self):
         return Vec3(self.sign_value(self.x), self.sign_value(self.y), self.sign_value(self.z))
 
@@ -183,9 +193,8 @@ class Transform:
 
     def moweDir(self, Dir: Vec3):
         if self.collide:
-            ff = findNearObjByPos(Vec3.sum(self.position, Dir), 0.5, [self])
-            if not (ff and ff.gameobject.tr.collide):
-                # self.position = Vec3.sum(self.position, Dir)
+            ff = findNearObjByRad(Vec3.sum(self.position, Dir), 0.9, nb=[self], collide=True)
+            if not ff or not ff.gameobject.tr.collide:
                 self.setPosition(Vec3.sum(self.position, Dir))
                 return
             self.beh.onCollide(ff.gameobject.tr)
@@ -195,19 +204,19 @@ class Transform:
 
     def setPosition(self, V: Vec3):
         if self.collide:
-            ff = findNearObjByPos(V, 0.5, [self])
+            ff = findNearObjByRad(V, 0.9, nb=[self], collide=True)
             if not (ff and ff.gameobject.tr.collide):
                 self.position = V
             else:
                 sp = V
                 if self.position.x > V.x:
-                    sp = Vec3(V.x + 0.5, V.y, V.z)
+                    sp = Vec3(V.x + 0.9, V.y, V.z)
                 if self.position.x < V.x:
-                    sp = Vec3(V.x - 0.5, V.y, V.z)
+                    sp = Vec3(V.x - 0.9, V.y, V.z)
                 if self.position.y > V.y:
-                    sp = Vec3(V.x, V.y + 0.5, V.z)
+                    sp = Vec3(V.x, V.y + 0.9, V.z)
                 if self.position.y < V.y:
-                    sp = Vec3(V.x, V.y - 0.5, V.z)
+                    sp = Vec3(V.x, V.y - 0.9, V.z)
                 self.position = sp
                 if self.beh:
                     self.beh.onCollide(ff.gameobject.tr)
@@ -246,6 +255,7 @@ class Drawer:
 
 
 class Behavior:
+    name = ''
     spawnposx = 0
     spawnposy = 0
     symbol = ''
@@ -305,18 +315,44 @@ def instantiate(beh, pos=Vec3()) -> int:
     b.start()
     b.baceStart()
     b.gameobject.tr.position = pos
+    b.name = beh.__name__[0] + beh.__name__[1] + str(len(ObjList.getObjs()) - 1)
     return len(ObjList.getObjs()) - 1
 
 
-def findNearObjByPos(V: Vec3, f: float, b=[]):
+def findNearObjByRad(V: Vec3, rad: float, collide=False, nb=[], nbc=[]):
+    g = []
     for i in ObjList.getObjs():
-        if (Vec3.distance(V, i.gameobject.tr.position) <= f) and (not (i in b)):
-            return i
-    return None
+        if collide and not i.gameobject.tr.collide or i in nb or type(i) in nbc:
+            continue
+        if Vec3.distance(V, i.gameobject.tr.position) <= rad:
+            g.append(i)
+    try:
+        for i in range(1, len(g)):
+            key_item = g[i]
+            j = i - 1
+            while j >= 0 and Vec3.distance(V, g[j].gameobject.tr.position) > Vec3.distance(V,
+                                                                                           key_item.gameobject.tr.position):
+                g[j + 1] = g[j]
+                j -= 1
+            g[j + 1] = key_item
+        return g[0]
+    except IndexError:
+        return None
+
+
+def findAllObjsAtRad(V: Vec3, collide: bool, f: float, nb=[]):
+    g = []
+    for i in ObjList.getObjs():
+        if collide and not i.gameobject.tr.collide or i in nb:
+            continue
+        if Vec3.distance(V, i.gameobject.tr.position) <= f:
+            g.append(i)
+    return g
 
 
 def destroy(beh):
-    ObjList.removeObj(beh)
+    if beh is not None:
+        ObjList.removeObj(beh)
 
 
 def getBeh(n: str):
