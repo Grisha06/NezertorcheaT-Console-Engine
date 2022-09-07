@@ -1,11 +1,4 @@
 {
-  "pl": {
-    "cname": "Player",
-    "spawnposx": 11,
-    "spawnposy": 7,
-    "symbol": "@",
-    "collide": true
-  },
   "e": {
     "cname": "Enemy",
     "spawnposx": 2,
@@ -54,5 +47,19 @@
     "spawnposy": 3,
     "symbol": "\u2588",
     "collide": true
+  },
+  "pl1": {
+    "cname": "Player",
+    "spawnposx": 9,
+    "spawnposy": 6,
+    "symbol": "P",
+    "collide": true
+  },
+  "pl1s": {
+    "cname": "PlayerSharp",
+    "spawnposx": 10,
+    "spawnposy": 6,
+    "symbol": "y",
+    "collide": false
   }
 }

@@ -248,7 +248,7 @@ class Drawer:
 class Behavior:
     spawnposx = 0
     spawnposy = 0
-    symbol = '@'
+    symbol = ''
     collide = True
 
     def __init__(self, o: bool):
@@ -323,3 +323,4 @@ def getBeh(n: str):
     for i in Behavior.__subclasses__():
         if i.__name__ == n:
             return i
+    return None

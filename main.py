@@ -10,19 +10,13 @@ for module in os.listdir(os.path.dirname(__file__) + "\\Scripts"):
 del module
 
 a = add_matrix()
-print_matrix(a)
 
 for i in objMap:
     bb = getBeh(objMap[i]['cname'])(False)
-
-    for j in bb.__dict__:
-        if j[0] + j[1] != '__' and type(bb.__dict__[j]) != type(getBeh):
-            try:
-                bb.__dict__[j] = objMap[i][j]
-            except KeyError:
-                print(j)
-    bb.spawnposx = objMap[i]['spawnposx']
-    bb.spawnposy = objMap[i]['spawnposy']
+    bb.__setattr__("name", i)
+    for j in objMap[i]:
+        if j != 'cname' and type(bb.__getattribute__(j)) != type(getBeh):
+            bb.__setattr__(j, type(bb.__getattribute__(j))(objMap[i][j]))
     ObjList.addObj(bb)
 
 for i in ObjList.getObjs():

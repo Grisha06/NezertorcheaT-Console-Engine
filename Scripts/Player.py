@@ -2,6 +2,7 @@ import keyboard
 
 import Scripts
 import Scripts.Enemy
+import Scripts.PlayerSharp
 from NTEngineClasses import *
 
 
@@ -35,7 +36,7 @@ class Player(Behavior):
             instantiate(Scripts.Wall.Wall, self.gameobject.tr.position)
         if keyboard.is_pressed("f"):
             p = findNearObjByPos(self.gameobject.tr.position, 2, [self])
-            if p != None:
+            if p is not None and not isinstance(p, Scripts.PlayerSharp.PlayerSharp):
                 destroy(p)
         if not self.isInstantiated:
             ui.changeSpace(1,
