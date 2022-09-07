@@ -1,65 +1,116 @@
 {
-  "e": {
-    "cname": "Enemy",
-    "spawnposx": 2,
-    "spawnposy": 6,
-    "symbol": "$",
-    "collide": true
-  },
   "w": {
     "cname": "Wall",
-    "spawnposx": 3,
-    "spawnposy": 4,
+    "spawnposx": 13,
+    "spawnposy": 0,
     "symbol": "\u2588",
     "collide": true
   },
   "w1": {
     "cname": "Wall",
-    "spawnposx": 4,
-    "spawnposy": 4,
-    "symbol": "\u2588",
-    "collide": false
-  },
-  "w2": {
-    "cname": "Wall",
-    "spawnposx": 5,
-    "spawnposy": 4,
+    "spawnposx": 14,
+    "spawnposy": 0,
     "symbol": "\u2588",
     "collide": true
   },
-  "ww": {
+  "w3": {
     "cname": "Wall",
-    "spawnposx": 7,
-    "spawnposy": 11,
+    "spawnposx": 14,
+    "spawnposy": 1,
     "symbol": "\u2588",
     "collide": true
   },
-  "e2": {
-    "cname": "Enemy2",
+  "w4": {
+    "cname": "Wall",
+    "spawnposx": 14,
+    "spawnposy": 2,
+    "symbol": "\u2588",
+    "collide": true
+  },
+  "w5": {
+    "cname": "Wall",
     "spawnposx": 3,
-    "spawnposy": 5,
-    "symbol": "&",
-    "collide": true
-  },
-  "h": {
-    "cname": "Wall",
-    "spawnposx": 11,
     "spawnposy": 3,
     "symbol": "\u2588",
     "collide": true
   },
-  "pl1": {
-    "cname": "Player",
+  "w6": {
+    "cname": "Wall",
     "spawnposx": 9,
-    "spawnposy": 6,
+    "spawnposy": 11,
+    "symbol": "\u2588",
+    "collide": true
+  },
+  "w7": {
+    "cname": "Wall",
+    "spawnposx": 3,
+    "spawnposy": 12,
+    "symbol": "\u2588",
+    "collide": true
+  },
+  "e": {
+    "cname": "Enemy",
+    "spawnposx": 8,
+    "spawnposy": 4,
+    "symbol": "$",
+    "collide": true
+  },
+  "P": {
+    "cname": "Player",
+    "spawnposx": 7,
+    "spawnposy": 12,
     "symbol": "P",
     "collide": true
   },
-  "pl1s": {
+  "fgn": {
+    "cname": "Wall",
+    "spawnposx": 29,
+    "spawnposy": 14,
+    "symbol": "\u2588",
+    "collide": true
+  },
+  "kj,h": {
+    "cname": "Wall",
+    "spawnposx": 28,
+    "spawnposy": 14,
+    "symbol": "\u2588",
+    "collide": true
+  },
+  "cvb": {
+    "cname": "Wall",
+    "spawnposx": 29,
+    "spawnposy": 13,
+    "symbol": "\u2588",
+    "collide": true
+  },
+  "k": {
+    "cname": "Wall",
+    "spawnposx": 29,
+    "spawnposy": 12,
+    "symbol": "\u2588",
+    "collide": true
+  },
+  "C": {
+    "cname": "Enemy2",
+    "spawnposx": 23,
+    "spawnposy": 8,
+    "symbol": "C",
+    "collide": true
+  },
+  "y": {
     "cname": "PlayerSharp",
-    "spawnposx": 10,
-    "spawnposy": 6,
+    "spawnposx": 8,
+    "spawnposy": 12,
     "symbol": "y",
-    "collide": false
+    "collide": false,
+    "psn": "P"
+  },
+  "chs": {
+    "cname": "PlayerSharp",
+    "spawnposx": 24,
+    "spawnposy": 8,
+    "symbol": "#",
+    "collide": false,
+    "psn": "C"
   }
 }

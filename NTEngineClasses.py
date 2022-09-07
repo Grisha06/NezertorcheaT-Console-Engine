@@ -181,14 +181,14 @@ class Vec3:
 
 class Transform:
 
-    def __init__(self, V: Vec3):
+    def __init__(self, V: Vec3, collide=False):
         self.position = V
-        self.collide = False
+        self.collide = collide
         self.beh = None
 
-    def __init__(self, x=0, y=0):
+    def __init__(self, x=0, y=0, collide=False):
         self.position = Vec3(x, y)
-        self.collide = False
+        self.collide = collide
         self.beh = None
 
     def moweDir(self, Dir: Vec3):
@@ -226,13 +226,13 @@ class Transform:
 
 
 class Obj:
-    def __init__(self, symb: str, V: Vec3):
-        self.tr = Transform(self.__check(V))
+    def __init__(self, symb: str, V: Vec3, collide=False):
+        self.tr = Transform(self.__check(V), collide=collide)
         self.symb = symb
         self.drawer = Drawer(self)
 
-    def __init__(self, symb: str, x=0, y=0):
-        self.tr = Transform(self.__check(x), self.__check(y))
+    def __init__(self, symb: str, x=0, y=0, collide=False):
+        self.tr = Transform(self.__check(x), self.__check(y), collide=collide)
         self.symb = symb
         self.drawer = Drawer(self)
 
@@ -284,8 +284,7 @@ class Behavior:
 
     @final
     def startStart(self):
-        self.gameobject = Obj(self.symbol, self.spawnposx, self.spawnposy)
-        self.gameobject.tr.collide = self.collide
+        self.gameobject = Obj(self.symbol, self.spawnposx, self.spawnposy, collide=self.collide)
 
     @final
     def baceUpdate(self, a):

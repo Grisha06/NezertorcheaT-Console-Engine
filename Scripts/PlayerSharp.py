@@ -6,14 +6,15 @@ class PlayerSharp(Behavior):
     spawnposx = 0
     spawnposy = 0
     symbol = '@'
-    collide = True
+    collide = False
     psn = "pl1"
+    __pll = None
 
     def start(self):
         for i in ObjList.getObjs():
-            if isinstance(i, Scripts.Player.Player) and i.name == self.psn:
-                self.pll = i
+            if i.name == self.psn:
+                self.__pll = i
                 break
 
     def update(self, a):
-        self.gameobject.tr.position = Vec3.int(Vec3.sum(self.pll.gameobject.tr.position, Vec3(1, 0)))
+        self.gameobject.tr.position = Vec3.int(Vec3.sum(self.__pll.gameobject.tr.position, Vec3(1, 0)))

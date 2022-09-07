@@ -145,8 +145,8 @@ setsizebutton.pack(side=LEFT)
 bacesizeframe.pack(side=TOP)
 
 bacegridframe = Frame(canvas)
-for x in range(settings['HEIGHT']):
-    for y in range(settings['WIDTH']):
+for y in range(settings['HEIGHT']):
+    for x in range(settings['WIDTH']):
         s = Button(bacegridframe, text=' ', font=ifont, width=1)
         s.config(command=lambda x=x, y=y, s=s: winParamsGetName(x, y, s))
         s.grid(row=y, column=x)
