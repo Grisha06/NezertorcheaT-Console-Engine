@@ -1,20 +1,21 @@
+import Scripts.Wall
 from NTEngineClasses import *
 from ObjList import getObjByName
+from NTETime import *
 
 
 class FireBall(Behavior):
-    spawnposx = -5
-    spawnposy = -1
     symbol = '*'
-    speed = 1
+    speed = 1.0
     collide = True
-
-    def start(self):
-        self.dir = Vec3(1, 0)
+    dir = Vec3()
 
     def update(self, a):
         self.passSteps(2)
-        self.gameobject.tr.moweDir(Vec3.mult_by_float(self.dir, self.speed))
+        self.gameobject.tr.moveDir(Vec3.mult_by_float(self.dir, self.speed))
 
     def onCollide(self, collider: Transform):
-        destroy(self)
+        if isinstance(collider.beh,
+                      (Scripts.Wall.Wall, Scripts.FireBall.FireBall, Scripts.Player.Player, Scripts.Enemy.Enemy)):
+            print("getTime()")
+            destroy(self)

@@ -83,6 +83,14 @@ class Vec3:
             raise ValueError("Position is need to be number")
 
     @final
+    def returnAsArray(self):
+        return [self.x, self.y, self.z]
+
+    @final
+    def returnAsDict(self):
+        return {'x': self.x, 'y': self.y, 'z': self.z}
+
+    @final
     @classmethod
     def __check(cls, n):
         return type(n) in (int, float)
@@ -119,7 +127,7 @@ class Vec3:
 
     @final
     @staticmethod
-    def mult_by_float(a, n=0):
+    def mult_by_float(a, n=0.0):
         return Vec3(a.x * n, a.y * n, a.z * n)
 
     @final
@@ -137,7 +145,10 @@ class Vec3:
 
     @final
     def norm(self):
-        return Vec3.dev_by_float(self, self.length())
+        if self.length() != 0.0:
+            return Vec3.dev_by_float(self, self.length())
+        else:
+            return Vec3.zero()
 
     @final
     @staticmethod
@@ -180,61 +191,90 @@ class Vec3:
 
 
 class Transform:
+    def getPosition(self):
+        if self.parent is not None:
+            p = self.__getParents(parents=[self.parent])
+            g = self.local_position
+            for i in p:
+                g = Vec3.sum(g, i.local_position)
+            return g
+        else:
+            return self.local_position
 
-    def __init__(self, V: Vec3, collide=False):
-        self.position = V
+    def __getParents(self, par=None, parents=[]):
+        if par is not None:
+            if par.parent is not None:
+                return self.__getParents(par=par.parent, parents=parents + [par])
+            else:
+                return parents + [par]
+        else:
+            return parents
+
+    def __init__(self, V: Vec3, collide=False, parent=None):
+        self.local_position = V
         self.collide = collide
         self.beh = None
+        self.parent = parent
 
-    def __init__(self, x=0, y=0, collide=False):
-        self.position = Vec3(x, y)
+    def __init__(self, x=0.0, y=0.0, collide=False, parent=None):
+        self.local_position = Vec3(x, y)
         self.collide = collide
         self.beh = None
+        self.parent = parent
 
-    def moweDir(self, Dir: Vec3):
+    def moveDir(self, Dir: Vec3):
         if self.collide:
-            ff = findNearObjByRad(Vec3.sum(self.position, Dir), 0.9, nb=[self], collide=True)
+            ff = findNearObjByRad(Vec3.sum(self.local_position, Dir), math.sqrt(2) / 2, nb=[self], collide=True)
             if not ff or not ff.gameobject.tr.collide:
-                self.setPosition(Vec3.sum(self.position, Dir))
+                self.setLocalPosition(Vec3.sum(self.local_position, Dir))
                 return
+            #self.local_position=\
+            #    Vec3.sum(Vec3.sum(self.local_position, Dir), Vec3.mult_by_float(Dir.norm(),
+            #                                                                    -math.sqrt(2) / 2 + Vec3.distance(
+            #                                                                        Vec3.sum(self.getPosition(), Dir),
+            #                                                                        ff.gameobject.tr.getPosition())))
             self.beh.onCollide(ff.gameobject.tr)
             ff.gameobject.tr.beh.onCollide(self)
         else:
-            self.position = Vec3.sum(self.position, Dir)
+            self.local_position = Vec3.sum(self.local_position, Dir)
 
-    def setPosition(self, V: Vec3):
+    def setLocalPosition(self, V: Vec3):
         if self.collide:
-            ff = findNearObjByRad(V, 0.9, nb=[self], collide=True)
+            ff = findNearObjByRad(V, math.sqrt(2) / 2, nb=[self], collide=True)
+
             if not (ff and ff.gameobject.tr.collide):
-                self.position = V
+                self.local_position = V
             else:
                 sp = V
-                if self.position.x > V.x:
+                if self.local_position.x > V.x:
                     sp = Vec3(V.x + 0.9, V.y, V.z)
-                if self.position.x < V.x:
+                if self.local_position.x < V.x:
                     sp = Vec3(V.x - 0.9, V.y, V.z)
-                if self.position.y > V.y:
+                if self.local_position.y > V.y:
                     sp = Vec3(V.x, V.y + 0.9, V.z)
-                if self.position.y < V.y:
+                if self.local_position.y < V.y:
                     sp = Vec3(V.x, V.y - 0.9, V.z)
-                self.position = sp
+                self.local_position = sp
                 if self.beh:
+                    print(ff.gameobject.tr.getPosition().returnAsArray())
                     self.beh.onCollide(ff.gameobject.tr)
                     ff.gameobject.tr.beh.onCollide(self)
         else:
-            self.position = V
+            self.local_position = V
 
 
 class Obj:
-    def __init__(self, symb: str, V: Vec3, collide=False):
+    def __init__(self, symb: str, V: Vec3, collide=False, parent: Transform = None):
         self.tr = Transform(self.__check(V), collide=collide)
         self.symb = symb
         self.drawer = Drawer(self)
+        self.tr.parent = parent
 
-    def __init__(self, symb: str, x=0, y=0, collide=False):
+    def __init__(self, symb: str, x=0.0, y=0.0, collide=False, parent: Transform = None):
         self.tr = Transform(self.__check(x), self.__check(y), collide=collide)
         self.symb = symb
         self.drawer = Drawer(self)
+        self.tr.parent = parent
 
     @final
     def __check(self, n):
@@ -249,17 +289,19 @@ class Drawer:
         self.gm = gm
 
     def draw(self, a):
-        if 0 <= self.gm.tr.position.y < settings['HEIGHT'] and 0 <= self.gm.tr.position.x < settings['WIDTH']:
-            a[int(clamp(self.gm.tr.position.y, 0, settings['HEIGHT'] - 1))][
-                int(clamp(self.gm.tr.position.x, 0, settings['WIDTH'] - 1))] = self.gm.symb
+        po = self.gm.tr.getPosition()
+        if 0.0 <= po.y < settings['HEIGHT'] and 0.0 <= po.x < settings['WIDTH']:
+            a[round(clamp(po.y, 0.0, settings['HEIGHT'] - 1.0))][
+                round(clamp(po.x, 0.0, settings['WIDTH'] - 1.0))] = self.gm.symb
 
 
 class Behavior:
     name = ''
-    spawnposx = 0
-    spawnposy = 0
+    spawnposx = 0.0
+    spawnposy = 0.0
     symbol = ''
     collide = True
+    parent = None
 
     def __init__(self, o: bool):
         self.isInstantiated = o
@@ -281,6 +323,7 @@ class Behavior:
     @final
     def baceStart(self):
         self.gameobject.tr.beh = self
+        self.gameobject.tr.parent = self.parent
 
     @final
     def startStart(self):
@@ -313,7 +356,7 @@ def instantiate(beh, pos=Vec3()) -> int:
     b.startStart()
     b.start()
     b.baceStart()
-    b.gameobject.tr.position = pos
+    b.gameobject.tr.local_position = pos
     b.name = beh.__name__[0] + beh.__name__[1] + str(len(ObjList.getObjs()) - 1)
     return len(ObjList.getObjs()) - 1
 
@@ -323,14 +366,14 @@ def findNearObjByRad(V: Vec3, rad: float, collide=False, nb=[], nbc=[]):
     for i in ObjList.getObjs():
         if collide and not i.gameobject.tr.collide or i in nb or type(i) in nbc:
             continue
-        if Vec3.distance(V, i.gameobject.tr.position) <= rad:
+        if Vec3.distance(V, i.gameobject.tr.local_position) <= rad:
             g.append(i)
     try:
         for i in range(1, len(g)):
             key_item = g[i]
             j = i - 1
-            while j >= 0 and Vec3.distance(V, g[j].gameobject.tr.position) > Vec3.distance(V,
-                                                                                           key_item.gameobject.tr.position):
+            while j >= 0 and Vec3.distance(V, g[j].gameobject.tr.local_position) > Vec3.distance(V,
+                                                                                                 key_item.gameobject.tr.local_position):
                 g[j + 1] = g[j]
                 j -= 1
             g[j + 1] = key_item
@@ -344,8 +387,16 @@ def findAllObjsAtRad(V: Vec3, collide: bool, f: float, nb=[]):
     for i in ObjList.getObjs():
         if collide and not i.gameobject.tr.collide or i in nb:
             continue
-        if Vec3.distance(V, i.gameobject.tr.position) <= f:
+        if Vec3.distance(V, i.gameobject.tr.local_position) <= f:
             g.append(i)
+    for i in range(1, len(g)):
+        key_item = g[i]
+        j = i - 1
+        while j >= 0 and Vec3.distance(V, g[j].gameobject.tr.local_position) > Vec3.distance(V,
+                                                                                             key_item.gameobject.tr.local_position):
+            g[j + 1] = g[j]
+            j -= 1
+        g[j + 1] = key_item
     return g
 
 

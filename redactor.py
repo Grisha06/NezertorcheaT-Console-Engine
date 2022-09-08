@@ -3,6 +3,7 @@ from tkinter import messagebox
 from tkinter import ttk
 from tkinter.font import *
 
+import NTEngineClasses
 from NTEngineClasses import *
 from globalSettings import *
 
@@ -46,7 +47,7 @@ def winParamsGetName(x: int, y: int, s: Button, r=None):
 def winParams(x: int, y: int, name: str, w: Tk, s: Button):
     w.destroy()
     win2 = Tk()
-    win2.geometry(f"{200}x{200}")
+    # win2.geometry(f"{200}x{200}")
     win2.title(f"NCE inspector: x={x}, y={y}")
     win2.config(bg='#383838')
     win2.resizable(False, False)
@@ -79,13 +80,47 @@ def winParams(x: int, y: int, name: str, w: Tk, s: Button):
                     l = Label(f, text=j + ' = ')
                     l.pack(side=LEFT)
                     e = Entry(f)
+                    ss = False
+                    if type(i.__dict__[j]) == bool:
+                        ss = True
+                        e = BooleanVar()
+                        e.set(0)
+                        eez = Checkbutton(f, variable=e,
+                                          onvalue=True, offvalue=False)
+                    v = False
+                    if type(i.__dict__[j]) == NTEngineClasses.Vec3:
+                        v = True
+                        ff = Frame(f)
+                        ee1 = Entry(ff)
+                        ee2 = Entry(ff)
+                        ee3 = Entry(ff)
+
+                        e = [ee1, ee2, ee3]
+                        ff.pack(side=LEFT)
+
                     if j not in ['spawnposx', 'spawnposy']:
-                        e.insert(0, str(i.__dict__[j]))
+                        if isinstance(i.__dict__[j], bool):
+                            e.set(bool(i.__dict__[j]))
+                        elif not v and not ss:
+                            e.insert(0, str(i.__dict__[j]))
                     if j == 'spawnposx':
                         e.insert(0, str(x))
+                    if j == 'parent':
+                        e.insert(0, "None")
                     if j == 'spawnposy':
                         e.insert(0, str(y))
-                    e.pack(side=LEFT)
+                    if not v:
+                        if ss:
+                            eez.pack(side=LEFT)
+                        else:
+                            e.pack(side=LEFT)
+                    else:
+                        ee1.insert(0, str(i.__dict__[j].x))
+                        ee2.insert(0, str(i.__dict__[j].y))
+                        ee3.insert(0, str(i.__dict__[j].z))
+                        ee1.pack(side=LEFT)
+                        ee2.pack(side=LEFT)
+                        ee3.pack(side=LEFT)
                     f.pack()
                     o.update({j: e})
             tp = True
@@ -113,7 +148,10 @@ def gadd(name, s, o):
         if i.__name__ == o["cname"]:
             for j in i.__dict__:
                 if j[0] + j[1] != '__' and type(i.__dict__[j]) not in [type(winParamsGetName), Behavior, Obj,
-                                                                       Vec3]:
+                                                                       Transform]:
+                    if isinstance(i.__dict__[j], Vec3):
+                        g[name].update({j: [float(o[j][0].get()), float(o[j][1].get()), float(o[j][2].get())]})
+                        continue
                     g[name].update({j: type(i.__dict__[j])(o[j].get())})
             break
 
