@@ -10,6 +10,7 @@ class Enemy(Behavior):
     spawnposy = 2
     symbol = '$'
     collide = True
+    parent = ''
 
     def update(self, a):
         self.passSteps(5)

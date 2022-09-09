@@ -234,7 +234,6 @@ class Transform:
                     sp = Vec3(V.x, V.y - 0.9, V.z)
                 self.local_position = sp
                 if self.beh:
-                    print(ff.gameobject.tr.getPosition().returnAsArray())
                     self.beh.onCollide(ff.gameobject.tr)
                     ff.gameobject.tr.beh.onCollide(self)
         else:

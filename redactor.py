@@ -102,12 +102,16 @@ def winParams(x: int, y: int, name: str, w: Tk, s: Button):
                         if isinstance(i.__dict__[j], bool):
                             e.set(bool(i.__dict__[j]))
                         elif not v and not ss:
+                            e.delete(0,END)
                             e.insert(0, str(i.__dict__[j]))
                     if j == 'spawnposx':
+                        e.delete(0, END)
                         e.insert(0, str(x))
                     if j == 'parent':
+                        e.delete(0, END)
                         e.insert(0, "None")
                     if j == 'spawnposy':
+                        e.delete(0, END)
                         e.insert(0, str(y))
                     if not v:
                         if ss:

@@ -149,5 +149,13 @@
       0.0
     ],
     "parent": "None"
+  },
+  "saa": {
+    "cname": "Empty",
+    "spawnposx": -1,
+    "spawnposy": -1,
+    "symbol": "$",
+    "collide": true,
+    "parent": "P"
   }
 }
