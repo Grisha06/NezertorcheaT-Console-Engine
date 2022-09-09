@@ -82,110 +82,88 @@ class Vec3:
         else:
             raise ValueError("Position is need to be number")
 
-    @final
     def returnAsArray(self):
         return [self.x, self.y, self.z]
 
-    @final
     def returnAsDict(self):
         return {'x': self.x, 'y': self.y, 'z': self.z}
 
-    @final
     @classmethod
     def __check(cls, n):
         return type(n) in (int, float)
 
-    @final
     @staticmethod
     def sign_value(a):
         return int(0 < a) - int(a < 0)
 
-    @final
     @staticmethod
     def one():
         return Vec3(1, 1, 1)
 
-    @final
     @staticmethod
     def zero():
         return Vec3(0)
 
-    @final
     @staticmethod
     def dev_by_float(a, n=1):
         return Vec3(a.x / n, a.y / n, a.z / n)
 
-    @final
     @staticmethod
     def sum(a, b):
         return Vec3(a.x + b.x, a.y + b.y, a.z + b.z)
 
-    @final
     @staticmethod
     def substr(a, b):
         return Vec3(a.x - b.x, a.y - b.y, a.z - b.z)
 
-    @final
     @staticmethod
     def mult_by_float(a, n=0.0):
         return Vec3(a.x * n, a.y * n, a.z * n)
 
-    @final
     def length(self):
         return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
 
-    @final
     def abs(self):
         return Vec3(fabs(self.x), fabs(self.y), fabs(self.z))
 
-    @final
     @staticmethod
     def reflect(rd, n):
         return Vec3.substr(rd, Vec3.mult_by_float(n, Vec3.dot(n, rd) * 2))
 
-    @final
     def norm(self):
         if self.length() != 0.0:
             return Vec3.dev_by_float(self, self.length())
         else:
             return Vec3.zero()
 
-    @final
     @staticmethod
     def dot(a, b):
         return a.x * b.x + a.y * b.y + a.z * b.z
 
-    @final
     @staticmethod
     def mult(a, b):
         return Vec3(a.x * b.x, a.y * b.y, a.z * b.z)
 
-    @final
     @staticmethod
     def div(a, b):
         return Vec3(a.x / b.x, a.y / b.y, a.z / b.z)
 
-    @final
     @staticmethod
     def step(edge, v):
         return Vec3(int(edge.x > v.x), int(edge.y > v.y), int(edge.y > v.y))
 
-    @final
     @staticmethod
     def distance(v1, v2):
         return math.sqrt((v1.x - v2.x) ** 2 + (v1.y - v2.y) ** 2 + (v1.z - v2.z) ** 2)
 
-    @final
     @staticmethod
     def int(v1):
         return Vec3(int(v1.x), int(v1.y), int(v1.z))
 
-    @final
     @staticmethod
     def round(v1):
         return Vec3(round(v1.x), round(v1.y), round(v1.z))
 
-    @final
     def sign(self):
         return Vec3(self.sign_value(self.x), self.sign_value(self.y), self.sign_value(self.z))
 
@@ -228,7 +206,7 @@ class Transform:
             if not ff or not ff.gameobject.tr.collide:
                 self.setLocalPosition(Vec3.sum(self.local_position, Dir))
                 return
-            #self.local_position=\
+            # self.local_position=\
             #    Vec3.sum(Vec3.sum(self.local_position, Dir), Vec3.mult_by_float(Dir.norm(),
             #                                                                    -math.sqrt(2) / 2 + Vec3.distance(
             #                                                                        Vec3.sum(self.getPosition(), Dir),
