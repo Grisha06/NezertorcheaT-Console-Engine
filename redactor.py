@@ -107,7 +107,7 @@ def winParams(x: int, y: int, name: str, w: Tk, s: Button):
                     if j == 'spawnposx':
                         e.delete(0, END)
                         e.insert(0, str(x))
-                    if j == 'parent':
+                    if j == 'parent' or j[-1] + j[-2] + j[-3] + j[-4] + j[-5] == "_name":
                         e.delete(0, END)
                         e.insert(0, "None")
                     if j == 'spawnposy':

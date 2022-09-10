@@ -8,6 +8,9 @@ from globalSettings import *
 
 
 class UI:
+    def __init__(self):
+        self.__text = ""
+
     def __init__(self, text=[['', True]]):
         self.__text = text
 
@@ -35,7 +38,7 @@ class UI:
         self.__text[i] = [text, createNewLine]
 
 
-ui = UI('use wasd for movement', True)
+ui = UI()
 
 
 def cls(): os.system('cls' if os.name == 'nt' else 'clear')
@@ -276,7 +279,7 @@ class Behavior:
     name = ''
     spawnposx = 0.0
     spawnposy = 0.0
-    symbol = ''
+    symbol = ' '
     collide = True
     parent = None
 

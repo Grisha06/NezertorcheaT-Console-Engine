@@ -16,7 +16,7 @@ for i in objMap:
     bb.__setattr__("name", i)
     for j in objMap[i]:
         if j != 'cname' and type(bb.__getattribute__(j)) != type(getBeh):
-            if j == 'parent':
+            if j == 'parent' or j[-1] + j[-2] + j[-3] + j[-4] + j[-5] == "_name":
                 continue
             if isinstance(bb.__getattribute__(j), Vec3):
                 bb.__setattr__(j, Vec3(float(objMap[i][j][0]), float(objMap[i][j][1]), float(objMap[i][j][2])))
@@ -35,11 +35,11 @@ for u in ObjList.getObjs():
         i = u.name
         for j in objMap[i]:
             if j != 'cname' and type(u.__getattribute__(j)) != type(getBeh):
-                if j == 'parent' and objMap[i][j] == "None":
+                if (j == 'parent' or j[-1] + j[-2] + j[-3] + j[-4] + j[-5] == "_name") and \
+                        objMap[i][j] == "None":
                     u.gameobject.tr.__setattr__(j, None)
                     continue
-                if j == 'parent':
-                    u.gameobject.tr.parent = ObjList.getObjByName(objMap[i][j]).gameobject.tr
+                if j == 'parent' or j[-1] + j[-2] + j[-3] + j[-4] + j[-5] == "_name":
                     u.gameobject.tr.__setattr__(j, ObjList.getObjByName(objMap[i][j]).gameobject.tr)
                     continue
 
