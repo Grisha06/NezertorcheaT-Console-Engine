@@ -19,25 +19,25 @@ class Enemy(Behavior):
                           Scripts.Player.Player) and int(i.gameobject.tr.local_position.y) == int(
                 self.gameobject.tr.local_position.y):
                 if i.gameobject.tr.local_position.x > self.gameobject.tr.local_position.x:
-                    ObjList.getObj(instantiate(Scripts.FireBall.FireBall,
-                                               Vec3(self.gameobject.tr.local_position.x + 1,
-                                                    self.gameobject.tr.local_position.y))).dir = Vec3(1, 0)
+                    ObjList.getObj(self.instantiate(Scripts.FireBall.FireBall,
+                                                    Vec3(self.gameobject.tr.local_position.x + 1,
+                                                         self.gameobject.tr.local_position.y))).dir = Vec3(1, 0)
                 else:
-                    ObjList.getObj(instantiate(Scripts.FireBall.FireBall,
-                                               Vec3(self.gameobject.tr.local_position.x - 1,
-                                                    self.gameobject.tr.local_position.y))).dir = Vec3(-1, 0)
+                    ObjList.getObj(self.instantiate(Scripts.FireBall.FireBall,
+                                                    Vec3(self.gameobject.tr.local_position.x - 1,
+                                                         self.gameobject.tr.local_position.y))).dir = Vec3(-1, 0)
                 return
             if isinstance(i,
                           Scripts.Player.Player) and int(i.gameobject.tr.local_position.x) == int(
                 self.gameobject.tr.local_position.x):
                 if i.gameobject.tr.local_position.y > self.gameobject.tr.local_position.y:
-                    ObjList.getObj(instantiate(Scripts.FireBall.FireBall,
-                                               Vec3(self.gameobject.tr.local_position.x,
-                                                    self.gameobject.tr.local_position.y + 1))).dir = Vec3(0, 1)
+                    ObjList.getObj(self.instantiate(Scripts.FireBall.FireBall,
+                                                    Vec3(self.gameobject.tr.local_position.x,
+                                                         self.gameobject.tr.local_position.y + 1))).dir = Vec3(0, 1)
                 else:
-                    ObjList.getObj(instantiate(Scripts.FireBall.FireBall,
-                                               Vec3(self.gameobject.tr.local_position.x,
-                                                    self.gameobject.tr.local_position.y - 1))).dir = Vec3(0, -1)
+                    ObjList.getObj(self.instantiate(Scripts.FireBall.FireBall,
+                                                    Vec3(self.gameobject.tr.local_position.x,
+                                                         self.gameobject.tr.local_position.y - 1))).dir = Vec3(0, -1)
                 return
 
         s = Vec3()
@@ -58,20 +58,20 @@ class Enemy(Behavior):
 
     def onCollide(self, collider: Transform):
         if isinstance(collider.beh, Scripts.Player.Player):
-            ObjList.getObj(instantiate(Scripts.FireBall.FireBall,
-                                       Vec3(self.gameobject.tr.local_position.x - 1,
-                                            self.gameobject.tr.local_position.y))).dir = Vec3(
+            ObjList.getObj(self.instantiate(Scripts.FireBall.FireBall,
+                                            Vec3(self.gameobject.tr.local_position.x - 1,
+                                                 self.gameobject.tr.local_position.y))).dir = Vec3(
                 -1, 0)
-            ObjList.getObj(instantiate(Scripts.FireBall.FireBall,
-                                       Vec3(self.gameobject.tr.local_position.x + 1,
-                                            self.gameobject.tr.local_position.y))).dir = Vec3(
+            ObjList.getObj(self.instantiate(Scripts.FireBall.FireBall,
+                                            Vec3(self.gameobject.tr.local_position.x + 1,
+                                                 self.gameobject.tr.local_position.y))).dir = Vec3(
                 1, 0)
-            ObjList.getObj(instantiate(Scripts.FireBall.FireBall,
-                                       Vec3(self.gameobject.tr.local_position.x,
-                                            self.gameobject.tr.local_position.y - 1))).dir = Vec3(
+            ObjList.getObj(self.instantiate(Scripts.FireBall.FireBall,
+                                            Vec3(self.gameobject.tr.local_position.x,
+                                                 self.gameobject.tr.local_position.y - 1))).dir = Vec3(
                 0, -1)
-            ObjList.getObj(instantiate(Scripts.FireBall.FireBall,
-                                       Vec3(self.gameobject.tr.local_position.x,
-                                            self.gameobject.tr.local_position.y + 1))).dir = Vec3(
+            ObjList.getObj(self.instantiate(Scripts.FireBall.FireBall,
+                                            Vec3(self.gameobject.tr.local_position.x,
+                                                 self.gameobject.tr.local_position.y + 1))).dir = Vec3(
                 0, 1)
         if isinstance(collider.beh, Scripts.FireBall.FireBall): destroy(self)

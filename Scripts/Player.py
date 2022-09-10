@@ -10,7 +10,7 @@ class Player(Behavior):
     spawnposy = 0
     symbol = '@'
     collide = True
-    speed=1.0
+    speed = 1.0
 
     def start(self):
         if not self.isInstantiated:
@@ -31,9 +31,9 @@ class Player(Behavior):
         if keyboard.is_pressed("d"):
             self.gameobject.tr.moveDir(Vec3(self.speed, 0))
         if keyboard.is_pressed("e"):
-            instantiate(Scripts.Enemy.Enemy, self.gameobject.tr.local_position)
+            self.instantiate(Scripts.Enemy.Enemy, self.gameobject.tr.local_position)
         if keyboard.is_pressed("q"):
-            instantiate(Scripts.Wall.Wall, Vec3.int(self.gameobject.tr.local_position))
+            self.instantiate(Scripts.Wall.Wall, Vec3.int(self.gameobject.tr.local_position))
         if keyboard.is_pressed("f"):
             destroy(findNearObjByRad(self.gameobject.tr.local_position, 2, nb=[self],
                                      nbc=[Scripts.Empty.Empty]))

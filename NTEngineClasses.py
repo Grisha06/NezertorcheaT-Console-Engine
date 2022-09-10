@@ -325,17 +325,17 @@ class Behavior:
     def onCollide(self, collider: Transform):
         pass
 
-
-def instantiate(beh, pos=Vec3()) -> int:
-    b = beh(True)
-    b.isInstantiated = True
-    ObjList.addObj(b)
-    b.startStart()
-    b.start()
-    b.baceStart()
-    b.gameobject.tr.local_position = pos
-    b.name = beh.__name__[0] + beh.__name__[1] + str(len(ObjList.getObjs()) - 1)
-    return len(ObjList.getObjs()) - 1
+    @final
+    def instantiate(self, beh, Pos: Vec3) -> int:
+        b = beh(True)
+        b.isInstantiated = True
+        ObjList.addObj(b)
+        b.startStart()
+        b.start()
+        b.baceStart()
+        b.gameobject.tr.local_position = Pos
+        b.name = beh.__name__ + " Clone (" + str(len(ObjList.getObjs()) - 1) + ")"
+        return len(ObjList.getObjs()) - 1
 
 
 def findNearObjByRad(V: Vec3, rad: float, collide=False, nb=[], nbc=[]):
