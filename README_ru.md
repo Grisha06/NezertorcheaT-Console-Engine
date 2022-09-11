@@ -24,8 +24,7 @@ Scripts.
 Свойсто "**symbol**" отвечает за символ объекта в мире.  
 Свойсто "**collide**" отвечает за возможность столкновения с другими объектами.  
 Свойсто "**parent**" отвечает за родителя объекта и принимает имя объекта  
-Кнопка "**Save**" отвечает за сохранение
-объекта на карте.
+Кнопка "**Save**" отвечает за сохранение объекта на карте.
 
 Это пока весь функционал редактора карты.
 
@@ -50,6 +49,11 @@ class Name(Behavior):
         #<code>  
         if not self.isInstantiated:  
             #<ui_code>  
+    def onCollide(self, collider: Transform):
+        pass
+    def lateUpdate(self, a):
+        Drawer().drawSymb(a, "8", Vec3(1, 1))
+        
 ```  
 
 ### Объяснение методов:
@@ -94,12 +98,19 @@ class Name(Behavior):
     - **класс Obj**:
         - **tr: Transform** - класс Transform
         - **symb: str** - отображаемый символ
-    - класс Behavior:
+    - **класс Drawer**:
+        - **drawSymb(a, symb: str, pos: Vec3)** - используется для отрисовки символа "symb" на позиции "pos", работает
+          только в "lateUpdate"
+        - **clearSymb(a, pos: Vec3)** - используется для очищения символа на позиции "pos", работает только в "
+          lateUpdate"
+    - **класс Behavior**:
         - **isInstantiated: bool** - определяет был ли объект создан с помощью метода instantiate()
-        - **update(a)** - вызывается каждое обновление мира
-        - **start()** - вызывается в самом начале
-        - **onCollide(collider: Transform)** - вызывается при соприкосновении с объектом
+        - **update(self, a)** - вызывается каждое обновление мира
+        - **start(self)** - вызывается в самом начале
+        - **onCollide(self, collider: Transform)** - вызывается при соприкосновении с объектом
+        - **lateUpdate(self, a):** - вызывается после "update"
         - **passSteps(frames: int)** - используется для полной остановки объекта на "frames" тиков
+        - **passSeconds(secs: float)** - используется для полной остановки объекта на "secs" секунд
         - **instantiate(beh, Pos: Vec3) -> int** - используется для создания объектов в позиции "pos" с поведением "beh"
           , в "beh" нужно ставить тип, наследованный от Behavior, возвращает позицию созданного объекта в массиве
           объектов, пример кода: ```instantiate(Scripts.FireBall.FireBall, self.gameobject.tr.position)```

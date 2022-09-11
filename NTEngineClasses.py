@@ -3,6 +3,7 @@ import os
 from math import fabs
 from typing import final
 
+import NTETime
 import ObjList
 from globalSettings import *
 
@@ -177,6 +178,7 @@ class Transform:
             p = self.__getParents(parents=[self.parent])
             g = self.local_position
             for i in p:
+                print(self.beh.name)
                 g = Vec3.sum(g, i.local_position)
             return g
         else:
@@ -247,13 +249,13 @@ class Obj:
     def __init__(self, symb: str, V: Vec3, collide=False, parent: Transform = None):
         self.tr = Transform(self.__check(V), collide=collide)
         self.symb = symb
-        self.drawer = Drawer(self)
+        self.drawer = Drawer(gm=self)
         self.tr.parent = parent
 
     def __init__(self, symb: str, x=0.0, y=0.0, collide=False, parent: Transform = None):
         self.tr = Transform(self.__check(x), self.__check(y), collide=collide)
         self.symb = symb
-        self.drawer = Drawer(self)
+        self.drawer = Drawer(gm=self)
         self.tr.parent = parent
 
     @final
@@ -265,14 +267,28 @@ class Obj:
 
 
 class Drawer:
-    def __init__(self, gm: Obj):
+    def __init__(self, gm: Obj = None):
         self.gm = gm
 
+    @final
     def draw(self, a):
-        po = self.gm.tr.getPosition()
-        if 0.0 <= po.y < settings['HEIGHT'] and 0.0 <= po.x < settings['WIDTH']:
-            a[round(clamp(po.y, 0.0, settings['HEIGHT'] - 1.0))][
-                round(clamp(po.x, 0.0, settings['WIDTH'] - 1.0))] = self.gm.symb
+        if self.gm is not None:
+            po = self.gm.tr.getPosition()
+            if 0.0 <= po.y < settings['HEIGHT'] and 0.0 <= po.x < settings['WIDTH']:
+                a[round(clamp(po.y, 0.0, settings['HEIGHT'] - 1.0))][
+                    round(clamp(po.x, 0.0, settings['WIDTH'] - 1.0))] = self.gm.symb
+
+    @final
+    def drawSymb(self, a, symb: str, pos: Vec3):
+        if 0.0 <= pos.y < settings['HEIGHT'] and 0.0 <= pos.x < settings['WIDTH']:
+            a[round(clamp(pos.y, 0.0, settings['HEIGHT'] - 1.0))][
+                round(clamp(pos.x, 0.0, settings['WIDTH'] - 1.0))] = symb
+
+    @final
+    def clearSymb(self, a, pos: Vec3):
+        if 0.0 <= pos.y < settings['HEIGHT'] and 0.0 <= pos.x < settings['WIDTH']:
+            a[round(clamp(pos.y, 0.0, settings['HEIGHT'] - 1.0))][
+                round(clamp(pos.x, 0.0, settings['WIDTH'] - 1.0))] = " "
 
 
 class Behavior:
@@ -286,13 +302,18 @@ class Behavior:
     def __init__(self, o: bool):
         self.isInstantiated = o
 
-    __passT = 0
+    __passT = 0.0
     __passingT = False
-    __passingFrT = 0
+    __passingS = False
+    __passingFrT = 0.0
 
     @final
     def getPassingT(self):
         return self.__passingT
+
+    @final
+    def getPassingS(self):
+        return self.__passingS
 
     def update(self, a):
         pass
@@ -312,18 +333,39 @@ class Behavior:
     @final
     def baceUpdate(self, a):
         self.gameobject.drawer.draw(a)
-        if self.__passT >= self.__passingFrT:
-            self.__passT = 0
-            self.__passingT = False
-            self.__passingFrT = 0
-        else:
-            self.__passT += 1
+        if self.__passingT:
+            if self.__passingS:
+                if self.__passT >= self.__passingFrT:
+                    self.__passT = 0.0
+                    self.__passingT = False
+                    self.__passingS = False
+                    self.__passingFrT = 0.0
+                else:
+                    self.__passT += NTETime.getDeltaTime()
+            else:
+                if self.__passT >= self.__passingFrT:
+                    self.__passT = 0.0
+                    self.__passingT = False
+                    self.__passingFrT = 0.0
+                else:
+                    self.__passT += 1.0
+
+    def lateUpdate(self, a):
+        pass
 
     @final
     def passSteps(self, frames: int):
-        self.__passT = 0
+        self.__passT = 0.0
         self.__passingT = True
+        self.__passingS = False
         self.__passingFrT = frames
+
+    @final
+    def passSeconds(self, secs: float):
+        self.__passT = 0.0
+        self.__passingT = True
+        self.__passingS = True
+        self.__passingFrT = secs
 
     def onCollide(self, collider: Transform):
         pass

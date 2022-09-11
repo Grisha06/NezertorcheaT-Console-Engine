@@ -22,7 +22,8 @@ def popObj(i: int):
 def removeObj(b):
     try:
         __behs.remove(b)
-    except:pass
+    except:
+        pass
 
 
 @final
@@ -35,3 +36,12 @@ def getObjByName(name: str):
     for i in getObjs():
         if i is not None and i.name == name:
             return i
+
+
+@final
+def getObjsByBeh(btype):
+    a = []
+    for i in getObjs():
+        if i is not None and isinstance(i, btype):
+            a.append(i)
+    return a

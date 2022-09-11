@@ -1,4 +1,5 @@
 __Time = 0
+__deltaTime = 0
 
 
 def addTime():
@@ -8,3 +9,12 @@ def addTime():
 
 def getTime():
     return __Time
+
+
+def getDeltaTime():
+    return __deltaTime
+
+
+def setDeltaTime(a: float):
+    global __deltaTime
+    __deltaTime = a

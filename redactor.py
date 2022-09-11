@@ -102,7 +102,7 @@ def winParams(x: int, y: int, name: str, w: Tk, s: Button):
                         if isinstance(i.__dict__[j], bool):
                             e.set(bool(i.__dict__[j]))
                         elif not v and not ss:
-                            e.delete(0,END)
+                            e.delete(0, END)
                             e.insert(0, str(i.__dict__[j]))
                     if j == 'spawnposx':
                         e.delete(0, END)
@@ -156,7 +156,10 @@ def gadd(name, s, o):
                     if isinstance(i.__dict__[j], Vec3):
                         g[name].update({j: [float(o[j][0].get()), float(o[j][1].get()), float(o[j][2].get())]})
                         continue
-                    g[name].update({j: type(i.__dict__[j])(o[j].get())})
+                    if not isinstance(i.__dict__[j], type(None)):
+                        g[name].update({j: type(i.__dict__[j])(o[j].get())})
+                    else:
+                        g[name].update({j: o[j].get()})
             break
 
     s.config(text=o["symbol"].get())
