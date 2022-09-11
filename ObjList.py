@@ -36,6 +36,7 @@ def getObjByName(name: str):
     for i in getObjs():
         if i is not None and i.name == name:
             return i
+    return None
 
 
 @final

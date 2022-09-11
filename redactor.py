@@ -14,9 +14,10 @@ for module in os.listdir(os.path.dirname(__file__) + "\\Scripts"):
 del module
 
 g = {}
-with open('globalMap.json') as json_file:
+with open('globalSettings.json') as json_file:
+    settings = json.load(json_file)
+with open(f"Maps\\{settings['MAP']}.json") as json_file:
     g = json.load(json_file)
-
 
 def setgridsize():
     try:

@@ -178,7 +178,6 @@ class Transform:
             p = self.__getParents(parents=[self.parent])
             g = self.local_position
             for i in p:
-                print(self.beh.name)
                 g = Vec3.sum(g, i.local_position)
             return g
         else:
@@ -283,6 +282,15 @@ class Drawer:
         if 0.0 <= pos.y < settings['HEIGHT'] and 0.0 <= pos.x < settings['WIDTH']:
             a[round(clamp(pos.y, 0.0, settings['HEIGHT'] - 1.0))][
                 round(clamp(pos.x, 0.0, settings['WIDTH'] - 1.0))] = symb
+
+    @final
+    def drawSymbImage(self, a, img: str, pos: Vec3):
+        for i in range(len(images[img])):
+            for j in range(len(images[img][0])):
+                if 0.0 <= pos.y + i < settings['HEIGHT'] and 0.0 <= pos.x + j < settings['WIDTH'] and len(
+                        images[img][i][j]) == 1:
+                    a[round(clamp(pos.y + i, 0.0, settings['HEIGHT'] - 1.0))][
+                        round(clamp(pos.x + j, 0.0, settings['WIDTH'] - 1.0))] = images[img][i][j]
 
     @final
     def clearSymb(self, a, pos: Vec3):

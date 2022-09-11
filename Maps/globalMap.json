@@ -1,0 +1,20 @@
+{
+  "Player": {
+    "cname": "Player",
+    "spawnposx": 30,
+    "spawnposy": 7,
+    "symbol": "@",
+    "collide": true,
+    "speed": 1.0,
+    "number": 10,
+    "parent": "None"
+  },
+  "GameManager": {
+    "spawnposx": -5,
+    "spawnposy": -5,
+    "cname": "GameManager",
+    "symbol": " ",
+    "collide": false,
+    "parent": "None"
+  }
+}
