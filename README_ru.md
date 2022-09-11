@@ -68,6 +68,7 @@ class Name(Behavior):
     - **objMap** - карта из файла globalMap.json
 4. NTEngineClasses:
     - **объект ui** - представление класса UI
+    - **объект camera** - представление класса Camera
     - **класс UI**:
         - **add(text, createNewLine: bool) -> int** - добавляет новую строку в массив строк, поле "createNewLine"
           отвечает за создание новой строки в конце, возвращает позицию новой строки в массиве
