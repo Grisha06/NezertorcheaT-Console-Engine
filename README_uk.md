@@ -65,9 +65,10 @@ class Name(Behavior):
     - **getObjs()** - отримати всі об'єкти
 3. GlobalSettings:
     - **settings** - усі поля з файлу globalSettings.json
-    - **objMap** - картка з файлу globalMap.json
+    - **objMap** - мапа з файлу globalMap.json
 4. NTEngineClasses:
     - **об'єкт ui** - представлення класу UI
+    - **об'єкт camera** - представлення класу Camera
     - **клас UI**:
         - **add(text, createNewLine: bool) -> int** - додає новий рядок у масив рядків, поле "createNewLine"
           відповідає за створення нового рядка в кінці, повертає позицію нового рядка в масиві
