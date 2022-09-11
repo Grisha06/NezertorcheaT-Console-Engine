@@ -3,6 +3,7 @@ import keyboard
 import Scripts
 import Scripts.Enemy
 from NTEngineClasses import *
+from Scripts import GameManager
 
 
 class Player(Behavior):
@@ -11,15 +12,16 @@ class Player(Behavior):
     symbol = '@'
     collide = True
     speed = 1.0
+    maxnumber = 30
+    maxnumbert = 5
+    s = 1
+    ss= 1
+    gm: GameManager.GameManager = None
 
     def start(self):
-        if not self.isInstantiated:
-            ui.add(
-                f"Player: x:{self.gameobject.tr.local_position.x}; y:{self.gameobject.tr.local_position.y}; z:{self.gameobject.tr.local_position.z}",
-                True)
-            ui.add(
-                f"",
-                True)
+        self.s = ui.add("", True)
+        self.ss = ui.add("", True)
+        self.gm = ObjList.getObjsByBeh(GameManager.GameManager)[0]
 
     def update(self, a):
         if keyboard.is_pressed("w"):
@@ -30,17 +32,15 @@ class Player(Behavior):
             self.gameobject.tr.moveDir(Vec3(0, self.speed))
         if keyboard.is_pressed("d"):
             self.gameobject.tr.moveDir(Vec3(self.speed, 0))
-        if keyboard.is_pressed("e"):
-            self.instantiate(Scripts.Enemy.Enemy, self.gameobject.tr.local_position)
-        if keyboard.is_pressed("q"):
+        if not self.gm.starthorde and self.maxnumber - len(
+                ObjList.getObjsByBeh(Scripts.Wall.Wall)) > 0 and keyboard.is_pressed("e"):
             self.instantiate(Scripts.Wall.Wall, Vec3.int(self.gameobject.tr.local_position))
-        if keyboard.is_pressed("f"):
+        if not self.gm.starthorde and self.maxnumbert - len(
+                ObjList.getObjsByBeh(Scripts.Turret.Turret)) > 0 and keyboard.is_pressed("q"):
+            self.instantiate(Scripts.Turret.Turret, Vec3.int(self.gameobject.tr.local_position))
+        if not self.gm.starthorde and keyboard.is_pressed("f"):
             destroy(findNearObjByRad(self.gameobject.tr.local_position, 2, nb=[self],
-                                     nbc=[Scripts.Empty.Empty]))
-        if not self.isInstantiated:
-            ui.changeSpace(1,
-                           f"Player: x:{self.gameobject.tr.local_position.x}; y:{self.gameobject.tr.local_position.y}; z:{self.gameobject.tr.local_position.z}",
-                           True)
-            # ui.changeSpace(2,
-            #         s     f"Near: {findNearObjByRad(self.gameobject.tr.local_position, 100, True, nb=[self], nbc=[Scripts.PlayerSharp.PlayerSharp]).name}",
-            #               True)
+                                     nbc=[Scripts.Empty.Empty, Scripts.Enemy.Enemy, Scripts.WallChange.WallChange,
+                                          Scripts.FireBall.FireBall, Scripts.Turret.Turret]))
+        ui.changeSpace(self.s, "Walls = " + str(self.maxnumber - len(ObjList.getObjsByBeh(Scripts.Wall.Wall))))
+        ui.changeSpace(self.ss, "Turrets = " + str(self.maxnumbert - len(ObjList.getObjsByBeh(Scripts.Turret.Turret))))

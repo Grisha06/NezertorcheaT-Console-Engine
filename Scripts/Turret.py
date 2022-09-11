@@ -5,22 +5,25 @@ import Scripts.Player
 from NTEngineClasses import *
 
 
-class Enemy(Behavior):
+class Turret(Behavior):
     spawnposx = 5
     spawnposy = 2
-    symbol = '$'
+    symbol = '┬'
     collide = True
     parent = None
-    pl: Scripts.Player.Player = None
-
-    def start(self):
-        try:
-            self.pl = ObjList.getObjsByBeh(Scripts.Player.Player)[0]
-        except IndexError:
-            pass
+    pl: Scripts.Enemy.Enemy = None
 
     def update(self, a):
         self.passSteps(5)
+        if self.gameobject.tr.collide:
+            if isinstance(findNearObjByRad(self.gameobject.tr.local_position, 0.1, nb=[self]), type(self)):
+                destroy(findNearObjByRad(self.gameobject.tr.local_position, 0.1, nb=[self]))
+        try:
+            self.pl = findNearObjByRad(self.gameobject.tr.local_position, 100, True,
+                                       nbc=[Scripts.Player.Player, Scripts.FireBall.FireBall, Scripts.Turret.Turret,
+                                            Scripts.Wall.Wall, Scripts.WallChange.WallChange, Scripts.Barrier.Barrier])
+        except IndexError:
+            pass
         try:
             if int(self.pl.gameobject.tr.local_position.y) == int(
                     self.gameobject.tr.local_position.y):
@@ -46,21 +49,5 @@ class Enemy(Behavior):
                                                     Vec3(self.gameobject.tr.local_position.x,
                                                          self.gameobject.tr.local_position.y - 1))).dir = Vec3(0, -1)
                     return
-            self.gameobject.tr.moveDir(Vec3.mult_by_float(Vec3(1, 0), 1))
         except:
             pass
-        s = Vec3()
-        if bool(getrandbits(1)):
-            if self.gameobject.tr.local_position.y < settings['HEIGHT']:
-                s.y = 1
-        else:
-            if self.gameobject.tr.local_position.y > 0:
-                s.y = -1
-        if bool(getrandbits(1)):
-            if self.gameobject.tr.local_position.x < settings['WIDTH']:
-                s.x = 1
-        else:
-            if self.gameobject.tr.local_position.x > 0:
-                s.x = -1
-
-        self.gameobject.tr.moveDir(Vec3.mult_by_float(s, 1))

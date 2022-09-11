@@ -391,7 +391,7 @@ class Behavior:
         return len(ObjList.getObjs()) - 1
 
 
-def findNearObjByRad(V: Vec3, rad: float, collide=False, nb=[], nbc=[]):
+def findNearObjByRad(V: Vec3, rad: float, collide=False, nb=[], nbc=[], na=[], nac=[]):
     g = []
     for i in ObjList.getObjs():
         if collide and not i.gameobject.tr.collide or i in nb or type(i) in nbc:

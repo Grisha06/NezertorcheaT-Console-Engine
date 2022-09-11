@@ -1,7 +1,5 @@
 import Scripts.Wall
 from NTEngineClasses import *
-from ObjList import getObjByName
-from NTETime import *
 
 
 class FireBall(Behavior):
@@ -16,6 +14,7 @@ class FireBall(Behavior):
 
     def onCollide(self, collider: Transform):
         if isinstance(collider.beh,
-                      (Scripts.Wall.Wall, Scripts.FireBall.FireBall, Scripts.Player.Player, Scripts.Enemy.Enemy)):
-            print("getTime()")
+                      (Scripts.FireBall.FireBall, Scripts.Wall.Wall, Scripts.Barrier.Barrier,
+                       Scripts.Player.Player, Scripts.Enemy.Enemy, Scripts.Turret.Turret)):
+            destroy(collider.beh)
             destroy(self)

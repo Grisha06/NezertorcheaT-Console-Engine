@@ -68,7 +68,6 @@ while True:
         if not i.getPassingT():
             i.update(a)
         i.baceUpdate(a)
-        i.lateUpdate(a)
     for i in ObjList.getObjs():
         i.lateUpdate(a)
     cls()
