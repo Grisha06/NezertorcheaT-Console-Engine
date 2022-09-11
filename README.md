@@ -18,13 +18,13 @@ Next, there will be a property editor window, it must contain properties: "**nam
 , "**symbol**", "**parent**"
 and "**collide**". You can also add these properties in scripts yourself.
 
-The "**name**" property is responsible for the name, and if the entered name exists, the object with that name will be overwritten.
-The "**spawnposx**" property is responsible for the initial local position of the object along the X axis.
-The "**spawnposy**" property is responsible for the initial local position of the object along the Y axis.
-The "**symbol**" property is responsible for the symbol of the object in the world.
-The "**collide**" property is responsible for the possibility of collision with other objects.
-The "**parent**" property is responsible for the parent of the object and takes the name of the object
-The "**Save**" button is responsible for saving the object on the map.
+The "**name**" property is responsible for the name, and if the entered name exists, the object with that name will be overwritten.  
+The "**spawnposx**" property is responsible for the initial local position of the object along the X axis.  
+The "**spawnposy**" property is responsible for the initial local position of the object along the Y axis.  
+The "**symbol**" property is responsible for the symbol of the object in the world.  
+The "**collide**" property is responsible for the possibility of collision with other objects.  
+The "**parent**" property is responsible for the parent of the object and takes the name of the object  
+The "**Save**" button is responsible for saving the object on the map.  
 
 This is all the functionality of the map editor for now.
 
