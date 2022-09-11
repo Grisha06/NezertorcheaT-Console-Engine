@@ -24,8 +24,7 @@ The "**spawnposy**" property is responsible for the initial local position of th
 The "**symbol**" property is responsible for the symbol of the object in the world.
 The "**collide**" property is responsible for the possibility of collision with other objects.
 The "**parent**" property is responsible for the parent of the object and takes the name of the object
-The "**Save**" button is responsible for saving
-object on the map.
+The "**Save**" button is responsible for saving the object on the map.
 
 This is all the functionality of the map editor for now.
 
@@ -50,11 +49,16 @@ class Name(Behavior):
         #<code>
         if not self.isInstantiated:
             #<ui_code>
+    def onCollide(self, collider: Transform):
+        pass
+    def lateUpdate(self, a):
+        Drawer().drawSymb(a, "8", Vec3(1, 1))
+        
 ```
 
 ### Explanation of methods:
 
-1. NTE Time:
+1. NTETime:
     - **getTime()** - returns the current frame
 2. ObjList:
     - **getObj(i: int)** - get an object
@@ -94,18 +98,25 @@ class Name(Behavior):
     - **obj class**:
         - **tr: Transform** - Transform class
         - **symb: str** - displayed symbol
-    - Behavior class:
+    - **Drawer class**:
+        - **drawSymb(a, symb: str, pos: Vec3)** - used to draw symbol "symb" at position "pos", works
+          only in "lateUpdate"
+        - **clearSymb(a, pos: Vec3)** - used to clear symbol at position "pos", only works in "
+          lateUpdate"
+    - **Behavior class**:
         - **isInstantiated: bool** - determines if the object was created using the instantiate() method
-        - **update(a)** - called every world update
-        - **start()** - called at the very beginning
-        - **onCollide(collider: Transform)** - called on contact with an object
+        - **update(self, a)** - called every world update
+        - **start(self)** - called at the very beginning
+        - **onCollide(self, collider: Transform)** - called when collidecontact with an object
+        - **lateUpdate(self, a):** - called after "update"
         - **passSteps(frames: int)** - used to completely stop the object for "frames" ticks
+        - **passSeconds(secs: float)** - used to completely stop the object for "secs" seconds
         - **instantiate(beh, Pos: Vec3) -> int** - used to create objects at position "pos" with behavior "beh"
           , "beh" must be set to a type inherited from Behavior, returns the position of the created object in the array
           objects, example code: ```instantiate(Scripts.FireBall.FireBall, self.gameobject.tr.position)```
     - **clamp(num, min_value, max_value)** - the simplest variable constraint
-     - **findNearObjByPos(V: Vec3, f: float, b=[])** - returns objects in radius "f" to position "V", excluding all
-       objects from the list "b", there you need to put objects of a type that is inherited from Behavior
-     - **destroy(beh)** - deletes the object "beh" from the world
+    - **findNearObjByPos(V: Vec3, f: float, b=[])** - returns objects in radius "f" to position "V", excluding all
+      objects from the list "b", there you need to put objects of a type that is inherited from Behavior
+    - **destroy(beh)** - deletes the object "beh" from the world
 
 # That's all! Thanks for reading!
