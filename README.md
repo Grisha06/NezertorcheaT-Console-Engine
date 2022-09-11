@@ -68,6 +68,7 @@ class Name(Behavior):
     - **objMap** - map from globalMap.json file
 4.NTEngineClasses:
     - **object ui** - representation of the UI class
+    - **object camera** - representation of the Camera class
     - **UI class**:
         - **add(text, createNewLine: bool) -> int** - adds a new line to the array of strings, field "createNewLine"
           is responsible for creating a new line at the end, returns the position of the new line in the array
