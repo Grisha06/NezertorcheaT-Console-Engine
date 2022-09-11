@@ -34,7 +34,7 @@ Scripts.
 
 ````
 #<imports>
-від NTEngineClasses import *
+from NTEngineClasses import *
 
 class Name(Behavior):
     spawnposx = 0
@@ -52,7 +52,7 @@ class Name(Behavior):
     def onCollide(self, collider: Transform):
         pass
     def lateUpdate(self, a):
-        Drawer().drawSymb(a, "8", Vec3(1, 1))
+        #<Drawer().drawSymb(a, "8", Vec3(1, 1))>
         
 ````
 
