@@ -1,6 +1,5 @@
 import random
-
-
+import NTEmapManager
 import Scripts
 from NTEngineClasses import *
 
@@ -13,9 +12,11 @@ class GameManager(Behavior):
     timm = 30
     starthorde = False
     s = 0
-    pl_name= None
+    pl_name = None
 
     def start(self):
+        if settings["MAP"] == "globalMap":
+            NTEmapManager.loadLevel("globalMap2")
         self.s = ui.add("", True)
         for i in range(15):
             self.instantiate(Scripts.WallChange.WallChange, Vec3(15, i))
@@ -27,16 +28,16 @@ class GameManager(Behavior):
             self.instantiate(Scripts.Barrier.Barrier, Vec3(i, settings["HEIGHT"]))
 
     def update(self, a):
-
+        self.pl_name = ObjList.getObjByName("Player")
         if not self.starthorde:
             self.passSeconds(1)
-            if self.pl_name is None:
-                close()
+            if type(self.pl_name) != Scripts.Player.Player:
+                NTEmapManager.stopMainLoop()
         else:
             self.instantiate(Scripts.Enemy.Enemy, Vec3(0, random.randint(0, settings["HEIGHT"] - 1)))
             self.passSeconds(1)
-            if self.pl_name is None:
-                close()
+            if type(self.pl_name) != Scripts.Player.Player:
+                NTEmapManager.stopMainLoop()
         if not self.starthorde:
             if self.timm > 0:
                 self.timm -= 1

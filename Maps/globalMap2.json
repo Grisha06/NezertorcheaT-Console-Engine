@@ -1,10 +1,10 @@
 {
-  "globalMap": {
+  "globalMap2": {
     "Player": {
       "cname": "Player",
       "spawnposx": 30,
       "spawnposy": 7,
-      "symbol": "@",
+      "symbol": "4",
       "collide": true,
       "speed": 1.0,
       "parent": "None"

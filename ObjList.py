@@ -27,6 +27,12 @@ def removeObj(b):
 
 
 @final
+def clearObjs():
+    for i in __behs:
+        __behs.remove(i)
+
+
+@final
 def getObjs():
     return __behs
 

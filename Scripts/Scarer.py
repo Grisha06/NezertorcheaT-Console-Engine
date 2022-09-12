@@ -11,7 +11,7 @@ class Scarer(Behavior):
     symbol = ' '
     collide = True
     parent = None
-    pl: Scripts.Player.Player = None
+    pl_name: Scripts.Player.Player = None
     d: Drawer = None
     syf: str = 'Scarer'
 
