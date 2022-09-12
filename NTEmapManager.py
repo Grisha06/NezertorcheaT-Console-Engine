@@ -11,7 +11,7 @@ del module
 def loadLevel(mapname: str = "globalMap"):
     map = objMaps[mapname]
     settings["MAP"] = mapname
-    global uiasssssssssssewwwwwwwwwwwwwwwwwdqssqsqdw
+    global ui
     ui = 0
     ui = UI()
     ObjList.clearObjs()
