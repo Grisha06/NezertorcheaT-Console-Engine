@@ -42,6 +42,13 @@ class UI:
 ui = UI()
 
 
+def close():
+    #sys.exit(1)
+    #os.close(1)
+    exit()
+    pass
+
+
 def cls(): os.system('cls' if os.name == 'nt' else 'clear')
 
 

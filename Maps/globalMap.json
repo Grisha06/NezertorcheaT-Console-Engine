@@ -14,7 +14,8 @@
     "cname": "GameManager",
     "symbol": " ",
     "collide": false,
-    "parent": "None"
+    "parent": "None",
+    "pl_name": "Player"
   },
   "Scarer": {
     "cname": "Scarer",
