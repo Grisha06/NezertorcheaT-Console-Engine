@@ -64,5 +64,7 @@ def loadLevel(mapname: str = "globalMap"):
     return a
 
 
-def stopMainLoop():
+def stopMainLoop(func=None):
+    if func is not None:
+        func()
     raise RuntimeError(1)

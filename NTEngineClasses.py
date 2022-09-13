@@ -42,8 +42,6 @@ class UI:
 ui = UI()
 
 
-
-
 def cls(): os.system('cls' if os.name == 'nt' else 'clear')
 
 
@@ -392,6 +390,13 @@ class Behavior:
         b.name = beh.__name__ + " Clone (" + str(len(ObjList.getObjs()) - 1) + ")"
         return len(ObjList.getObjs()) - 1
 
+    @final
+    def destroy(self, beh=None):
+        if beh is not None:
+            ObjList.removeObj(beh)
+        else:
+            ObjList.removeObj(self)
+
 
 def findNearObjByRad(V: Vec3, rad: float, collide=False, nb=[], nbc=[], na=[], nac=[]):
     g = []
@@ -430,11 +435,6 @@ def findAllObjsAtRad(V: Vec3, collide: bool, f: float, nb=[]):
             j -= 1
         g[j + 1] = key_item
     return g
-
-
-def destroy(beh):
-    if beh is not None:
-        ObjList.removeObj(beh)
 
 
 def getBeh(n: str):
