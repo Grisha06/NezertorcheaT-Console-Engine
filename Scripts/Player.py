@@ -39,8 +39,9 @@ class Player(Behavior):
                 ObjList.getObjsByBeh(Scripts.Turret.Turret)) > 0 and keyboard.is_pressed("q"):
             self.instantiate(Scripts.Turret.Turret, Vec3.int(self.gameobject.tr.local_position))
         if not self.gm.starthorde and keyboard.is_pressed("f"):
-            destroy(findNearObjByRad(self.gameobject.tr.local_position, 2, nb=[self],
+            self.destroy(findNearObjByRad(self.gameobject.tr.local_position, 2, nb=[self],
                                      nbc=[Scripts.Empty.Empty, Scripts.Enemy.Enemy, Scripts.WallChange.WallChange,
                                           Scripts.FireBall.FireBall, Scripts.Turret.Turret]))
-        ui.changeSpace(self.s, "Walls = " + str(self.maxnumber - len(ObjList.getObjsByBeh(Scripts.Wall.Wall))))
-        ui.changeSpace(self.ss, "Turrets = " + str(self.maxnumbert - len(ObjList.getObjsByBeh(Scripts.Turret.Turret))))
+        if not self.gm.starthorde:
+            ui.changeSpace(self.s, "Walls = " + str(self.maxnumber - len(ObjList.getObjsByBeh(Scripts.Wall.Wall))))
+            ui.changeSpace(self.ss, "Turrets = " + str(self.maxnumbert - len(ObjList.getObjsByBeh(Scripts.Turret.Turret))))

@@ -2,6 +2,7 @@ import random
 import NTEmapManager
 import Scripts
 from NTEngineClasses import *
+from time import sleep
 
 
 class GameManager(Behavior):
@@ -32,12 +33,12 @@ class GameManager(Behavior):
         if not self.starthorde:
             self.passSeconds(1)
             if type(self.pl_name) != Scripts.Player.Player:
-                NTEmapManager.stopMainLoop()
+                NTEmapManager.stopMainLoop(self.closs)
         else:
             self.instantiate(Scripts.Enemy.Enemy, Vec3(0, random.randint(0, settings["HEIGHT"] - 1)))
             self.passSeconds(1)
             if type(self.pl_name) != Scripts.Player.Player:
-                NTEmapManager.stopMainLoop()
+                NTEmapManager.stopMainLoop(self.closs)
         if not self.starthorde:
             if self.timm > 0:
                 self.timm -= 1
@@ -46,7 +47,7 @@ class GameManager(Behavior):
                 self.starthorde = True
                 self.timm = 30
                 for i in ObjList.getObjsByBeh(Scripts.WallChange.WallChange):
-                    destroy(i)
+                    self.destroy(i)
         else:
             if self.timm > 0:
                 self.timm -= 1
@@ -55,10 +56,16 @@ class GameManager(Behavior):
                 self.starthorde = False
                 self.timm = 30
                 for i in ObjList.getObjsByBeh(Scripts.Wall.Wall):
-                    destroy(i)
+                    self.destroy(i)
                 for i in ObjList.getObjsByBeh(Scripts.Enemy.Enemy):
-                    destroy(i)
+                    self.destroy(i)
                 for i in ObjList.getObjsByBeh(Scripts.Turret.Turret):
-                    destroy(i)
+                    self.destroy(i)
                 for i in range(15):
                     self.instantiate(Scripts.WallChange.WallChange, Vec3(15, i))
+
+    def closs(self):
+        sleep(2)
+        cls()
+        print("u ded")
+        sleep(5)

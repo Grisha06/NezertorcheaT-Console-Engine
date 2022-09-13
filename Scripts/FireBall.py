@@ -16,5 +16,5 @@ class FireBall(Behavior):
         if isinstance(collider.beh,
                       (Scripts.FireBall.FireBall, Scripts.Wall.Wall, Scripts.Barrier.Barrier,
                        Scripts.Player.Player, Scripts.Enemy.Enemy, Scripts.Turret.Turret)):
-            destroy(collider.beh)
-            destroy(self)
+            self.destroy(collider.beh)
+            self.destroy(self)
