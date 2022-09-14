@@ -11,7 +11,6 @@ class Turret(Behavior):
     symbol = '┬'
     collide = True
     parent = None
-    pl: Scripts.Enemy.Enemy = None
 
     def update(self, a):
         self.passSteps(5)

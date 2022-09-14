@@ -9,8 +9,10 @@ from globalSettings import *
 
 
 class UI:
+    __text = []
+
     def __init__(self):
-        self.__text = ""
+        self.__text = []
 
     def __init__(self, text=[['', True]]):
         self.__text = text
@@ -20,7 +22,8 @@ class UI:
 
     def print(self):
         for i in self.__text:
-            print(i[0], end='\n' if i[1] else '')
+            if i[0] is not None:
+                print(i[0], end='\n' if i[1] else '')
 
     def add(self, text, createNewLine: bool) -> int:
         self.__text.append([str(text), createNewLine])
@@ -28,6 +31,11 @@ class UI:
 
     def clearSpace(self, i: int, createNewLine: bool):
         self.__text[i] = [['', createNewLine]]
+
+    def removeAllSpaces(self):
+        for i in range(len(self.__text) - 1):
+            self.__text.pop(i)
+        print(self.__text)
 
     def removeSpace(self, text='', createNewLine=True):
         self.__text.remove([text, createNewLine])
@@ -40,6 +48,11 @@ class UI:
 
 
 ui = UI()
+
+
+def clearUI():
+    global ui
+    ui = UI()
 
 
 def cls(): os.system('cls' if os.name == 'nt' else 'clear')

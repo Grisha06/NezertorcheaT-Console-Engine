@@ -1,11 +1,30 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
-from tkinter.font import *
+from tkinter.font import Font
 
 import NTEngineClasses
 from NTEngineClasses import *
 from globalSettings import *
+
+
+def dop(te, s: StringVar):
+    s.set(te.get())
+    w.destroy()
+    return
+
+
+def askforstring(s: StringVar, title: str):
+    wint = Tk()
+    wint.title(title)
+    wint.config(bg='#383838')
+    wint.resizable(False, False)
+    wint.geometry("100x200")
+    text = Entry(wint)
+    b = Button(wint, text="Enter", command=lambda: dop(text, s, w))
+    text.pack()
+    b.pack()
+
 
 for module in os.listdir(os.path.dirname(__file__) + "\\Scripts"):
     if module == '__init__.py' or module[-3:] != '.py':
@@ -16,8 +35,9 @@ del module
 g = {}
 with open('globalSettings.json') as json_file:
     settings = json.load(json_file)
-with open(f"Maps\\{settings['MAP']}.json") as json_file:
-    g = json.load(json_file)
+
+with open(f"Maps\globalMap.json") as json_file:
+    g = json.load(json_file)['globalMap']
 
 
 def setgridsize():

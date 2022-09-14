@@ -18,7 +18,7 @@ class GameManager(Behavior):
     def start(self):
         if settings["MAP"] == "globalMap":
             NTEmapManager.loadLevel("globalMap2")
-        self.s = ui.add("", True)
+        ui.add("", True)
         for i in range(15):
             self.instantiate(Scripts.WallChange.WallChange, Vec3(15, i))
         for i in range(settings["HEIGHT"] + 1):
@@ -42,7 +42,7 @@ class GameManager(Behavior):
         if not self.starthorde:
             if self.timm > 0:
                 self.timm -= 1
-                ui.changeSpace(self.s, "Time = " + str(self.timm))
+                ui.changeSpace(3, "Time = " + str(self.timm))
             elif not self.starthorde:
                 self.starthorde = True
                 self.timm = 30
@@ -51,7 +51,7 @@ class GameManager(Behavior):
         else:
             if self.timm > 0:
                 self.timm -= 1
-                ui.changeSpace(self.s, "Time = " + str(self.timm))
+                ui.changeSpace(3, "Time = " + str(self.timm))
             elif self.starthorde:
                 self.starthorde = False
                 self.timm = 30

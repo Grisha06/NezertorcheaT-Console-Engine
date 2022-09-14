@@ -1,7 +1,6 @@
 from random import getrandbits
 
 import Scripts.FireBall
-import Scripts.Player
 from NTEngineClasses import *
 
 
@@ -11,7 +10,6 @@ class Scarer(Behavior):
     symbol = ' '
     collide = True
     parent = None
-    pl_name: Scripts.Player.Player = None
     d: Drawer = None
     syf: str = 'Scarer'
 

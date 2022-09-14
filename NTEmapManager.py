@@ -1,3 +1,4 @@
+import NTEngineClasses
 from NTEngineClasses import *
 from globalSettings import *
 
@@ -11,9 +12,7 @@ del module
 def loadLevel(mapname: str = "globalMap"):
     map = objMaps[mapname]
     settings["MAP"] = mapname
-    global ui
-    ui = 0
-    ui = UI()
+    clearUI()
     ObjList.clearObjs()
     for i in map:
         bb = getBeh(map[i]['cname'])(False)
