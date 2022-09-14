@@ -1,0 +1,30 @@
+{
+  "globalMap": {
+    "Player": {
+      "cname": "Player",
+      "spawnposx": 30,
+      "spawnposy": 7,
+      "symbol": "@",
+      "collide": true,
+      "speed": 1.0,
+      "parent": "None"
+    },
+    "GameManager": {
+      "spawnposx": -5,
+      "spawnposy": -5,
+      "cname": "GameManager",
+      "symbol": " ",
+      "collide": false,
+      "parent": "None",
+      "pl_name": "Player"
+    },
+    "Scarer": {
+      "cname": "Scarer",
+      "spawnposx": 4,
+      "spawnposy": 6,
+      "symbol": " ",
+      "collide": true,
+      "parent": "None"
+    }
+  }
+}
