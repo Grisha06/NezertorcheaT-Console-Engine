@@ -63,7 +63,10 @@ class BoxCollider(Collider):
 
     def updColl(self):
         for i in ObjList.getObjs():
-            if i.name == self.gm.name or len(i.GetAllComponentsOfType(BoxCollider)) == 0:
+            try:
+                if i.name == self.gm.name or len(i.GetAllComponentsOfType(BoxCollider)) == 0:
+                    continue
+            except:
                 continue
             for j in i.GetAllComponentsOfType(BoxCollider):
                 gp = self.gm.tr.getPosition()

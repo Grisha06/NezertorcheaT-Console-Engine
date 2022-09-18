@@ -3,11 +3,6 @@ from time import perf_counter
 from NTEmapManager import *
 a = loadLevel()
 
-'''for b in ObjList.getObjs():
-    b.startStart()
-    b.start()
-    b.baceStart()'''
-
 while True:
     t_start = perf_counter()
     NTETime.addTime()
