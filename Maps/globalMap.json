@@ -1,0 +1,19 @@
+{
+  "globalMap": {
+    "player": {
+      "startPos": {"x": 10, "y": 10},
+      "components": {
+        "Drawer": {"symb": "@"},
+        "BoxCollider": {},
+        "Player": {"speed": 0.5}
+      }
+    },
+    "enem": {
+      "startPos": {"x": 5, "y": 5},
+      "components": {
+        "Drawer": {"symb": "$"},
+        "BoxCollider": {}
+      }
+    }
+  }
+}
