@@ -5,7 +5,7 @@
       "components": {
         "Drawer": {"symb": "@"},
         "BoxCollider": {},
-        "Player": {"speed": 0.5}
+        "Player": {"speed": 1}
       }
     },
     "enem": {

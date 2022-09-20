@@ -2,59 +2,42 @@
 
 ## Welcome to the NezertorcheaT Console Engine documentation!
 
-And let's start with the fact that in order to work, you need Python installed on your computer, and the downloaded repository of the project itself, in a separate folder.  
+To try out a test project, run the main.py file.
 
-To try out a test project, run the main.py file.  
-
-The map editor is opened by running the redactor.py file.
-The fields "**Height**" and "**Width**" are responsible for the size of the playing field.
-By writing numbers greater than 1 there and pressing "**Set Grid Size**" you will save these values ​​in the globalSettings.json file.
-The "**Save Map**" button will save the map to the globalMap.json file.
-By clicking on the cells, the menu for creating an object will open, but first you need to enter the name of one of the classes in the folder
-Scripts.
-
-Next, there will be a property editor window, it must contain properties: "**name**", "**spawnposx**", "**spawnposy**", "**symbol**", "**parent**" and "**collide**". You can also add these properties in scripts yourself.  
-
-The "**name**" property is responsible for the name, and if the entered name exists, the object with that name will be overwritten.  
-The "**spawnposx**" property is responsible for the initial local position of the object along the X axis.  
-The "**spawnposy**" property is responsible for the initial local position of the object along the Y axis.  
-The "**symbol**" property is responsible for the symbol of the object in the world.  
-The "**collide**" property is responsible for the possibility of collision with other objects.  
-The "**parent**" property is responsible for the parent of the object and takes the name of the object.  
-A property ending with "**_name**" takes the name of an object and will be treated as that object.  
-The "**Save**" button is responsible for saving the object on the map.  
-
-This is all the functionality of the map editor for now.  
+The map editor is represented by a list of json files in the Maps folder.
+The first field is the name of the map.
+Further there are descriptions of game objects, and more specifically their names.
+Inside the objects are the "**startPos**" and "**components**" fields.
+The first is the representation of the starting position as a vector.
+The second is the list of components.
+It can lick any objects whose types are inherited from the "**Component**" class.
+And it can lick the properties of these objects.
 
 ## Now the fun part! Your scripts!
 
-In the Scripts folder, you can create your own files, in the likeness of the existing ones. Your script should look like this:  
+In the Scripts folder, you can create your own files, in the likeness of the existing ones. Your script should look like this:
 
 ```
 #<imports>
 from NTEngineClasses import *
 
 class Name(Behavior):
-    spawnposx = 0
-    spawnposy=0
-    symbol = '@'
-    collide = True
-
     def start(self):
         #<code>
     
     def update(self, a):
         #<code>
-        if not self.isInstantiated:
-            #<ui_code>
+
     def onCollide(self, collider: Transform):
         pass
-    def lateUpdate(self, a):
-        Drawer().drawSymb(a, "8", Vec3(1, 1))
+
+    def onDraw(self, a):
+        #<ui_code>
+        #<draw_code>: Drawer().drawSymb(a, "8", Vec3(1, 1))
         
 ```
 
-### Explanation of methods:  
+### Explanation of methods:
 
 1. NTE Time:
     - **getTime()** - returns the current frame
@@ -62,7 +45,6 @@ class Name(Behavior):
     - **getObj(i: int)** - get an object
     - **getObjs()** - get all objects
     - **getObjByName(name: str)** - get object with name "name"
-    - **getObjsByBeh(btype):** - get all objects with type "btype"
 3.globalSettings:
     - **settings** - all fields from the globalSettings.json file
     - **objMaps** - map from Maps folder
@@ -82,7 +64,7 @@ class Name(Behavior):
         - **clearSpace(i: int, createNewLine: bool)** - clears the line with number "i", field "createNewLine" is responsible for
           creating a newline at the end
         - **changeSpace(i: int, text='', createNewLine=True)** - changes the properties of the i-th line to new ones
-    - Vec3 class:
+    - **Vec3 class**:
         - **Vec3.dev_by_float(a, n=1)** - divides the vector "a" by the number "n"
         - **Vec3.mult_by_float(a, n=0)** - multiplies the vector "a" by the number "n"
         - **Vec3.sum(a, b)** - sum of vectors "a" and "b"
@@ -101,30 +83,35 @@ class Name(Behavior):
         - **collide: bool** - collision calculation
         - **beh: Behavior** - link to behavior
         - **moweDir(Dir: Vec3)** - add "Dir" vector to position, adjusted for physics
-        - **setLocalPosition(V: Vec3)** - move local position to "V" verctor, adjusted for physics
-        -**getPosition()** - get the global position of an object in the world
+        - **setLocalPosition(V: Vec3)** - move local position to "V" vector, adjusted for physics
+        - **getPosition()** - get the global position of the object in the world
     - **obj class**:
+        - **isInstantiated: bool** - determines if the object was created using the instantiate() method
         - **tr: Transform** - Transform class
-        - **symb: str** - displayed symbol
+        - **GetComponent(typ: Component)** - allows you to get a component of type "typ"
+        - **AddComponent(comp: Component)** - allows you to create a "comp" type component
+        - **AddComponents(comps: list)** - allows you to create "comps" components, of type "Component"
+        - **AddCreatedComponent(comp)** - allows you to create a "comp" component
+        - **GetAllComponentsOfType(typ: Component)** - allows you to get all components of type "typ"
+        - **RemoveComponent(typ: Component)** - allows you to remove a component of type "typ"
+        - **PopComponent(i: int)** - allows you to remove the component in place of "i"
     - **Drawer class**:
         - **drawSymb(a, symb: str, pos: Vec3)** - used to draw symbol "symb" at position "pos", works
           only in "lateUpdate"
         - **clearSymb(a, pos: Vec3)** - used to clear symbol at position "pos", only works in "
-          lateUpdate"
+          onDraw"
     - **Behavior class**:
-        - **isInstantiated: bool** - determines if the object was created using the instantiate() method
         - **update(self, a)** - called every world update
         - **start(self)** - called at the very beginning
         - **onCollide(self, collider: Transform)** - called on contact with an object
         - **lateUpdate(self, a):** - called after "update"
         - **passSteps(frames: int)** - used to completely stop the object for "frames" ticks
         - **passSeconds(secs: float)** - used to completely stop the object for "secs" seconds
-        - **instantiate(beh, Pos: Vec3) -> int** - used to create objects at position "pos" with behavior "beh"
-          , "beh" must be set to a type inherited from Behavior, returns the position of the created object in the array
-          objects, example code: ```instantiate(Scripts.FireBall.FireBall, self.gameobject.tr.position)```
+        - **instantiate(symb: str, Pos=Vec3(), comps=[]) -> Obj** - used to create objects at position "Pos" with
+          components "comps" and symbol "symb"
         - **destroy(beh)** - removes the object "beh" from the world
     - **clamp(num, min_value, max_value)** - the simplest variable constraint
-    - **findNearObjByPos(V: Vec3, f: float, b=[])** - returns objects in radius "f" to position "V", excluding all
-      objects from the list "b", there you need to put objects of a type that is inherited from Behavior
+    - **findAllObjsAtRad(V: Vec3, rad: float)** - returns objects in radius "rad" to position "V"
+    - **findNearObjByRad(V: Vec3, rad: float)** - returns the closest object within radius "rad" to position "V"
 
 # That's all! Thanks for reading!
