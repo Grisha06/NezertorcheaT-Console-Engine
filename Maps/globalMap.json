@@ -5,25 +5,11 @@
       "components": {
         "Drawer": {"symb": "@"},
         "BoxCollider": {},
-        "Player": {"speed": 0.5}
+        "Player": {"speed": 1}
       }
     },
     "enem": {
       "startPos": {"x": 5, "y": 5},
-      "components": {
-        "Drawer": {"symb": "$"},
-        "BoxCollider": {}
-      }
-    },
-    "enem2": {
-      "startPos": {"x": 5, "y": 6},
-      "components": {
-        "Drawer": {"symb": "$"},
-        "BoxCollider": {}
-      }
-    },
-    "enem3": {
-      "startPos": {"x": 5, "y": 7},
       "components": {
         "Drawer": {"symb": "$"},
         "BoxCollider": {}

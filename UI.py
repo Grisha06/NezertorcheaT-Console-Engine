@@ -1,6 +1,6 @@
-from colorama import init
+import sys
 
-init()
+from globalSettings import *
 
 
 class UI:
@@ -20,10 +20,17 @@ class UI:
             if i[0] is not None:
                 print(i[0], end='\n' if i[1] else '')
 
-    def printStrInPos(self, s: str):
-        for i in self.__text:
-            if i[0] is not None:
-                print(i[0], end='\n' if i[1] else '')
+    @staticmethod
+    def printStrAtPos(s: str, x: int, y: int):
+        sys.stdout.write("\x1b[%d;%df%s" % (y, x, s))
+        sys.stdout.flush()
+
+    @staticmethod
+    def printImageAtPos(img: str, x: int, y: int):
+        for j in range(len(images[img])):
+            for i in range(len(images[img][0])):
+                if len(images[img][j][i]) == 1:
+                    UI.printStrAtPos(images[img][j][i], int(x) + i+len(images[img])//2, int(y) + j+len(images[img][0])//2-1)
 
     def add(self, text, createNewLine: bool) -> int:
         self.__text.append([str(text), createNewLine])

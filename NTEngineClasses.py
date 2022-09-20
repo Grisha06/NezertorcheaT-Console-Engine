@@ -1,11 +1,9 @@
-import os
 from typing import final
 
 import NTETime
 import ObjList
 from UI import *
 from Vector3 import *
-from globalSettings import *
 
 ui = UI()
 
@@ -52,7 +50,8 @@ class Component:
     pass
 
     def __str__(self):
-        return f"{self.__class__.__name__}({self.__dict__})"
+        return "{0}({1}null)".format(self.__class__.__name__,
+                                     "".join([f"{i}: {self.__dict__[i]}; " for i in self.__dict__]))
 
 
 class Collider(Component):
@@ -75,9 +74,10 @@ class BoxCollider(Collider):
         self.width = 1
         self.height = 1
         self.collide = False
+        self.side = ''
 
     def updColl(self):
-        for i in ObjList.getObjs():
+        for i in findAllObjsAtRad(self.gm.tr.getPosition(), 2):
             try:
                 if i.name == self.gm.name or len(i.GetAllComponentsOfType(BoxCollider)) == 0:
                     continue
@@ -95,6 +95,12 @@ class BoxCollider(Collider):
                         cy + self.height >= xy >= cy <= xy + self.height >= cy + self.height) or (
                                 cy + self.height >= xy <= cy <= xy + self.height >= cy + self.height)):
                     self.collide = True
+                    ang = int(Vec3.angleB2V(self.gm.tr.getPosition() - i.tr.getPosition(), Vec3(1, 0, 0)))
+                    angl = ang - ((ang // 360) * 360)
+                    if 45 <= angl < 135: self.side = UP
+                    if 135 <= angl < 225: self.side = LEFT
+                    if 315 <= angl < 45: self.side = RIGHT
+                    if 225 <= angl < 315: self.side = DOWN
                     try:
                         for se in self.gm.GetAllComponentsOfType(Behavior):
                             se.onCollide(j)
@@ -107,6 +113,7 @@ class BoxCollider(Collider):
                         pass
                     return
         self.collide = False
+        self.side = ''
 
 
 class Transform(Component):
@@ -187,6 +194,14 @@ class Obj:
                         j.onDraw(a)
                 except KeyError:
                     pass
+        except KeyError:
+            pass
+
+    @final
+    def updAfterDraw(self):
+        try:
+            for i in self.GetAllComponentsOfType(Behavior):
+                i.afterDraw()
         except KeyError:
             pass
 
@@ -327,6 +342,9 @@ class Behavior(Component):
         pass
 
     def onDraw(self, a):
+        pass
+
+    def afterDraw(self):
         pass
 
     def start(self):

@@ -1,5 +1,5 @@
 import math
-
+import os
 
 class Vec3:
     """3D Vector"""
@@ -13,7 +13,7 @@ class Vec3:
             raise ValueError("Position is need to be number")
 
     def __str__(self):
-        return f"Vector3(x:{self.x},y:{self.y},z:{self.z})"
+        return f"Vector3(x: {self.x}, y: {self.y}, z: {self.z})"
 
     def __add__(self, other):
         """Sum of 2 Vectors"""
@@ -51,6 +51,13 @@ class Vec3:
     @staticmethod
     def sign_value(a):
         return int(0 < a) - int(a < 0)
+
+    @staticmethod
+    def angleB2V(a, b):
+        try:
+            return math.degrees(math.acos((a ** b) / (Vec3.length(a) * Vec3.length(b))))
+        except ZeroDivisionError:
+            return 0
 
     @staticmethod
     def one():
