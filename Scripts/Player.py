@@ -21,9 +21,8 @@ class Player(Behavior):
         if keyboard.is_pressed("d"):
             self.gm.tr.moveDir(Vec3(self.speed, 0))
         if keyboard.is_pressed("e"):
-            Behavior.instantiate("r", Vec3.sum(self.gm.tr.getPosition(), Vec3(1)))
+            Behavior.instantiate("r", self.gm.tr.getPosition() + Vec3(1))
 
     def onDraw(self, a):
-        ui.changeSpace(0, str(self.gm.tr.getPosition().x), True)
-        ui.changeSpace(1, str(self.gm.tr.getPosition().y), True)
-        ui.changeSpace(2, str(self.gm.GetComponent(BoxCollider).collide), True)
+        ui.changeSpace(0, str(self.gm.tr.getPosition()), True)
+        ui.changeSpace(1, str(self.gm.GetComponent(BoxCollider)), True)

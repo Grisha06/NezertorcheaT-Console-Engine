@@ -1,3 +1,8 @@
+from colorama import init
+
+init()
+
+
 class UI:
     __text = []
 
@@ -11,6 +16,11 @@ class UI:
         self.__text = [[text, createNewLine]]
 
     def print(self):
+        for i in self.__text:
+            if i[0] is not None:
+                print(i[0], end='\n' if i[1] else '')
+
+    def printStrInPos(self, s: str):
         for i in self.__text:
             if i[0] is not None:
                 print(i[0], end='\n' if i[1] else '')

@@ -9,6 +9,11 @@ from globalSettings import *
 
 ui = UI()
 
+UP = "up"
+DOWN = "down"
+RIGHT = "right"
+LEFT = "left"
+
 
 def cls(): os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -46,10 +51,14 @@ def print_matrix(a):
 class Component:
     pass
 
+    def __str__(self):
+        return f"{self.__class__.__name__}({self.__dict__})"
+
 
 class Collider(Component):
     def __init__(self, gm):
         self.gm = gm
+        self.collide = False
 
     collide = False
 
@@ -61,6 +70,12 @@ class BoxCollider(Collider):
     height = 1.0
     width = 1.0
 
+    def __init__(self, gm):
+        self.gm = gm
+        self.width = 1
+        self.height = 1
+        self.collide = False
+
     def updColl(self):
         for i in ObjList.getObjs():
             try:
@@ -69,24 +84,29 @@ class BoxCollider(Collider):
             except:
                 continue
             for j in i.GetAllComponentsOfType(BoxCollider):
-                gp = self.gm.tr.getPosition()
-                opos = i.tr.getPosition()
-                if ((gp.x >= opos.x and opos.x <= gp.x + self.height and gp.x >= opos.x + self.height) or (
-                        opos.x >= gp.x and gp.x <= opos.x + self.height and opos.x >= gp.x + self.height)) or (
-                        (gp.y >= opos.y and opos.y <= gp.y + self.width and gp.y >= opos.y + self.width) or (
-                        opos.y >= gp.y and gp.x <= opos.y + self.width and opos.y >= gp.y + self.width)):
+                xx = self.gm.tr.getPosition().x
+                xy = self.gm.tr.getPosition().y
+                cy = i.tr.getPosition().y
+                cx = i.tr.getPosition().x
+                if ((cx + self.width >= xx <= cx <= xx + self.width <= cx + self.width) or (
+                        cx + self.width >= xx >= cx <= xx + self.width >= cx + self.width) or (
+                            cx + self.width >= xx <= cx <= xx + self.width >= cx + self.width)) and (
+                        (cy + self.height >= xy <= cy <= xy + self.height <= cy + self.height) or (
+                        cy + self.height >= xy >= cy <= xy + self.height >= cy + self.height) or (
+                                cy + self.height >= xy <= cy <= xy + self.height >= cy + self.height)):
                     self.collide = True
                     try:
-                        for self.gm in self.gm.GetAllComponentsOfType(Behavior):
-                            self.gm.onCollide(j)
+                        for se in self.gm.GetAllComponentsOfType(Behavior):
+                            se.onCollide(j)
                     except KeyError:
                         pass
                     try:
                         for ig in i.GetAllComponentsOfType(Behavior):
-                            ig.onCollide(j)
+                            ig.onCollide(self)
                     except KeyError:
                         pass
                     return
+        self.collide = False
 
 
 class Transform(Component):
@@ -95,7 +115,7 @@ class Transform(Component):
             p = self.__getParents(parents=[self.parent])
             g = self.local_position
             for i in p:
-                g = Vec3.sum(g, i.local_position)
+                g = g + i.local_position
             return g
         else:
             return self.local_position
@@ -115,7 +135,7 @@ class Transform(Component):
         self.parent = parent
 
     def moveDir(self, Dir: Vec3):
-        self.setLocalPosition(Vec3.sum(self.local_position, Dir))
+        self.setLocalPosition(self.local_position + Dir)
 
         '''for i in self.gm.GetAllComponents(Behavior):
             i.onCollide(ff.gameobject.tr)
@@ -137,18 +157,11 @@ class Obj:
         self.tr = self.GetAllComponents()[0]
         self.tr.parent = parent
 
+    def __str__(self):
+        return f"Obj(name:{self.name})"
+
     @final
     def upd(self, a):
-        try:
-            for i in self.GetAllComponentsOfType(Drawer):
-                i.drawSymb(a, i.symb, self.tr.getPosition())
-                try:
-                    for j in i.gm.GetAllComponentsOfType(Behavior):
-                        j.onDraw(a)
-                except KeyError:
-                    pass
-        except KeyError:
-            pass
         try:
             for i in self.GetAllComponentsOfType(Collider):
                 i.updColl()
@@ -164,6 +177,16 @@ class Obj:
         try:
             for i in self.GetAllComponentsOfType(Behavior):
                 i.lateUpdate(a)
+        except KeyError:
+            pass
+        try:
+            for i in self.GetAllComponentsOfType(Drawer):
+                i.drawSymb(a, i.symb, self.tr.getPosition())
+                try:
+                    for j in i.gm.GetAllComponentsOfType(Behavior):
+                        j.onDraw(a)
+                except KeyError:
+                    pass
         except KeyError:
             pass
 

@@ -1,5 +1,8 @@
+import math
+
+
 class Vec3:
-    """Трёхмерный вектор"""
+    """3D Vector"""
 
     def __init__(self, x=0.0, y=0.0, z=0.0):
         if self.__check(x) and self.__check(y) and self.__check(z):
@@ -8,6 +11,32 @@ class Vec3:
             self.z = z
         else:
             raise ValueError("Position is need to be number")
+
+    def __str__(self):
+        return f"Vector3(x:{self.x},y:{self.y},z:{self.z})"
+
+    def __add__(self, other):
+        """Sum of 2 Vectors"""
+        return Vec3.sum(self, other)
+
+    def __sub__(self, other):
+        """Difference between two Vectors"""
+        return Vec3.substr(self, other)
+
+    def __mul__(self, other):
+        return Vec3.mult(self, other)
+
+    def __pow__(self, other):
+        """Dot product of two Vectors"""
+        return Vec3.dot(self, other)
+
+    def __truediv__(self, other):
+        """Divide every component of Vector by float"""
+        return Vec3.dev_by_float(self, other)
+
+    def __mod__(self, other):
+        """Multiple every component of Vector by float"""
+        return Vec3.mult_by_float(self, other)
 
     def returnAsArray(self):
         return [self.x, self.y, self.z]
@@ -55,11 +84,11 @@ class Vec3:
 
     @staticmethod
     def reflect(rd, n):
-        return Vec3.substr(rd, Vec3.mult_by_float(n, Vec3.dot(n, rd) * 2))
+        return rd - ((n % (n ** rd)) * 2)
 
     def norm(self):
         if self.length() != 0.0:
-            return Vec3.dev_by_float(self, self.length())
+            return self // self.length()
         else:
             return Vec3.zero()
 
