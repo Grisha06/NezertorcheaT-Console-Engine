@@ -19,7 +19,7 @@
 
 ````
 #<imports>
-від NTEngineClasses import *
+from NTEngineClasses import *
 
 class Name(Behavior):
     def start(self):
