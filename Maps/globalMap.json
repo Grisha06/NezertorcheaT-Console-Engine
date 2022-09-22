@@ -14,6 +14,13 @@
         "Drawer": {"symb": "$"},
         "BoxCollider": {}
       }
+    },
+    "MainCamera": {
+      "startPos": {"x": 20, "y": 7},
+      "tag": "MainCamera",
+      "components": {
+        "Camera": {}
+      }
     }
   }
 }
