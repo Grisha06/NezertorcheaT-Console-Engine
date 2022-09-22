@@ -47,7 +47,12 @@ def print_matrix(a):
 
 
 class Component:
-    pass
+    def __init__(self, gm):
+        self.gm = gm
+        self.after_init()
+
+    def after_init(self):
+        ...
 
     def __str__(self):
         return "{0}({1}null)".format(self.__class__.__name__,
@@ -55,8 +60,7 @@ class Component:
 
 
 class Collider(Component):
-    def __init__(self, gm):
-        self.gm = gm
+    def after_init(self):
         self.collide = False
 
     collide = False
@@ -69,8 +73,7 @@ class BoxCollider(Collider):
     height = 1.0
     width = 1.0
 
-    def __init__(self, gm):
-        self.gm = gm
+    def after_init(self):
         self.width = 1
         self.height = 1
         self.collide = False
@@ -285,8 +288,7 @@ class Obj:
 class Drawer(Component):
     # symb = ' '
 
-    def __init__(self, gm):
-        self.gm = gm
+    def after_init(self):
         self.symb = " "
 
     # @final
@@ -327,8 +329,11 @@ class Behavior(Component):
     __passingS = False
     __passingFrT = 0.0
 
-    def __init__(self, gm: Obj):
-        self.gm = gm
+    def after_init(self):
+        self.__passT = 0.0
+        self.__passingT = False
+        self.__passingS = False
+        self.__passingFrT = 0.0
 
     @final
     def getPassingT(self):

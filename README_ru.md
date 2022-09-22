@@ -37,7 +37,7 @@ class Name(Behavior):
         
 ```  
 
-### Объяснение методов:
+### Объяснение обычных методов и классов:
 
 1. NTETime:
     - **getTime()** - возвращает текущий кадр
@@ -48,10 +48,6 @@ class Name(Behavior):
 3. globalSettings:
     - **settings** - все поля из файла globalSettings.json
     - **objMaps** - карта из папки Maps
-4. Drawer:
-    - **drawSymb(a, symb: str, pos: Vec3)** - рисует символ "symb" в позиции "pos" на матрице "a"
-    - **drawSymbImage(a, img: str, pos: Vec3)** - рисует список символов, хранящихся в папке TextImages, с именем "img"
-      в позиции "pos" на матрице "a"
 5. NTEmapManager:
     - **loadLevel(mapname: str = "globalMap")** - загружает карту, хранящуюся в папке Maps, с именем "mapname"
     - **stopMainLoop(func)** - останавливает главный цикл, пробросив ошибку, но, перед этим, выполняет функцию "func"
@@ -78,15 +74,8 @@ class Name(Behavior):
         - **abs()**
         - **norm()**
         - **sign()**
-    - **класс Transform**:
-        - **local_position: Vec3** - локальная позиция объекта
-        - **collide: bool** - просчет столкновений
-        - **beh: Behavior** - ссылка на поведение
-        - **moweDir(Dir: Vec3)** - прибавить к позиции вектор "Dir", с поправкой на физику
-        - **setLocalPosition(V: Vec3)** - переместить локальную позицию в вектор "V", с поправкой на физику
-        - **getPosition()** - получить глобальную позицию объекта в мире
     - **класс Obj**:
-        - **isInstantiated: bool** - определяет был ли объект создан с помощью метода instantiate()
+        - **isInstantiated: bool** - определяет, был ли объект создан с помощью метода instantiate()
         - **tr: Transform** - класс Transform
         - **GetComponent(typ: Component)** - позволяет получить компонент типа "typ"
         - **AddComponent(comp: Component)** - позволяет создать компонент типа "comp"
@@ -95,23 +84,35 @@ class Name(Behavior):
         - **GetAllComponentsOfType(typ: Component)** - позволяет получить все компоненты типа "typ"
         - **RemoveComponent(typ: Component)** - позволяет удалить компонент типа "typ"
         - **PopComponent(i: int)** - позволяет удалить компонент на месте "i"
-    - **класс Drawer**:
-        - **drawSymb(a, symb: str, pos: Vec3)** - используется для отрисовки символа "symb" на позиции "pos", работает
-          только в "lateUpdate"
-        - **clearSymb(a, pos: Vec3)** - используется для очищения символа на позиции "pos", работает только в "
-          onDraw"
-    - **класс Behavior**:
-        - **update(self, a)** - вызывается каждое обновление мира
-        - **start(self)** - вызывается в самом начале
-        - **onCollide(self, collider: Transform)** - вызывается при соприкосновении с объектом
-        - **lateUpdate(self, a):** - вызывается после "update"
-        - **passSteps(frames: int)** - используется для полной остановки объекта на "frames" тиков
-        - **passSeconds(secs: float)** - используется для полной остановки объекта на "secs" секунд
-        - **instantiate(symb: str, Pos=Vec3(), comps=[]) -> Obj** - используется для создания объектов в позиции "Pos" с
-          компонентами "comps" и символом "symb"
-        - **destroy(beh)** - удаляет объект "beh" из мира
     - **clamp(num, min_value, max_value)** - простейшее ограничение переменной
     - **findAllObjsAtRad(V: Vec3, rad: float)** - возвращает объекты в радиусе "rad" к позиции "V"
     - **findNearObjByRad(V: Vec3, rad: float)** - возвращает ближайший объект в радиусе "rad" к позиции "V"
-
+### Объяснение компонентов:
+Это были обыкновенные классы и методы использующиеся повсеместно, а теперь идут те, которые я буду называть компонентами, так как все наследованы от класса "Component".  
+Они используются при описании поведения объектов.  
+С ними можно взаимодействовать через методы класса "Obj".  
+Так же у них у всех есть ссылка на объект к которому они привязаны.  
+1. **класс Transform**:
+   - **local_position: Vec3** - локальная позиция объекта
+   - **collide: bool** - просчет столкновений
+   - **beh: Behavior** - ссылка на поведение
+   - **moweDir(Dir: Vec3)** - прибавить к позиции вектор "Dir", с поправкой на физику
+   - **setLocalPosition(V: Vec3)** - переместить локальную позицию в вектор "V", с поправкой на физику
+   - **getPosition()** - получить глобальную позицию объекта в мире
+2. **класс Drawer**:
+   - **drawSymb(a, symb: str, pos: Vec3)** - используется для отрисовки символа "symb" на позиции "pos", работает только в "lateUpdate"
+   - **clearSymb(a, pos: Vec3)** - используется для очищения символа на позиции "pos", работает только в "onDraw"
+3. **класс BoxCollider**:
+   - height - высота коллайдера
+   - width - ширина коллайдера
+   - collide - соприкосновение
+4. **класс Behavior**:
+   - **update(self, a)** - вызывается каждое обновление мира
+   - **start(self)** - вызывается в самом начале
+   - **onCollide(self, collider: Transform)** - вызывается при соприкосновении с объектом
+   - **lateUpdate(self, a):** - вызывается после "update"
+   - **passSteps(frames: int)** - используется для полной остановки объекта на "frames" тиков
+   - **passSeconds(secs: float)** - используется для полной остановки объекта на "secs" секунд
+   - **instantiate(symb: str, Pos=Vec3(), comps=[]) -> Obj** - используется для создания объектов в позиции "Pos" с компонентами "comps" и символом "symb"
+   - **destroy(beh)** - удаляет объект "beh" из мира
 # На этом всё! Спасибо за прочтение!
