@@ -72,6 +72,7 @@ class Collider(Component):
 class BoxCollider(Collider):
     height = 1.0
     width = 1.0
+    side = ''
 
     def after_init(self):
         self.width = 1
@@ -251,20 +252,42 @@ class Obj:
     def GetAllComponents(self) -> list:
         return self.__components
 
-    @final
+    '''@final
     def GetAllComponentsOfType(self, typ: Component) -> list:
         l = []
         for i in self.__components:
             if isinstance(i, typ):
                 l.append(i)
-        return l
+        return l'''
+
+    @final
+    def GetAllComponentsOfType(self, typ: Component) -> list:
+        return self.__gacotRec(typ)
+
+    def __gacotRec(self, typ, l=[], i=0):
+        if i >= len(self.__components):
+            return l
+        if isinstance(self.__components[i], typ):
+            return self.__gacotRec(typ, l=l + [self.__components[i]], i=i + 1)
+        return self.__gacotRec(typ, l=l, i=i + 1)
+
+    '''@final
+        def GetComponent(self, typ: Component):
+            for i in self.__components:
+                if isinstance(i, typ):
+                    return i 
+            return None'''
 
     @final
     def GetComponent(self, typ: Component):
-        for i in self.__components:
-            if isinstance(i, typ):
-                return i
-        return None
+        return self.__gcRec(typ)
+
+    def __gcRec(self, typ, i=0):
+        if i >= len(self.__components):
+            return None
+        if isinstance(self.__components[i], typ):
+            return self.__components[i]
+        return self.__gcRec(typ, i + 1)
 
     @final
     def RemoveComponent(self, typ: Component):
