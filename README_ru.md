@@ -1,6 +1,6 @@
-# NezertorcheaT Console Engine
+# NezertorcheaT's Console Engine
 
-## Приветствую вас в документации по NezertorcheaT Console Engine!
+## Приветствую вас в документации по NezertorcheaT's Console Engine!
 
 Чтобы попробовать тестовый проект, запустите файл main.py.
 
@@ -60,6 +60,8 @@ class Name(Behavior):
         - **clearSpace(i: int, createNewLine: bool)** - очищает строку с номером "i", поле "createNewLine" отвечает за
           создание новой строки в конце
         - **changeSpace(i: int, text='', createNewLine=True)** - изменяет свойства строки с номером i на новые
+        - **UI.printStrAtPos(s: str, x: int, y: int)** - отрисовывает строку в консоли, **Внимание!** Для отрисовки объектов в игровом мире используйте класс "Drawer"!
+        - **UI.printImageAtPos(img: str, x: int, y: int)** - отрисовывает изображение с именем "img" в консоли, **Внимание!** Для отрисовки объектов в игровом мире используйте класс "Drawer"!
     - **класс Vec3**:
         - **Vec3.dev_by_float(a, n=1)** - оператор "**//**" - делит вектор "a" на число "n"
         - **Vec3.mult_by_float(a, n=0)** - оператор "**%**" - умножает вектор "a" на число "n"
@@ -94,23 +96,22 @@ class Name(Behavior):
 Так же у них у всех есть ссылка на объект к которому они привязаны.  
 1. **класс Transform**:
    - **local_position: Vec3** - локальная позиция объекта
-   - **collide: bool** - просчет столкновений
-   - **beh: Behavior** - ссылка на поведение
-   - **moweDir(Dir: Vec3)** - прибавить к позиции вектор "Dir", с поправкой на физику
-   - **setLocalPosition(V: Vec3)** - переместить локальную позицию в вектор "V", с поправкой на физику
+   - **moweDir(Dir: Vec3)** - прибавить к позиции вектор "Dir"
+   - **setLocalPosition(V: Vec3)** - переместить локальную позицию в вектор "V"
    - **getPosition()** - получить глобальную позицию объекта в мире
 2. **класс Drawer**:
    - **drawSymb(a, symb: str, pos: Vec3)** - используется для отрисовки символа "symb" на позиции "pos", работает только в "lateUpdate"
    - **clearSymb(a, pos: Vec3)** - используется для очищения символа на позиции "pos", работает только в "onDraw"
 3. **класс BoxCollider**:
-   - height - высота коллайдера
-   - width - ширина коллайдера
-   - collide - соприкосновение
+   - **height** - высота коллайдера
+   - **width** - ширина коллайдера
+   - **collide** - соприкосновение
 4. **класс Behavior**:
    - **update(self, a)** - вызывается каждое обновление мира
    - **start(self)** - вызывается в самом начале
-   - **onCollide(self, collider: Transform)** - вызывается при соприкосновении с объектом
+   - **onCollide(self, collider: Collider)** - вызывается при соприкосновении с объектом
    - **lateUpdate(self, a):** - вызывается после "update"
+   - **onDraw(self, a):** - вызывается после отрисовки
    - **passSteps(frames: int)** - используется для полной остановки объекта на "frames" тиков
    - **passSeconds(secs: float)** - используется для полной остановки объекта на "secs" секунд
    - **instantiate(symb: str, Pos=Vec3(), comps=[]) -> Obj** - используется для создания объектов в позиции "Pos" с компонентами "comps" и символом "symb"
