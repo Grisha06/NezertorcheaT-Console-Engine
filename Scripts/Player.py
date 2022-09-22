@@ -12,21 +12,25 @@ class Player(Behavior):
         ui.add("", True)
         ui.add("", True)
         self.coll = self.gm.GetComponent(Collider)
+        self.f=Vec3()
 
     def update(self, a):
-        f = Vec3()
+        self.gm.tr.moveDir(self.f)
+        if self.coll.collide:
+            self.gm.tr.moveDir(self.f % -2)
+        self.f = Vec3()
 
         if keyboard.is_pressed("w"):
-            f = f + Vec3(0, -self.speed)
+            self.f = self.f + Vec3(0, -self.speed)
         if keyboard.is_pressed("a"):
-            f = f + Vec3(-self.speed, 0)
+            self.f = self.f + Vec3(-self.speed, 0)
         if keyboard.is_pressed("s"):
-            f = f + Vec3(0, self.speed)
+            self.f = self.f + Vec3(0, self.speed)
         if keyboard.is_pressed("d"):
-            f = f + Vec3(self.speed, 0)
-        #if self.coll.collide:
+            self.f = self.f + Vec3(self.speed, 0)
+        # if self.coll.collide:
         #    f = f % -1
-        self.gm.tr.moveDir(f)
+
 
         if keyboard.is_pressed("e"):
             Behavior.instantiate("r", self.gm.tr.getPosition() + Vec3(1))

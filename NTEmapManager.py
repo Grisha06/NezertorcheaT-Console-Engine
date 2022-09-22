@@ -30,6 +30,10 @@ def loadLevel(mapname: str = "globalMap"):
         bb = Obj(im)
         print(bb)
         bb.tr.local_position = Vec3(mape[im]["startPos"]['x'], mape[im]["startPos"]['y'])
+        try:
+            bb.tag = mape[im]["tag"]
+        except KeyError:
+            bb.tag = None
         for j in mape[im]["components"]:
             bbc = getcls(j)(bb)
             for jji in mape[im]["components"][j]:

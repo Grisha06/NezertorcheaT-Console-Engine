@@ -1,6 +1,6 @@
 # NezertorcheaT's Console Engine
 
-## Welcome to the NezertorcheaT's Console Engine documentation!
+## Welcome to NezertorcheaT's Console Engine documentation!
 
 To try out a test project, run the main.py file.
 
@@ -10,8 +10,8 @@ Further there are descriptions of game objects, and more specifically their name
 Inside the objects are the "**startPos**" and "**components**" fields.
 The first is the representation of the starting position as a vector.
 The second is the list of components.
-It can lick any objects whose types are inherited from the "**Component**" class.
-And it can lick the properties of these objects.
+It can contain any objects whose types are inherited from the "**Component**" class.
+And it can contain the properties of these objects.
 
 ## Now the fun part! Your scripts!
 
@@ -28,7 +28,7 @@ class Name(Behavior):
     def update(self, a):
         #<code>
 
-    def onCollide(self, collider: Transform):
+    def onCollide(self, collider: Collider):
         pass
 
     def onDraw(self, a):
@@ -42,23 +42,18 @@ class Name(Behavior):
 1. NTE Time:
     - **getTime()** - returns the current frame
 2. ObjList:
-    - **getObj(i: int)** - get an object
     - **getObjs()** - get all objects
-    - **getObjByName(name: str)** - get object with name "name"
 3.globalSettings:
     - **settings** - all fields from the globalSettings.json file
-    - **objMaps** - map from Maps folder
+    - **objMaps** - maps from Maps folder
 5.NTEmapManager:
     - **loadLevel(mapname: str = "globalMap")** - loads the map stored in the Maps folder with the name "mapname"
     - **stopMainLoop(func)** - stops the main loop by throwing an error, but before that, executes the function "func"
 6.NTEngineClasses:
     - **object ui** - representation of the UI class
-    - **camera object** - representation of the Camera class
     - **UI class**:
-        - **add(text, createNewLine: bool) -> int** - adds a new line to the array of strings, field "createNewLine"
-          is responsible for creating a new line at the end, returns the position of the new line in the array
-        - **clearSpace(i: int, createNewLine: bool)** - clears the line with number "i", field "createNewLine" is responsible for
-          creating a newline at the end
+        - **add(text, createNewLine: bool) -> int** - adds a new line to the array of strings, the "createNewLine" field is responsible for creating a new line at the end, returns the position of the new line in the array
+        - **clearSpace(i: int, createNewLine: bool)** - clears the line with the number "i", the "createNewLine" field is responsible for creating a new line at the end
         - **changeSpace(i: int, text='', createNewLine=True)** - changes the properties of the i-th line to new ones
         - **UI.printStrAtPos(s: str, x: int, y: int)** - draws a string in the console, **Attention!** To draw objects in the game world, use the "Drawer" class!
         - **UI.printImageAtPos(img: str, x: int, y: int)** - draws an image named "img" in the console, **Attention!** Use the "Drawer" class to draw objects in the game world!
@@ -76,7 +71,7 @@ class Name(Behavior):
         - **abs()**
         - **normal()**
         - **sign()**
-    - **Obj class**:
+    - **obj class**:
         - **isInstantiated: bool** - determines if the object was created using the instantiate() method
         - **tr: Transform** - Transform class
         - **GetComponent(typ: Component)** - allows you to get a component of type "typ"
@@ -86,34 +81,54 @@ class Name(Behavior):
         - **GetAllComponentsOfType(typ: Component)** - allows you to get all components of type "typ"
         - **RemoveComponent(typ: Component)** - allows you to remove a component of type "typ"
         - **PopComponent(i: int)** - allows you to remove the component in place of "i"
+        - **Find(name: str)** - allows you to find an object by name
+        - **FindByTag(tag: str)** - allows you to find an object by tag
+        - **FindWithComponent(comp: Component)** - allows you to find an object by component
+        - **FindAllWithComponent(comp: Component)** - allows you to find all objects with a component
+        - **FindAllByTag(tag: str)** - allows you to find all objects with a tag
     - **clamp(num, min_value, max_value)** - the simplest variable constraint
     - **findAllObjsAtRad(V: Vec3, rad: float)** - returns objects in radius "rad" to position "V"
     - **findNearObjByRad(V: Vec3, rad: float)** - returns the closest object within radius "rad" to position "V"
+
 ### Explanation of components:
-These were ordinary classes and methods used everywhere, and now there are those that I will call components, since all are inherited from the "Component" class.
+
+These were ordinary classes and methods used everywhere, and now there are those that I will call component, since all are inherited from the "Component" class.
 They are used in describing the behavior of objects.
 They can be interacted with through the methods of the "Obj" class.
-They also all have a link to the object to which they are attached.
+Also, they all have a link to the object to which they are attached.
+
 1. **Transform class**:
-   - **local_position: Vec3** - local position of the object
-   - **moweDir(Dir: Vec3)** - add "Dir" vector to position
-   - **setLocalPosition(V: Vec3)** - move local position to "V" vector
-   - **getPosition()** - get the global position of the object in the world
+    - **local_position: Vec3** - local position of the object
+    - **moweDir(Dir: Vec3)** - add "Dir" vector to position
+    - **setLocalPosition(V: Vec3)** - move local position to "V" vector
+    - **getPosition()** - get the global position of the object in the world
 2. **Drawer class**:
-   - **drawSymb(a, symb: str, pos: Vec3)** - used to draw symbol "symb" at position "pos", only works in "lateUpdate"
-   - **clearSymb(a, pos: Vec3)** - used to clear symbol at position "pos", only works in "onDraw"
-3. **BoxCollider class**:
-   - **height** - collider height
-   - **width** - collider width
-   - **collide** - true if collide
-4. **Behavior class**:
-   - **update(self, a)** - called every world update
-   - **start(self)** - called at the very beginning
-   - **onCollide(self, collider: Collider)** - called on contact with an object
-   - **lateUpdate(self, a):** - called after "update"
-   - **onDraw(self, a):** - called after drawing
-   - **passSteps(frames: int)** - used to completely stop the object for "frames" ticks
-   - **passSeconds(secs: float)** - used to completely stop the object for "secs" seconds
-   - **instantiate(symb: str, Pos=Vec3(), comps=[]) -> Obj** - used to create objects at position "Pos" with components "comps" and symbol "symb"
-   - **destroy(beh)** - removes the object "beh" from the world
+    - **drawSymb(a, symb: str, pos: Vec3)** - used to draw symbol "symb" at position "pos", only works in "lateUpdate"
+    - **clearSymb(a, pos: Vec3)** - used to clear symbol at position "pos", only works in "onDraw"
+3. **Camera class**:
+    - **offset** - camera offset from the left corner, initially equal to half the size of the rendered map
+4. **BoxCollider class**:
+    - **height** - collider height
+    - **width** - collider width
+    - **collide** - contact
+5. **Behavior class**:
+    - **update(self, a)** - called every world update
+    - **start(self)** - called at the very beginning
+    - **onCollide(self, collider: Collider)** - called upon contact with an object
+    - **lateUpdate(self, a):** - called after "update"
+    - **onDraw(self, a):** - called after drawing
+    - **passSteps(frames: int)** - used to completely stop the object for "frames" ticks
+    - **passSeconds(secs: float)** - used to completely stop the object for "secs" seconds
+    - **instantiate(symb: str, Pos=Vec3(), comps=[]) -> Obj** - used to create objects at position "Pos" with components "comps" and symbol "symb"
+    - **destroy(beh)** - removes the object "beh" from the world
+
+### Tips:
+
+1. There must be at least one camera on the scene, if there are none, then nothing will be drawn.
+2. There is a "**MainCamera**" tag to define the main camera.
+3. Don't use methods from **ObjList**, use **Obj.Find()** and others instead.
+4. Don't use **NTETime**.
+5. Collision has not yet been implemented, so you will have to write it yourself, but there is a checkbox responsible for the intersection of objects.
+6. Don't use **BoxCollider.side**.
+
 # That's all! Thanks for reading!

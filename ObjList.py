@@ -1,3 +1,5 @@
+from globalSettings import settings
+
 __behs = []
 
 
@@ -31,8 +33,18 @@ def getObjs() -> list:
 
 
 def getObjByName(name: str):
-    for i in getObjs():
-        if i is not None and i.name == name:
-            return i
-    return None
+    if settings["USE RECURSION"]:
+        return __gobn(name)
+    else:
+        for i in getObjs():
+            if i is not None and i.name == name:
+                return i
+        return None
 
+
+def __gobn(typ, i=0):
+    if i >= len(getObjs()):
+        return None
+    if getObjs()[i] is not None and getObjs()[i].name == typ:
+        return getObjs()[i]
+    return __gobn(typ, i + 1)

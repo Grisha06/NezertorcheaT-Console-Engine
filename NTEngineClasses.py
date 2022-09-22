@@ -148,28 +148,27 @@ class Transform(Component):
     def moveDir(self, Dir: Vec3):
         self.setLocalPosition(self.local_position + Dir)
 
-        '''for i in self.gm.GetAllComponents(Behavior):
-            i.onCollide(ff.gameobject.tr)
-        for i in ff.gm.GetAllComponents(Behavior):
-            i.onCollide(self)'''
-
     def setLocalPosition(self, V: Vec3):
         self.local_position = V
 
 
 class Obj:
     name = ''
+    tag = None
     __components = []
+    isInstantiated = False
 
     def __init__(self, name: str, parent: Transform = None):
         self.name = name
+        self.tag = None
+        self.isInstantiated = False
         self.__components = []
         self.AddComponent(Transform)
         self.tr = self.GetAllComponents()[0]
         self.tr.parent = parent
 
     def __str__(self):
-        return f"Obj(name:{self.name})"
+        return f"Obj(name:{self.name}, tag:{self.tag})"
 
     @final
     def upd(self, a):
@@ -252,17 +251,88 @@ class Obj:
     def GetAllComponents(self) -> list:
         return self.__components
 
-    '''@final
-    def GetAllComponentsOfType(self, typ: Component) -> list:
-        l = []
-        for i in self.__components:
-            if isinstance(i, typ):
-                l.append(i)
-        return l'''
-
     @final
     def GetAllComponentsOfType(self, typ: Component) -> list:
-        return self.__gacotRec(typ)
+        if settings["USE RECURSION"]:
+            return self.__gacotRec(typ)
+        else:
+            l = []
+            for i in self.__components:
+                if isinstance(i, typ):
+                    l.append(i)
+            return l
+
+    @final
+    def Find(self, name: str):
+        ObjList.getObjByName(name)
+
+    @final
+    def FindWithComponent(self, comp: Component):
+        if settings["USE RECURSION"]:
+            return self.__fwcRec(comp)
+        else:
+            for i in ObjList.getObjs():
+                if i.GetComponent(comp):
+                    return i
+
+    def __fwcRec(self, comp, i=0):
+        if i >= len(ObjList.getObjs()):
+            return None
+        if ObjList.getObjs()[i].GetComponent(comp):
+            return ObjList.getObjs()[i]
+        return self.__gcRec(comp, i + 1)
+
+    @final
+    def FindAllWithComponent(self, comp: Component):
+        if settings["USE RECURSION"]:
+            return self.__fawcRec(comp)
+        else:
+            l = []
+            for i in ObjList.getObjs():
+                if i.GetComponent(comp):
+                    l.append(i)
+            return l
+
+    def __fawcRec(self, comp: Component, l=[], i=0):
+        if i >= len(ObjList.getObjs()):
+            return l
+        if ObjList.getObjs()[i].GetComponent(comp):
+            return self.__fawcRec(comp, l=l + [ObjList.getObjs()[i]], i=i + 1)
+        return self.__fawcRec(comp, l=l, i=i + 1)
+
+    @final
+    def FindByTag(self, tag: str):
+        if settings["USE RECURSION"]:
+            return self.__fbtRec(tag)
+        else:
+            for i in ObjList.getObjs():
+                if i.tag == tag:
+                    return i
+
+    def __fbtRec(self, tag, i=0):
+        if i >= len(ObjList.getObjs()):
+            return None
+        if ObjList.getObjs()[i].tag == tag:
+            return ObjList.getObjs()[i]
+        return self.__fbtRec(tag, i + 1)
+
+    @final
+    def FindAllByTag(self, tag: str):
+        if settings["USE RECURSION"]:
+            return self.__fabtRec(tag)
+        else:
+            l = []
+            for i in ObjList.getObjs():
+                if i.tag == tag:
+                    l.append(i)
+            return l
+
+    def __fabtRec(self, tag: str, l=[], i=0):
+        if i >= len(self.__components):
+            return l
+        if self.__components[i].tag == tag:
+            return self.__fabtRec(tag, l=l + [self.__components[i]], i=i + 1)
+        return self.__fabtRec(tag, l=l, i=i + 1)
 
     def __gacotRec(self, typ, l=[], i=0):
         if i >= len(self.__components):
@@ -271,16 +341,15 @@ class Obj:
             return self.__gacotRec(typ, l=l + [self.__components[i]], i=i + 1)
         return self.__gacotRec(typ, l=l, i=i + 1)
 
-    '''@final
-        def GetComponent(self, typ: Component):
-            for i in self.__components:
-                if isinstance(i, typ):
-                    return i 
-            return None'''
-
     @final
     def GetComponent(self, typ: Component):
-        return self.__gcRec(typ)
+        if settings["USE RECURSION"]:
+            return self.__gcRec(typ)
+        else:
+            for i in self.__components:
+                if isinstance(i, typ):
+                    return i
+            return None
 
     def __gcRec(self, typ, i=0):
         if i >= len(self.__components):
@@ -291,10 +360,21 @@ class Obj:
 
     @final
     def RemoveComponent(self, typ: Component):
-        for i in self.__components:
-            if isinstance(i, typ):
-                self.__components.remove(i)
-                return
+        if settings["USE RECURSION"]:
+            return self.__rcRec(typ)
+        else:
+            for i in self.__components:
+                if isinstance(i, typ):
+                    self.__components.remove(i)
+                    return
+
+    def __rcRec(self, typ: Component, i=0):
+        if i >= len(self.__components):
+            return
+        if isinstance(self.__components[i], typ):
+            self.__components.pop(i)
+            return
+        return self.__gcRec(typ, i + 1)
 
     @final
     def PopComponent(self, i: int):
@@ -308,40 +388,43 @@ class Obj:
             return None
 
 
+class Camera(Component):
+    offset = Vec3()
+
+    def after_init(self):
+        self.offset = Vec3(settings["WIDTH"] / 2, settings["HEIGHT"] / 2)
+
+
 class Drawer(Component):
     # symb = ' '
 
     def after_init(self):
         self.symb = " "
 
-    # @final
-    # def draw(self, a, ):
-    #     if self.gm is not None:
-    #         po = self.gm.tr.getPosition()
-    #         if 0.0 <= po.y < settings['HEIGHT'] and 0.0 <= po.x < settings['WIDTH']:
-    #             a[round(clamp(po.y, 0.0, settings['HEIGHT'] - 1.0))][
-    #                 round(clamp(po.x, 0.0, settings['WIDTH'] - 1.0))] = self.gm.symb
-    #
     @final
     def drawSymb(self, a, symb: str, pos: Vec3):
-        if 0.0 <= pos.y < settings['HEIGHT'] and 0.0 <= pos.x < settings['WIDTH'] and len(symb) == 1:
-            a[int(clamp(pos.y, 0.0, settings['HEIGHT'] - 1.0))][
-                int(clamp(pos.x, 0.0, settings['WIDTH'] - 1.0))] = symb
+        c = self.gm.FindByTag("MainCamera")
+        if c is None:
+            c = self.gm.FindWithComponent(Camera)
+        if c is None:
+            return
+        co = c.GetComponent(Camera)
+        c = c.tr.getPosition()
+
+        if 0.0 <= pos.y - c.y + co.offset.y < settings['HEIGHT'] and 0.0 <= pos.x - c.x + co.offset.x < settings[
+            'WIDTH'] and len(symb) == 1:
+            a[int(clamp(pos.y - c.y + co.offset.y, 0.0, settings['HEIGHT'] - 1.0))][
+                int(clamp(pos.x - c.x + co.offset.x, 0.0, settings['WIDTH'] - 1.0))] = symb
 
     @final
     def drawSymbImage(self, a, img: str, pos: Vec3):
         for i in range(len(images[img])):
-            for j in range(len(images[img][0])):
-                if 0.0 <= pos.y + i < settings['HEIGHT'] and 0.0 <= pos.x + j < settings['WIDTH'] and len(
-                        images[img][i][j]) == 1:
-                    a[int(clamp(pos.y + i, 0.0, settings['HEIGHT'] - 1.0))][
-                        int(clamp(pos.x + j, 0.0, settings['WIDTH'] - 1.0))] = images[img][i][j]
+            for j in range(len(images[img][i])):
+                self.drawSymb(a, images[img][i][j], pos + Vec3(j, i))
 
     @final
     def clearSymb(self, a, pos: Vec3):
-        if 0.0 <= pos.y < settings['HEIGHT'] and 0.0 <= pos.x < settings['WIDTH']:
-            a[int(clamp(pos.y, 0.0, settings['HEIGHT'] - 1.0))][
-                int(clamp(pos.x, 0.0, settings['WIDTH'] - 1.0))] = " "
+        self.drawSymb(a, ' ', pos)
 
 
 class Behavior(Component):
@@ -431,6 +514,7 @@ class Behavior(Component):
         b.tr.local_position = Pos
         b.AddComponent(Drawer)
         b.GetAllComponents()[1].symb = symb
+        b.isInstantiated = True
         for i in comps:
             b.AddComponent(i)
         ObjList.addObj(b)
