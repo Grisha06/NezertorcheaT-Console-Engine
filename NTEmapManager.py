@@ -29,7 +29,7 @@ def loadLevel(mapname: str = "globalMap"):
     for im in mape:
         bb = Obj(im)
         print(bb)
-        bb.tr.local_position = Vec3(mape[im]["startPos"]['x'], mape[im]["startPos"]['y'])
+        bb.transform.local_position = Vec3(mape[im]["startPos"]['x'], mape[im]["startPos"]['y'])
         try:
             bb.tag = mape[im]["tag"]
         except KeyError:

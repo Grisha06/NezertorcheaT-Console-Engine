@@ -11,13 +11,14 @@ class Player(Behavior):
         ui.add("", True)
         ui.add("", True)
         ui.add("", True)
-        self.coll = self.gm.GetComponent(Collider)
-        self.f=Vec3()
+        self.coll = self.gameobject.GetComponent(Collider)
+        self.f = Vec3()
 
     def update(self, a):
-        self.gm.tr.moveDir(self.f)
-        if self.coll.collide:
-            self.gm.tr.moveDir(self.f % -2)
+        self.gameobject.transform.moveDir(self.f)
+
+        # if self.coll.collide:
+        #    self.gameobject.transform.moveDir(self.f % -2)
         self.f = Vec3()
 
         if keyboard.is_pressed("w"):
@@ -31,13 +32,13 @@ class Player(Behavior):
         # if self.coll.collide:
         #    f = f % -1
 
-
         if keyboard.is_pressed("e"):
-            Behavior.instantiate("r", self.gm.tr.getPosition() + Vec3(1))
+            Behavior.instantiate("r", self.transform.position + Vec3(1))
 
     def onDraw(self, a):
-        ui.changeSpace(0, str(self.gm.tr.getPosition()), True)
-        ui.changeSpace(1, str(self.gm.GetComponent(BoxCollider)), True)
+        ui.changeSpace(0, str(self.transform.position), True)
+        ui.changeSpace(1, str(self.coll), True)
+        ui.changeSpace(2, str(Vec3.D2V(self.coll.angl)), True)
 
     # def afterDraw(self):
-    # UI.printImageAtPos("Scarer", self.gm.tr.getPosition().x, self.gm.tr.getPosition().y)
+    # UI.printImageAtPos("Scarer", self.transform.position.x, self.transform.position.y)

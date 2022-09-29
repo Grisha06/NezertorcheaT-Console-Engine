@@ -47,8 +47,8 @@ def print_matrix(a):
 
 
 class Component:
-    def __init__(self, gm):
-        self.gm = gm
+    def __init__(self, gameobject):
+        self.gameobject = gameobject
         self.after_init()
 
     def after_init(self):
@@ -72,26 +72,26 @@ class Collider(Component):
 class BoxCollider(Collider):
     height = 1.0
     width = 1.0
-    side = ''
+    angl = 0.0
 
     def after_init(self):
         self.width = 1
         self.height = 1
         self.collide = False
-        self.side = ''
+        self.angl = 0.0
 
     def updColl(self):
-        for i in findAllObjsAtRad(self.gm.tr.getPosition(), 2):
+        for i in findAllObjsAtRad(self.gameobject.transform.position, 2):
             try:
-                if i.name == self.gm.name or len(i.GetAllComponentsOfType(BoxCollider)) == 0:
+                if i.name == self.gameobject.name or len(i.GetAllComponentsOfType(BoxCollider)) == 0:
                     continue
             except:
                 continue
             for j in i.GetAllComponentsOfType(BoxCollider):
-                xx = self.gm.tr.getPosition().x
-                xy = self.gm.tr.getPosition().y
-                cy = i.tr.getPosition().y
-                cx = i.tr.getPosition().x
+                xx = self.gameobject.transform.position.x
+                xy = self.gameobject.transform.position.y
+                cy = i.transform.position.y
+                cx = i.transform.position.x
                 if ((cx + self.width >= xx <= cx <= xx + self.width <= cx + self.width) or (
                         cx + self.width >= xx >= cx <= xx + self.width >= cx + self.width) or (
                             cx + self.width >= xx <= cx <= xx + self.width >= cx + self.width)) and (
@@ -99,14 +99,14 @@ class BoxCollider(Collider):
                         cy + self.height >= xy >= cy <= xy + self.height >= cy + self.height) or (
                                 cy + self.height >= xy <= cy <= xy + self.height >= cy + self.height)):
                     self.collide = True
-                    ang = int(Vec3.angleB2V(self.gm.tr.getPosition() - i.tr.getPosition(), Vec3(1, 0, 0)))
+                    ang = float(Vec3.angleB2V(self.gameobject.transform.position - i.transform.position,
+                                              Vec3(1, 0, 0)))
                     angl = ang - ((ang // 360) * 360)
-                    if 45 <= angl < 135: self.side = UP
-                    if 135 <= angl < 225: self.side = LEFT
-                    if 315 <= angl < 45: self.side = RIGHT
-                    if 225 <= angl < 315: self.side = DOWN
+                    self.angl = angl
+                    if self.gameobject.transform.position.y > i.transform.position.y:
+                        self.angl = 360 - angl
                     try:
-                        for se in self.gm.GetAllComponentsOfType(Behavior):
+                        for se in self.gameobject.GetAllComponentsOfType(Behavior):
                             se.onCollide(j)
                     except KeyError:
                         pass
@@ -117,11 +117,13 @@ class BoxCollider(Collider):
                         pass
                     return
         self.collide = False
-        self.side = ''
 
 
 class Transform(Component):
-    def getPosition(self):
+    def upd(self):
+        self.position = self.__getPosition()
+
+    def __getPosition(self):
         if self.parent is not None:
             p = self.__getParents(parents=[self.parent])
             g = self.local_position
@@ -143,6 +145,7 @@ class Transform(Component):
     def __init__(self, gm, parent=None):
         self.gm = gm
         self.local_position = Vec3()
+        self.position = self.local_position
         self.parent = parent
 
     def moveDir(self, Dir: Vec3):
@@ -164,14 +167,15 @@ class Obj:
         self.isInstantiated = False
         self.__components = []
         self.AddComponent(Transform)
-        self.tr = self.GetAllComponents()[0]
-        self.tr.parent = parent
+        self.transform = self.GetAllComponents()[0]
+        self.transform.parent = parent
 
     def __str__(self):
         return f"Obj(name:{self.name}, tag:{self.tag})"
 
     @final
     def upd(self, a):
+        self.transform.upd()
         try:
             for i in self.GetAllComponentsOfType(Collider):
                 i.updColl()
@@ -191,9 +195,9 @@ class Obj:
             pass
         try:
             for i in self.GetAllComponentsOfType(Drawer):
-                i.drawSymb(a, i.symb, self.tr.getPosition())
+                i.drawSymb(a, i.symb, self.transform.position)
                 try:
-                    for j in i.gm.GetAllComponentsOfType(Behavior):
+                    for j in i.gameobject.GetAllComponentsOfType(Behavior):
                         j.onDraw(a)
                 except KeyError:
                     pass
@@ -403,13 +407,13 @@ class Drawer(Component):
 
     @final
     def drawSymb(self, a, symb: str, pos: Vec3):
-        c = self.gm.FindByTag("MainCamera")
+        c = self.gameobject.FindByTag("MainCamera")
         if c is None:
-            c = self.gm.FindWithComponent(Camera)
+            c = self.gameobject.FindWithComponent(Camera)
         if c is None:
             return
         co = c.GetComponent(Camera)
-        c = c.tr.getPosition()
+        c = c.transform.position
 
         if 0.0 <= pos.y - c.y + co.offset.y < settings['HEIGHT'] and 0.0 <= pos.x - c.x + co.offset.x < settings[
             'WIDTH'] and len(symb) == 1:
@@ -434,8 +438,10 @@ class Behavior(Component):
     __passingT = False
     __passingS = False
     __passingFrT = 0.0
+    transform: Transform
 
     def after_init(self):
+        self.transform = self.gameobject.transform
         self.__passT = 0.0
         self.__passingT = False
         self.__passingS = False
@@ -534,14 +540,14 @@ class Behavior(Component):
 def findNearObjByRad(V: Vec3, rad: float):
     g = []
     for i in ObjList.getObjs():
-        if Vec3.distance(V, i.tr.local_position) <= rad:
+        if Vec3.distance(V, i.transform.local_position) <= rad:
             g.append(i)
     try:
         for i in range(1, len(g)):
             key_item = g[i]
             j = i - 1
-            while j >= 0 and Vec3.distance(V, g[j].tr.local_position) > Vec3.distance(V,
-                                                                                      key_item.tr.local_position):
+            while j >= 0 and Vec3.distance(V, g[j].transform.local_position) > Vec3.distance(V,
+                                                                                             key_item.transform.local_position):
                 g[j + 1] = g[j]
                 j -= 1
             g[j + 1] = key_item
@@ -553,13 +559,13 @@ def findNearObjByRad(V: Vec3, rad: float):
 def findAllObjsAtRad(V: Vec3, rad: float):
     g = []
     for i in ObjList.getObjs():
-        if Vec3.distance(V, i.tr.local_position) <= rad:
+        if Vec3.distance(V, i.transform.local_position) <= rad:
             g.append(i)
     for i in range(1, len(g)):
         key_item = g[i]
         j = i - 1
-        while j >= 0 and Vec3.distance(V, g[j].tr.local_position) > Vec3.distance(V,
-                                                                                  key_item.tr.local_position):
+        while j >= 0 and Vec3.distance(V, g[j].transform.local_position) > Vec3.distance(V,
+                                                                                         key_item.transform.local_position):
             g[j + 1] = g[j]
             j -= 1
         g[j + 1] = key_item

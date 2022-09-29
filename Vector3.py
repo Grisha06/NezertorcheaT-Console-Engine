@@ -1,6 +1,7 @@
 import math
 import os
 
+
 class Vec3:
     """3D Vector"""
 
@@ -87,7 +88,11 @@ class Vec3:
         return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
 
     def abs(self):
-        return Vec3(fabs(self.x), fabs(self.y), fabs(self.z))
+        return Vec3(math.fabs(self.x), math.fabs(self.y), math.fabs(self.z))
+
+    @staticmethod
+    def D2V(degrees):
+        return Vec3(float(math.cos(math.radians(degrees))), float(math.sin(math.radians(degrees))))
 
     @staticmethod
     def reflect(rd, n):

@@ -101,7 +101,7 @@ Also, they all have a link to the object to which they are attached.
     - **local_position: Vec3** - local position of the object
     - **moweDir(Dir: Vec3)** - add "Dir" vector to position
     - **setLocalPosition(V: Vec3)** - move local position to "V" vector
-    - **getPosition()** - get the global position of the object in the world
+    - **position** - get the global position of the object in the world
 2. **Drawer class**:
     - **drawSymb(a, symb: str, pos: Vec3)** - used to draw symbol "symb" at position "pos", only works in "lateUpdate"
     - **clearSymb(a, pos: Vec3)** - used to clear symbol at position "pos", only works in "onDraw"
