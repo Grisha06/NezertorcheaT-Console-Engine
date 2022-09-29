@@ -100,9 +100,9 @@ class Name(Behavior):
 
 1. **класс Transform**:
     - **local_position: Vec3** - локальная позиция объекта
+    - **position: Vec3** - глобальная позиция объекта
     - **moweDir(Dir: Vec3)** - прибавить к позиции вектор "Dir"
     - **setLocalPosition(V: Vec3)** - переместить локальную позицию в вектор "V"
-    - **position** - получить глобальную позицию объекта в мире
 2. **класс Drawer**:
     - **drawSymb(a, symb: str, pos: Vec3)** - используется для отрисовки символа "symb" на позиции "pos", работает только в "lateUpdate"
     - **clearSymb(a, pos: Vec3)** - используется для очищения символа на позиции "pos", работает только в "onDraw"
@@ -131,5 +131,15 @@ class Name(Behavior):
 4. Не используйте **NTETime**.
 5. Коллизия пока не реализована, по этому вам придется писать её самостоятельно, но есть галочка, отвечающая за пересечение объектов.
 6. Не используйте **BoxCollider.side**.
+7. Пример реализации коллизии:
+```
+class SomeBehavior(Behavior):
+    def start(self):
+        self.coll = self.gameobject.GetComponent(Collider)
+
+    def update(self, a):
+        if keyboard.is_pressed("e"):
+            Behavior.instantiate("r", self.transform.position + Vec3(1))
+```
 
 # На этом всё! Спасибо за прочтение!

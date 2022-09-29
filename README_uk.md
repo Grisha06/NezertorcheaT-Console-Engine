@@ -130,5 +130,15 @@ class Name(Behavior):
 4. Не використовуйте **NTETime**.
 5. Колізія поки не реалізована, тому вам доведеться писати її самостійно, але є галочка, що відповідає за перетин об'єктів.
 6. Не використовуйте **BoxCollider.side**.
+7. Приклад реалізації колізії:
+```
+class SomeBehavior(Behavior):
+    def start(self):
+        self.coll = self.gameobject.GetComponent(Collider)
+
+    def update(self, a):
+        if keyboard.is_pressed("e"):
+            Behavior.instantiate("r", self.transform.position + Vec3(1))
+```
 
 # На цьому все! Дякую за прочитання!

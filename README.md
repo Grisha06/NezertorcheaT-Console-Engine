@@ -130,5 +130,15 @@ Also, they all have a link to the object to which they are attached.
 4. Don't use **NTETime**.
 5. Collision has not yet been implemented, so you will have to write it yourself, but there is a checkbox responsible for the intersection of objects.
 6. Don't use **BoxCollider.side**.
+7. An example of the implementation of a collision:
+```
+class SomeBehavior(Behavior):
+    def start(self):
+        self.coll = self.gameobject.GetComponent(Collider)
+
+    def update(self, a):
+        if keyboard.is_pressed("e"):
+            Behavior.instantiate("r", self.transform.position + Vec3(1))
+```
 
 # That's all! Thanks for reading!

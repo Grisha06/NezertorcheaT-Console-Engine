@@ -516,7 +516,7 @@ class Behavior(Component):
 
     @staticmethod
     def instantiate(symb: str, Pos=Vec3(), comps=[]) -> Obj:
-        b = Obj("obj_(" + str(len(ObjList.getObjs())) + ")")
+        b = Obj(f"obj_({str(len(ObjList.getObjs()))})")
         b.tr.local_position = Pos
         b.AddComponent(Drawer)
         b.GetAllComponents()[1].symb = symb

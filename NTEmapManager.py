@@ -46,7 +46,6 @@ def loadLevel(mapname: str = "globalMap"):
             bb.AddCreatedComponent(bbc)
         ObjList.addObj(bb)
         del bb
-        # break
 
     for y in ObjList.getObjs():
         y.startStart()

@@ -15,10 +15,8 @@ class Player(Behavior):
         self.f = Vec3()
 
     def update(self, a):
-        self.gameobject.transform.moveDir(self.f)
-
-        # if self.coll.collide:
-        #    self.gameobject.transform.moveDir(self.f % -2)
+        self.transform.moveDir(self.f)
+        # self.transform.local_position = Vec3.int(self.transform.local_position)
         self.f = Vec3()
 
         if keyboard.is_pressed("w"):
@@ -31,9 +29,9 @@ class Player(Behavior):
             self.f = self.f + Vec3(self.speed, 0)
         # if self.coll.collide:
         #    f = f % -1
-
-        if keyboard.is_pressed("e"):
-            Behavior.instantiate("r", self.transform.position + Vec3(1))
+        if self.coll.collide:
+            self.gameobject.transform.moveDir((Vec3.D2V(self.coll.angl % self.speed)))
+            #self.f = self.f + (Vec3.D2V(self.coll.angl) % self.speed)
 
     def onDraw(self, a):
         ui.changeSpace(0, str(self.transform.position), True)
