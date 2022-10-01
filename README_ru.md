@@ -1,6 +1,6 @@
-# NezertorcheaT Console Engine
+# NezertorcheaT's Console Engine
 
-## Приветствую вас в документации по NezertorcheaT Console Engine!
+## Приветствую вас в документации по NezertorcheaT's Console Engine!
 
 Чтобы попробовать тестовый проект, запустите файл main.py.
 
@@ -10,8 +10,8 @@
 Внутри объектов находятся поля "**startPos**" и "**components**".  
 Первое - это представление начальной позиции как вектора.  
 Второе - это список компонентов.  
-В нём могут лижать любые объекты типы которых наследованны от класса "**Component**".  
-А в нём могут лижать свойства этих объектов.
+В нём могут лежать любые объекты типы которых наследованы от класса "**Component**".  
+А в нём могут лежать свойства этих объектов.
 
 ## Теперь самое интересное! Cвои скрипты!
 
@@ -28,8 +28,8 @@ class Name(Behavior):
     def update(self, a):  
         #<code>  
 
-    def onCollide(self, collider: Transform):
-        pass
+    def onCollide(self, collider: Collider):
+        #<code>  
 
     def onDraw(self, a):
         #<ui_code>  
@@ -37,56 +37,44 @@ class Name(Behavior):
         
 ```  
 
-### Объяснение методов:
+### Объяснение обычных методов и классов:
 
 1. NTETime:
     - **getTime()** - возвращает текущий кадр
 2. ObjList:
-    - **getObj(i: int)** - получить объект
     - **getObjs()** - получить все объекты
-    - **getObjByName(name: str)** - получить объект с именем "name"
 3. globalSettings:
     - **settings** - все поля из файла globalSettings.json
-    - **objMaps** - карта из папки Maps
-4. Drawer:
-    - **drawSymb(a, symb: str, pos: Vec3)** - рисует символ "symb" в позиции "pos" на матрице "a"
-    - **drawSymbImage(a, img: str, pos: Vec3)** - рисует список символов, хранящихся в папке TextImages, с именем "img"
-      в позиции "pos" на матрице "a"
-5. NTEmapManager:
+    - **objMaps** - карты из папки Maps
+4. NTEmapManager:
     - **loadLevel(mapname: str = "globalMap")** - загружает карту, хранящуюся в папке Maps, с именем "mapname"
     - **stopMainLoop(func)** - останавливает главный цикл, пробросив ошибку, но, перед этим, выполняет функцию "func"
-6. NTEngineClasses:
+5. NTEngineClasses:
     - **объект ui** - представление класса UI
-    - **объект camera** - представление класса Camera
     - **класс UI**:
-        - **add(text, createNewLine: bool) -> int** - добавляет новую строку в массив строк, поле "createNewLine"
-          отвечает за создание новой строки в конце, возвращает позицию новой строки в массиве
-        - **clearSpace(i: int, createNewLine: bool)** - очищает строку с номером "i", поле "createNewLine" отвечает за
-          создание новой строки в конце
+        - **add(text, createNewLine: bool) -> int** - добавляет новую строку в массив строк, поле "createNewLine" отвечает за создание новой строки в конце, возвращает позицию новой строки в массиве
+        - **clearSpace(i: int, createNewLine: bool)** - очищает строку с номером "i", поле "createNewLine" отвечает за создание новой строки в конце
         - **changeSpace(i: int, text='', createNewLine=True)** - изменяет свойства строки с номером i на новые
-    - **класс Vec3**:
-        - **Vec3.dev_by_float(a, n=1)** - оператор "**//**" - делит вектор "a" на число "n"
+        - **UI.printStrAtPos(s: str, x: int, y: int)** - отрисовывает строку в консоли, **Внимание!** Для отрисовки объектов в игровом мире используйте класс "Drawer"!
+        - **UI.printImageAtPos(img: str, x: int, y: int)** - отрисовывает изображение с именем "img" в консоли, **Внимание!** Для отрисовки объектов в игровом мире используйте класс "Drawer"!
+    - **класс Component**:
+        - **gameobject: Obj** - ссылка на объект
+    - **класс Vector3**:
+        - **Vector3.dev_by_float(a, n=1)** - оператор "**//**" - делит вектор "a" на число "n"
         - **Vec3.mult_by_float(a, n=0)** - оператор "**%**" - умножает вектор "a" на число "n"
-        - **Vec3.sum(a, b)** - оператор "**+**" - сумма векторов "a" и "b"
-        - **Vec3.substr(a, b)** - оператор "**-**" - из вектора "a" вычетает вектор "b"
-        - **Vec3.mult(a, b)** - оператор "*" - умножает компоненты вектора "a" на компоненты вектора "b"
-        - **Vec3.div(a, b)** - делит компоненты вектора "a" на компоненты вектора "b"
-        - **Vec3.distance(v1, v2)** - расстояние между векторами "v1" и "v2"
-        - **Vec3.dot(a, b)** - оператор "**" - Скалярное произведение векторов "a" и "b"
-        - **Vec3.reflect(rd, n)**
+        - **Vector3.sum(a, b)** - оператор "**+**" - сумма векторов "a" и "b"
+        - **Vector3.substr(a, b)** - оператор "**-**" - из вектора "a" вычетает вектор "b"
+        - **Vector3.mult(a, b)** - оператор "*" - умножает компоненты вектора "a" на компоненты вектора "b"
+        - **Vector3.div(a, b)** - делит компоненты вектора "a" на компоненты вектора "b"
+        - **Vector3.distance(v1, v2)** - расстояние между векторами "v1" и "v2"
+        - **Vector3.dot(a, b)** - оператор "**" - Скалярное произведение векторов "a" и "b"
+        - **Vector3.reflect(rd, n)**
         - **length()** - длинна вектора
         - **abs()**
         - **norm()**
         - **sign()**
-    - **класс Transform**:
-        - **local_position: Vec3** - локальная позиция объекта
-        - **collide: bool** - просчет столкновений
-        - **beh: Behavior** - ссылка на поведение
-        - **moweDir(Dir: Vec3)** - прибавить к позиции вектор "Dir", с поправкой на физику
-        - **setLocalPosition(V: Vec3)** - переместить локальную позицию в вектор "V", с поправкой на физику
-        - **getPosition()** - получить глобальную позицию объекта в мире
     - **класс Obj**:
-        - **isInstantiated: bool** - определяет был ли объект создан с помощью метода instantiate()
+        - **isInstantiated: bool** - определяет, был ли объект создан с помощью метода instantiate()
         - **tr: Transform** - класс Transform
         - **GetComponent(typ: Component)** - позволяет получить компонент типа "typ"
         - **AddComponent(comp: Component)** - позволяет создать компонент типа "comp"
@@ -95,23 +83,65 @@ class Name(Behavior):
         - **GetAllComponentsOfType(typ: Component)** - позволяет получить все компоненты типа "typ"
         - **RemoveComponent(typ: Component)** - позволяет удалить компонент типа "typ"
         - **PopComponent(i: int)** - позволяет удалить компонент на месте "i"
-    - **класс Drawer**:
-        - **drawSymb(a, symb: str, pos: Vec3)** - используется для отрисовки символа "symb" на позиции "pos", работает
-          только в "lateUpdate"
-        - **clearSymb(a, pos: Vec3)** - используется для очищения символа на позиции "pos", работает только в "
-          onDraw"
-    - **класс Behavior**:
-        - **update(self, a)** - вызывается каждое обновление мира
-        - **start(self)** - вызывается в самом начале
-        - **onCollide(self, collider: Transform)** - вызывается при соприкосновении с объектом
-        - **lateUpdate(self, a):** - вызывается после "update"
-        - **passSteps(frames: int)** - используется для полной остановки объекта на "frames" тиков
-        - **passSeconds(secs: float)** - используется для полной остановки объекта на "secs" секунд
-        - **instantiate(symb: str, Pos=Vec3(), comps=[]) -> Obj** - используется для создания объектов в позиции "Pos" с
-          компонентами "comps" и символом "symb"
-        - **destroy(beh)** - удаляет объект "beh" из мира
+        - **Find(name: str)** - позволяет найти объект по имени
+        - **FindByTag(tag: str)** - позволяет найти объект по тегу
+        - **FindWithComponent(comp: Component)** - позволяет найти объект по компоненту
+        - **FindAllWithComponent(comp: Component)** - позволяет найти все объекты с компонентом
+        - **FindAllByTag(tag: str)** - позволяет найти все объекты с тегом
     - **clamp(num, min_value, max_value)** - простейшее ограничение переменной
     - **findAllObjsAtRad(V: Vec3, rad: float)** - возвращает объекты в радиусе "rad" к позиции "V"
     - **findNearObjByRad(V: Vec3, rad: float)** - возвращает ближайший объект в радиусе "rad" к позиции "V"
+
+### Объяснение компонентов:
+
+Это были обыкновенные классы и методы использующиеся повсеместно, а теперь идут те, которые я буду называть
+компонентами, так как все наследованы от класса "Component".  
+Они используются при описании поведения объектов.  
+С ними можно взаимодействовать через методы класса "Obj".  
+Так же у них у всех есть ссылка на объект к которому они привязаны.
+
+1. **класс Transform**:
+    - **local_position: Vec3** - локальная позиция объекта
+    - **position: Vec3** - глобальная позиция объекта
+    - **moweDir(Dir: Vec3)** - прибавить к позиции вектор "Dir"
+    - **setLocalPosition(V: Vec3)** - переместить локальную позицию в вектор "V"
+2. **класс Drawer**:
+    - **drawSymb(a, symb: str, pos: Vec3)** - используется для отрисовки символа "symb" на позиции "pos", работает только в "lateUpdate"
+    - **clearSymb(a, pos: Vec3)** - используется для очищения символа на позиции "pos", работает только в "onDraw"
+3. **класс Camera**:
+    - **offset** - смещение камеры от левого угла, первоначально равно половине размера отрисовываемой карты
+4. **класс BoxCollider**:
+    - **height** - высота коллайдера
+    - **width** - ширина коллайдера
+    - **collide** - соприкосновение
+5. **класс RigidBody** - моя попытка реализации физики
+6. **класс Behavior**:
+    - **update(self, a)** - вызывается каждое обновление мира
+    - **start(self)** - вызывается в самом начале
+    - **onCollide(self, collider: Collider)** - вызывается при соприкосновении с объектом
+    - **lateUpdate(self, a):** - вызывается после "update"
+    - **onDraw(self, a):** - вызывается после отрисовки
+    - **passSteps(frames: int)** - используется для полной остановки объекта на "frames" тиков
+    - **passSeconds(secs: float)** - используется для полной остановки объекта на "secs" секунд
+    - **instantiate(symb: str, Pos=Vec3(), comps=[]) -> Obj** - используется для создания объектов в позиции "Pos" с компонентами "comps" и символом "symb"
+    - **destroy(beh)** - удаляет объект "beh" из мира
+
+### Советы:
+
+1. На сцене должна быть хотя бы одна камера, если их нет, то ничего не будет отрисовано.
+2. Для определения главной камеры существует тег "**MainCamera**".
+3. Не используйте методы из **ObjList**, вместо них используйте **Obj.Find()** и др.
+4. Не используйте **NTETime**.
+5. Коллизия пока плохо реализована, по этому вам придется писать её самостоятельно.
+7. Пример реализации коллизии:
+```
+class SomeBody(RigidBody):
+    def updRB(self):
+        for i in self.gameobject.transform.nears:
+            for j in i.GetAllComponentsOfTypes(all_subclasses(RigidBody)):
+                for jj in j.gameobject.GetAllComponentsOfType(Collider):
+                    if jj.collide:
+                        self.gameobject.transform.moveDir(Vector3.D2V(jj.angle - 1))
+```
 
 # На этом всё! Спасибо за прочтение!
