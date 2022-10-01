@@ -29,7 +29,7 @@ class Name(Behavior):
         #<code>
 
     def onCollide(self, collider: Collider):
-        pass
+        #<code>
 
     def onDraw(self, a):
         #<ui_code>
@@ -46,10 +46,10 @@ class Name(Behavior):
 3.globalSettings:
     - **settings** - all fields from the globalSettings.json file
     - **objMaps** - maps from Maps folder
-5.NTEmapManager:
+4.NTEmapManager:
     - **loadLevel(mapname: str = "globalMap")** - loads the map stored in the Maps folder with the name "mapname"
     - **stopMainLoop(func)** - stops the main loop by throwing an error, but before that, executes the function "func"
-6.NTEngineClasses:
+5.NTEngineClasses:
     - **object ui** - representation of the UI class
     - **UI class**:
         - **add(text, createNewLine: bool) -> int** - adds a new line to the array of strings, the "createNewLine" field is responsible for creating a new line at the end, returns the position of the new line in the array
@@ -57,16 +57,18 @@ class Name(Behavior):
         - **changeSpace(i: int, text='', createNewLine=True)** - changes the properties of the i-th line to new ones
         - **UI.printStrAtPos(s: str, x: int, y: int)** - draws a string in the console, **Attention!** To draw objects in the game world, use the "Drawer" class!
         - **UI.printImageAtPos(img: str, x: int, y: int)** - draws an image named "img" in the console, **Attention!** Use the "Drawer" class to draw objects in the game world!
-    - **Vec3 class**:
-        - **Vec3.dev_by_float(a, n=1)** - operator "**//**" - divides vector "a" by number "n"
+    - **Component class**:
+        - **gameobject: Obj** - object reference
+    - **Vector3 class**:
+        - **Vector3.dev_by_float(a, n=1)** - operator "**//**" - divides vector "a" by number "n"
         - **Vec3.mult_by_float(a, n=0)** - operator "**%**" - multiplies vector "a" by number "n"
-        - **Vec3.sum(a, b)** - operator "**+**" - sum of vectors "a" and "b"
-        - **Vec3.substr(a, b)** - operator "**-**" - subtracts vector "b" from vector "a"
-        - **Vec3.mult(a, b)** - operator "*" - multiplies the components of the vector "a" by the components of the vector "b"
-        - **Vec3.div(a, b)** - divides the components of the vector "a" into the components of the vector "b"
-        - **Vec3.distance(v1, v2)** - distance between vectors "v1" and "v2"
-        - **Vec3.dot(a, b)** - operator "**" - Scalar product of vectors "a" and "b"
-        - **Vec3.reflect(rd, n)**
+        - **Vector3.sum(a, b)** - operator "**+**" - sum of vectors "a" and "b"
+        - **Vector3.substr(a, b)** - operator "**-**" - subtracts vector "b" from vector "a"
+        - **Vector3.mult(a, b)** - operator "*" - multiplies the components of the vector "a" by the components of the vector "b"
+        - **Vector3.div(a, b)** - divides the components of the vector "a" into the components of the vector "b"
+        - **Vector3.distance(v1, v2)** - distance between vectors "v1" and "v2"
+        - **Vector3.dot(a, b)** - operator "**" - Scalar product of vectors "a" and "b"
+        - **Vector3.reflect(rd, n)**
         - **length()** - vector length
         - **abs()**
         - **normal()**
@@ -92,16 +94,17 @@ class Name(Behavior):
 
 ### Explanation of components:
 
-These were ordinary classes and methods used everywhere, and now there are those that I will call component, since all are inherited from the "Component" class.
+These were ordinary classes and methods used everywhere, and now there are those that I will call
+components, since all are inherited from the "Component" class.
 They are used in describing the behavior of objects.
 They can be interacted with through the methods of the "Obj" class.
 Also, they all have a link to the object to which they are attached.
 
 1. **Transform class**:
     - **local_position: Vec3** - local position of the object
+    - **position: Vec3** - global position of the object
     - **moweDir(Dir: Vec3)** - add "Dir" vector to position
     - **setLocalPosition(V: Vec3)** - move local position to "V" vector
-    - **position** - get the global position of the object in the world
 2. **Drawer class**:
     - **drawSymb(a, symb: str, pos: Vec3)** - used to draw symbol "symb" at position "pos", only works in "lateUpdate"
     - **clearSymb(a, pos: Vec3)** - used to clear symbol at position "pos", only works in "onDraw"
@@ -111,7 +114,8 @@ Also, they all have a link to the object to which they are attached.
     - **height** - collider height
     - **width** - collider width
     - **collide** - contact
-5. **Behavior class**:
+5. **RigidBody class** - my attempt to implement physics
+6. **Behavior class**:
     - **update(self, a)** - called every world update
     - **start(self)** - called at the very beginning
     - **onCollide(self, collider: Collider)** - called upon contact with an object
@@ -126,19 +130,18 @@ Also, they all have a link to the object to which they are attached.
 
 1. There must be at least one camera on the scene, if there are none, then nothing will be drawn.
 2. There is a "**MainCamera**" tag to define the main camera.
-3. Don't use methods from **ObjList**, use **Obj.Find()** and others instead.
+3. Do not use methods from **ObjList**, use **Obj.Find()** instead, etc.
 4. Don't use **NTETime**.
-5. Collision has not yet been implemented, so you will have to write it yourself, but there is a checkbox responsible for the intersection of objects.
-6. Don't use **BoxCollider.side**.
+5. Collision is still poorly implemented, so you will have to write it yourself.
 7. An example of the implementation of a collision:
 ```
-class SomeBehavior(Behavior):
-    def start(self):
-        self.coll = self.gameobject.GetComponent(Collider)
-
-    def update(self, a):
-        if keyboard.is_pressed("e"):
-            Behavior.instantiate("r", self.transform.position + Vec3(1))
+class SomeBody(RigidBody):
+    def updRB(self):
+        for i in self.gameobject.transform.nears:
+            for j in i.GetAllComponentsOfTypes(all_subclasses(RigidBody)):
+                for jj in j.gameobject.GetAllComponentsOfType(Collider):
+                    if jj collide:
+                        self.gameobject.transform.moveDir(Vector3.D2V(jj.angle - 1))
 ```
 
 # That's all! Thanks for reading!

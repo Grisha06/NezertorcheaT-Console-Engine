@@ -29,7 +29,7 @@ class Name(Behavior):
         #<code>  
 
     def onCollide(self, collider: Collider):
-        pass
+        #<code>  
 
     def onDraw(self, a):
         #<ui_code>  
@@ -46,10 +46,10 @@ class Name(Behavior):
 3. globalSettings:
     - **settings** - все поля из файла globalSettings.json
     - **objMaps** - карты из папки Maps
-5. NTEmapManager:
+4. NTEmapManager:
     - **loadLevel(mapname: str = "globalMap")** - загружает карту, хранящуюся в папке Maps, с именем "mapname"
     - **stopMainLoop(func)** - останавливает главный цикл, пробросив ошибку, но, перед этим, выполняет функцию "func"
-6. NTEngineClasses:
+5. NTEngineClasses:
     - **объект ui** - представление класса UI
     - **класс UI**:
         - **add(text, createNewLine: bool) -> int** - добавляет новую строку в массив строк, поле "createNewLine" отвечает за создание новой строки в конце, возвращает позицию новой строки в массиве
@@ -57,16 +57,18 @@ class Name(Behavior):
         - **changeSpace(i: int, text='', createNewLine=True)** - изменяет свойства строки с номером i на новые
         - **UI.printStrAtPos(s: str, x: int, y: int)** - отрисовывает строку в консоли, **Внимание!** Для отрисовки объектов в игровом мире используйте класс "Drawer"!
         - **UI.printImageAtPos(img: str, x: int, y: int)** - отрисовывает изображение с именем "img" в консоли, **Внимание!** Для отрисовки объектов в игровом мире используйте класс "Drawer"!
-    - **класс Vec3**:
-        - **Vec3.dev_by_float(a, n=1)** - оператор "**//**" - делит вектор "a" на число "n"
+    - **класс Component**:
+        - **gameobject: Obj** - ссылка на объект
+    - **класс Vector3**:
+        - **Vector3.dev_by_float(a, n=1)** - оператор "**//**" - делит вектор "a" на число "n"
         - **Vec3.mult_by_float(a, n=0)** - оператор "**%**" - умножает вектор "a" на число "n"
-        - **Vec3.sum(a, b)** - оператор "**+**" - сумма векторов "a" и "b"
-        - **Vec3.substr(a, b)** - оператор "**-**" - из вектора "a" вычетает вектор "b"
-        - **Vec3.mult(a, b)** - оператор "*" - умножает компоненты вектора "a" на компоненты вектора "b"
-        - **Vec3.div(a, b)** - делит компоненты вектора "a" на компоненты вектора "b"
-        - **Vec3.distance(v1, v2)** - расстояние между векторами "v1" и "v2"
-        - **Vec3.dot(a, b)** - оператор "**" - Скалярное произведение векторов "a" и "b"
-        - **Vec3.reflect(rd, n)**
+        - **Vector3.sum(a, b)** - оператор "**+**" - сумма векторов "a" и "b"
+        - **Vector3.substr(a, b)** - оператор "**-**" - из вектора "a" вычетает вектор "b"
+        - **Vector3.mult(a, b)** - оператор "*" - умножает компоненты вектора "a" на компоненты вектора "b"
+        - **Vector3.div(a, b)** - делит компоненты вектора "a" на компоненты вектора "b"
+        - **Vector3.distance(v1, v2)** - расстояние между векторами "v1" и "v2"
+        - **Vector3.dot(a, b)** - оператор "**" - Скалярное произведение векторов "a" и "b"
+        - **Vector3.reflect(rd, n)**
         - **length()** - длинна вектора
         - **abs()**
         - **norm()**
@@ -112,7 +114,8 @@ class Name(Behavior):
     - **height** - высота коллайдера
     - **width** - ширина коллайдера
     - **collide** - соприкосновение
-5. **класс Behavior**:
+5. **класс RigidBody** - моя попытка реализации физики
+6. **класс Behavior**:
     - **update(self, a)** - вызывается каждое обновление мира
     - **start(self)** - вызывается в самом начале
     - **onCollide(self, collider: Collider)** - вызывается при соприкосновении с объектом
@@ -125,21 +128,20 @@ class Name(Behavior):
 
 ### Советы:
 
-1. На сцене должна быть хотя бы одна камера, если их не будет, то ничего не будет отрисовано.
+1. На сцене должна быть хотя бы одна камера, если их нет, то ничего не будет отрисовано.
 2. Для определения главной камеры существует тег "**MainCamera**".
 3. Не используйте методы из **ObjList**, вместо них используйте **Obj.Find()** и др.
 4. Не используйте **NTETime**.
-5. Коллизия пока не реализована, по этому вам придется писать её самостоятельно, но есть галочка, отвечающая за пересечение объектов.
-6. Не используйте **BoxCollider.side**.
+5. Коллизия пока плохо реализована, по этому вам придется писать её самостоятельно.
 7. Пример реализации коллизии:
 ```
-class SomeBehavior(Behavior):
-    def start(self):
-        self.coll = self.gameobject.GetComponent(Collider)
-
-    def update(self, a):
-        if keyboard.is_pressed("e"):
-            Behavior.instantiate("r", self.transform.position + Vec3(1))
+class SomeBody(RigidBody):
+    def updRB(self):
+        for i in self.gameobject.transform.nears:
+            for j in i.GetAllComponentsOfTypes(all_subclasses(RigidBody)):
+                for jj in j.gameobject.GetAllComponentsOfType(Collider):
+                    if jj.collide:
+                        self.gameobject.transform.moveDir(Vector3.D2V(jj.angle - 1))
 ```
 
 # На этом всё! Спасибо за прочтение!

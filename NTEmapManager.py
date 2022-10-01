@@ -8,10 +8,6 @@ for module in os.listdir(os.path.dirname(__file__) + "\\Scripts"):
 del module
 
 
-def all_subclasses(clss):
-    return set(clss.__subclasses__()).union(
-        [s for c in clss.__subclasses__() for s in all_subclasses(c)])
-
 
 def getcls(n: str):
     for jj in all_subclasses(Component):
@@ -29,7 +25,7 @@ def loadLevel(mapname: str = "globalMap"):
     for im in mape:
         bb = Obj(im)
         print(bb)
-        bb.transform.local_position = Vec3(mape[im]["startPos"]['x'], mape[im]["startPos"]['y'])
+        bb.transform.local_position = Vector3(mape[im]["startPos"]['x'], mape[im]["startPos"]['y'])
         try:
             bb.tag = mape[im]["tag"]
         except KeyError:
@@ -37,16 +33,17 @@ def loadLevel(mapname: str = "globalMap"):
         for j in mape[im]["components"]:
             bbc = getcls(j)(bb)
             for jji in mape[im]["components"][j]:
-                if isinstance(bbc.__getattribute__(jji), Vec3):
+                if isinstance(bbc.__getattribute__(jji), Vector3):
                     bbc.__setattr__(jji,
-                                    Vec3(mape[im]["components"][j][jji]["x"],
-                                         mape[im]["components"][j][jji]["y"]))
+                                    Vector3(mape[im]["components"][j][jji]["x"],
+                                            mape[im]["components"][j][jji]["y"]))
                     continue
                 bbc.__setattr__(jji, mape[im]["components"][j][jji])
             bb.AddCreatedComponent(bbc)
         ObjList.addObj(bb)
         del bb
-
+    for y in ObjList.getObjs():
+        y.transform.upd()
     for y in ObjList.getObjs():
         y.startStart()
     for y in ObjList.getObjs():

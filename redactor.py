@@ -110,7 +110,7 @@ def winParams(x: int, y: int, name: str, w: Tk, s: Button):
                         eez = Checkbutton(f, variable=e,
                                           onvalue=True, offvalue=False)
                     v = False
-                    if type(i.__dict__[j]) == NTEngineClasses.Vec3:
+                    if type(i.__dict__[j]) == NTEngineClasses.Vector3:
                         v = True
                         ff = Frame(f)
                         ee1 = Entry(ff)
@@ -176,7 +176,7 @@ def gadd(name, s, o):
             for j in i.__dict__:
                 if j[0] + j[1] != '__' and type(i.__dict__[j]) not in [type(winParamsGetName), Behavior, Obj,
                                                                        Transform]:
-                    if isinstance(i.__dict__[j], Vec3):
+                    if isinstance(i.__dict__[j], Vector3):
                         g[name].update({j: [float(o[j][0].get()), float(o[j][1].get()), float(o[j][2].get())]})
                         continue
                     if not isinstance(i.__dict__[j], type(None)):

@@ -4,6 +4,7 @@ from globalSettings import *
 
 
 class UI:
+    """User Interface"""
     __text = []
 
     def __init__(self):
