@@ -310,7 +310,7 @@ class Obj:
         else:
             l = []
             for i in self.__components:
-                if isinstance(i, typs):
+                if isinstance(i, tuple(typs)):
                     l.append(i)
             return l
 
