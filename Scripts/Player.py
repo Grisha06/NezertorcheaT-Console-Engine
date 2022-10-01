@@ -13,6 +13,7 @@ class Player(Behavior):
         ui.add("", True)
         self.coll = self.gameobject.GetComponent(Collider)
         self.f = Vec3()
+        #self.gameobject.GetComponent(Drawer).color = "Blue"
 
     def update(self, a):
         self.transform.moveDir(self.f)
@@ -29,9 +30,10 @@ class Player(Behavior):
             self.f = self.f + Vec3(self.speed, 0)
         # if self.coll.collide:
         #    f = f % -1
-        if self.coll.collide:
-            self.gameobject.transform.moveDir((Vec3.D2V(self.coll.angl % self.speed)))
-            #self.f = self.f + (Vec3.D2V(self.coll.angl) % self.speed)
+
+            # self.f = self.f + (Vec3.D2V(self.coll.angl) % self.speed)
+        if keyboard.is_pressed("r"):
+            Behavior.instantiate("r", self.transform.position + Vec3(0, 1), [BoxCollider])
 
     def onDraw(self, a):
         ui.changeSpace(0, str(self.transform.position), True)

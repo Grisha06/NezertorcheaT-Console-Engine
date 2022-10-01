@@ -3,8 +3,9 @@
     "player": {
       "startPos": {"x": 5, "y": 5},
       "components": {
-        "Drawer": {"symb": "@"},
+        "Drawer": {"symb": "@", "color": "Blue"},
         "BoxCollider": {},
+        "RigidBody": {},
         "Player": {"speed": 1}
       }
     },
@@ -12,6 +13,7 @@
       "startPos": {"x": 10, "y": 10},
       "components": {
         "Drawer": {"symb": "D"},
+        "BoxCollider": {},
         "Box": {}
       }
     },

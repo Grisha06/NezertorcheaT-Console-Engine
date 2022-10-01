@@ -2,10 +2,12 @@ from typing import final
 
 import NTETime
 import ObjList
+from Color import *
 from UI import *
 from Vector3 import *
 
 ui = UI()
+game_border = Border()
 
 UP = "up"
 DOWN = "down"
@@ -31,19 +33,21 @@ def add_matrix():
 
 
 def print_matrix(a):
-    for x in range(len(a)):
-        print('│', end='')
-        for y in range(len(a[0])):
-            print("\u001b[31m"+a[x][y], end='\u001b[37m')
-            # if y < len(a[0]) - 1:
-            #    print(' ', end='')
-        print('│')
-    print('└', end='')
+    print(game_border.border_angle_lu, end='')
     for y in range(len(a[0])):
-        print('─', end='')
-        # if y < len(a[0]) - 1:
-        #    print('─', end='')
-    print('┘')
+        print(game_border.border_u, end='')
+    print(game_border.border_angle_ur)
+
+    for x in range(len(a)):
+        print(game_border.border_l, end='')
+        for y in range(len(a[0])):
+            # print(BaceColor('Red').get() + a[x][y], end=BaceColor('White').get())
+            print(a[x][y], end=BaceColor("Reset").get())
+        print(game_border.border_r)
+    print(game_border.border_angle_dl, end='')
+    for y in range(len(a[0])):
+        print(game_border.border_d, end='')
+    print(game_border.border_angle_rd)
 
 
 class Component:
@@ -69,6 +73,15 @@ class Collider(Component):
         pass
 
 
+class RigidBody(Component):
+    def updRB(self):
+        for i in findAllObjsAtRad(self.gameobject.transform.position, 3):
+            for j in i.GetAllComponentsOfType(RigidBody):
+                for jj in j.gameobject.GetAllComponentsOfType(Collider):
+                    if jj.collide:
+                        self.gameobject.transform.moveDir(Vec3.D2V(jj.angl - 1))
+
+
 class BoxCollider(Collider):
     height = 1.0
     width = 1.0
@@ -81,7 +94,8 @@ class BoxCollider(Collider):
         self.angl = 0.0
 
     def updColl(self):
-        for i in findAllObjsAtRad(self.gameobject.transform.position, 2):
+
+        for i in findAllObjsAtRad(self.gameobject.transform.position, 3):
             try:
                 if i.name == self.gameobject.name or len(i.GetAllComponentsOfType(BoxCollider)) == 0:
                     continue
@@ -101,7 +115,8 @@ class BoxCollider(Collider):
                     self.collide = True
                     ang = float(Vec3.angleB2V(self.gameobject.transform.position - i.transform.position,
                                               Vec3(1, 0, 0)))
-                    angl = ang - ((ang // 360) * 360)
+                    angl = int(ang - ((ang // 360) * 360))
+                    # angl = int(ang)
                     self.angl = angl
                     if self.gameobject.transform.position.y > i.transform.position.y:
                         self.angl = 360 - angl
@@ -117,6 +132,7 @@ class BoxCollider(Collider):
                         pass
                     return
         self.collide = False
+        self.angl = 0.0
 
 
 class Transform(Component):
@@ -182,6 +198,11 @@ class Obj:
         except KeyError:
             pass
         try:
+            for i in self.GetAllComponentsOfType(RigidBody):
+                i.updRB()
+        except KeyError:
+            pass
+        try:
             for i in self.GetAllComponentsOfType(Behavior):
                 if not i.getPassingT():
                     i.update(a)
@@ -195,7 +216,7 @@ class Obj:
             pass
         try:
             for i in self.GetAllComponentsOfType(Drawer):
-                i.drawSymb(a, i.symb, self.transform.position)
+                i.drawSymb(a, i.symb, BaceColor(i.color).get(), self.transform.position)
                 try:
                     for j in i.gameobject.GetAllComponentsOfType(Behavior):
                         j.onDraw(a)
@@ -217,7 +238,7 @@ class Obj:
         try:
             for i in self.GetAllComponentsOfType(Behavior):
                 i.start()
-        except:
+        except KeyError:
             pass
 
     @final
@@ -225,7 +246,7 @@ class Obj:
         try:
             for i in self.GetAllComponentsOfType(Behavior):
                 i.baceStart()
-        except:
+        except KeyError:
             pass
 
     @final
@@ -233,7 +254,7 @@ class Obj:
         try:
             for i in self.GetAllComponentsOfType(Behavior):
                 i.startStart()
-        except:
+        except KeyError:
             pass
 
     @final
@@ -404,9 +425,10 @@ class Drawer(Component):
 
     def after_init(self):
         self.symb = " "
+        self.color = ""
 
     @final
-    def drawSymb(self, a, symb: str, pos: Vec3):
+    def drawSymb(self, a, symb: str, color: str, pos: Vec3):
         c = self.gameobject.FindByTag("MainCamera")
         if c is None:
             c = self.gameobject.FindWithComponent(Camera)
@@ -416,19 +438,19 @@ class Drawer(Component):
         c = c.transform.position
 
         if 0.0 <= pos.y - c.y + co.offset.y < settings['HEIGHT'] and 0.0 <= pos.x - c.x + co.offset.x < settings[
-            'WIDTH'] and len(symb) == 1:
+            'WIDTH'] and symb != "nl":
             a[int(clamp(pos.y - c.y + co.offset.y, 0.0, settings['HEIGHT'] - 1.0))][
-                int(clamp(pos.x - c.x + co.offset.x, 0.0, settings['WIDTH'] - 1.0))] = symb
+                int(clamp(pos.x - c.x + co.offset.x, 0.0, settings['WIDTH'] - 1.0))] = color + symb
 
     @final
     def drawSymbImage(self, a, img: str, pos: Vec3):
-        for i in range(len(images[img])):
-            for j in range(len(images[img][i])):
-                self.drawSymb(a, images[img][i][j], pos + Vec3(j, i))
+        for i in range(len(img)):
+            for j in range(len(img[i])):
+                self.drawSymb(a, img[i][j], '', pos + Vec3(j, i))
 
     @final
     def clearSymb(self, a, pos: Vec3):
-        self.drawSymb(a, ' ', pos)
+        self.drawSymb(a, ' ', '', pos)
 
 
 class Behavior(Component):
@@ -517,7 +539,7 @@ class Behavior(Component):
     @staticmethod
     def instantiate(symb: str, Pos=Vec3(), comps=[]) -> Obj:
         b = Obj(f"obj_({str(len(ObjList.getObjs()))})")
-        b.tr.local_position = Pos
+        b.transform.local_position = Pos
         b.AddComponent(Drawer)
         b.GetAllComponents()[1].symb = symb
         b.isInstantiated = True
