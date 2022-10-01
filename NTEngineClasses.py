@@ -34,7 +34,7 @@ def print_matrix(a):
     for x in range(len(a)):
         print('│', end='')
         for y in range(len(a[0])):
-            print(a[x][y], end='')
+            print("\u001b[31m"+a[x][y], end='\u001b[37m')
             # if y < len(a[0]) - 1:
             #    print(' ', end='')
         print('│')
