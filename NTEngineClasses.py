@@ -1,14 +1,16 @@
 from typing import final
 
-import NTETime
-import ObjList
+import ObjList as ol
+from NTETime import *
 from Border import *
 from Color import *
 from UI import *
 from Vector3 import *
 
+ObjList = ol.GlobalObjList()
 ui = UI()
 game_border = Border()
+NTETimeManager = NTETime()
 
 UP = "up"
 DOWN = "down"
@@ -76,11 +78,13 @@ class Collider(Component):
 
     def after_init(self):
         self.collide = False
+        self.angle = 0.0
 
     collide = False
+    angle = 0.0
 
     def updColl(self):
-        pass
+        ...
 
 
 class RigidBody(Component):
@@ -88,17 +92,44 @@ class RigidBody(Component):
 
     def updRB(self):
         for i in self.gameobject.transform.nears:
-            for j in i.GetAllComponentsOfTypes(all_subclasses(RigidBody)):
+            for j in i.GetAllComponentsOfType(RigidBody):
                 for jj in j.gameobject.GetAllComponentsOfType(Collider):
                     if jj.collide:
-                        self.gameobject.transform.moveDir(Vector3.D2V(jj.angle - 1))
+                        self.gameobject.transform.moveDir(Vector3.D2V(jj.angle))
+
+
+class DistanceCollider(Collider):
+    """Collider based on near objects (very hard)"""
+
+    def updColl(self):
+        if (r := findNearObjByRad(self.gameobject.transform.position + Vector3(1, 0, 0), 0.5)) is not None:
+            if r.GetComponent(Collider) is not None:
+                self.collide = True
+                self.angle = 180
+                return
+        if (r := findNearObjByRad(self.gameobject.transform.position + Vector3(-1, 0, 0), 0.5)) is not None:
+            if r.GetComponent(Collider) is not None:
+                self.collide = True
+                self.angle = 0
+                return
+        if (r := findNearObjByRad(self.gameobject.transform.position + Vector3(0, 1, 0), 0.5)) is not None:
+            if r.GetComponent(Collider) is not None:
+                self.collide = True
+                self.angle = 270
+                return
+        if (r := findNearObjByRad(self.gameobject.transform.position + Vector3(0, -1, 0), 0.5)) is not None:
+            if r.GetComponent(Collider) is not None:
+                self.collide = True
+                self.angle = 90
+                return
+        self.collide = False
+        self.angle = 0
 
 
 class BoxCollider(Collider):
     """Collider like rectangle"""
     height = 1.0
     width = 1.0
-    angle = 0.0
 
     def after_init(self):
         self.width = 1
@@ -109,11 +140,11 @@ class BoxCollider(Collider):
     def updColl(self):
         for i in self.gameobject.transform.nears:
             try:
-                if i.name == self.gameobject.name or len(i.GetAllComponentsOfTypes(all_subclasses(BoxCollider))) == 0:
+                if i.name == self.gameobject.name or len(i.GetAllComponentsOfType(BoxCollider)) == 0:
                     continue
-            except:
+            except KeyError:
                 continue
-            for j in i.GetAllComponentsOfTypes(all_subclasses(BoxCollider)):
+            for j in i.GetAllComponentsOfType(BoxCollider):
                 xx = self.gameobject.transform.position.x
                 xy = self.gameobject.transform.position.y
                 cy = i.transform.position.y

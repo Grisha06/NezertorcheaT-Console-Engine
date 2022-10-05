@@ -1,20 +1,16 @@
-__Time = 0
-__deltaTime = 0
+class NTETime:
+    def __init__(self):
+        self.__Time = 0
+        self.__deltaTime = 0
 
+    def addTime(self):
+        self.__Time += 1
 
-def addTime():
-    global __Time
-    __Time += 1
+    def getTime(self):
+        return self.__Time
 
+    def getDeltaTime(self):
+        return self.__deltaTime
 
-def getTime():
-    return __Time
-
-
-def getDeltaTime():
-    return __deltaTime
-
-
-def setDeltaTime(a: float):
-    global __deltaTime
-    __deltaTime = a
+    def setDeltaTime(self, a: float):
+        self.__deltaTime = a

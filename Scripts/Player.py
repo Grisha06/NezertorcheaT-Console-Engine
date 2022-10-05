@@ -13,7 +13,7 @@ class Player(Behavior):
         ui.add("", True)
         self.coll = self.gameobject.GetComponent(Collider)
         self.f = Vector3()
-        #self.gameobject.GetComponent(Drawer).color = "Blue"
+        # self.gameobject.GetComponent(Drawer).color = "Blue"
 
     def update(self, a):
         self.transform.moveDir(self.f)
@@ -31,7 +31,7 @@ class Player(Behavior):
         # if self.coll.collide:
         #    f = f % -1
 
-            # self.f = self.f + (Vec3.D2V(self.coll.angl) % self.speed)
+        # self.f = self.f + (Vec3.D2V(self.coll.angl) % self.speed)
         if keyboard.is_pressed("r"):
             Behavior.instantiate("r", self.transform.position + Vector3(0, 1), [BoxCollider])
 
@@ -39,6 +39,7 @@ class Player(Behavior):
         ui.changeSpace(0, str(self.transform.position), True)
         ui.changeSpace(1, str(self.coll), True)
         ui.changeSpace(2, str(Vector3.D2V(self.coll.angle)), True)
+        self.gameobject.GetComponent(Drawer).drawSymbImage(a, images["pl"], self.gameobject.transform.position)
 
     # def afterDraw(self):
     # UI.printImageAtPos("Scarer", self.transform.position.x, self.transform.position.y)

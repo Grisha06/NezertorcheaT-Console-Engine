@@ -7,6 +7,7 @@ for module in os.listdir(os.path.dirname(__file__) + "\\Scripts"):
     __import__("Scripts." + module[:-3], locals(), globals())
 del module
 
+isWork = True
 
 
 def getcls(n: str):
@@ -26,9 +27,9 @@ def loadLevel(mapname: str = "globalMap"):
         bb = Obj(im)
         print(bb)
         bb.transform.local_position = Vector3(mape[im]["startPos"]['x'], mape[im]["startPos"]['y'])
-        try:
+        if mape[im].get("tag") is not None:
             bb.tag = mape[im]["tag"]
-        except KeyError:
+        else:
             bb.tag = None
         for j in mape[im]["components"]:
             bbc = getcls(j)(bb)
@@ -42,6 +43,11 @@ def loadLevel(mapname: str = "globalMap"):
             bb.AddCreatedComponent(bbc)
         ObjList.addObj(bb)
         del bb
+
+    for im in mape:
+        if mape[im].get("parent") is not None:
+            ObjList.getObjByName(im).transform.parent = ObjList.getObjByName(mape[im]["parent"]).transform
+
     for y in ObjList.getObjs():
         y.transform.upd()
     for y in ObjList.getObjs():
@@ -56,4 +62,5 @@ def loadLevel(mapname: str = "globalMap"):
 def stopMainLoop(func=None):
     if func is not None:
         func()
-    raise RuntimeError(1)
+    global isWork
+    isWork = False

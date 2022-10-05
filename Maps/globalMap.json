@@ -3,17 +3,24 @@
     "player": {
       "startPos": {"x": 5, "y": 5},
       "components": {
-        "Drawer": {"symb": "@", "color": "Blue"},
-        "BoxCollider": {},
+        "Drawer": {"symb": "nl"},
+        "DistanceCollider": {},
         "RigidBody": {},
         "Player": {"speed": 1}
+      }
+    },
+    "dollar": {
+      "startPos": {"x": 3, "y": 1},
+      "parent": "player",
+      "components": {
+        "Drawer": {"symb": "$", "color": "Yellow"}
       }
     },
     "box": {
       "startPos": {"x": 10, "y": 10},
       "components": {
         "Drawer": {"symb": "D"},
-        "BoxCollider": {},
+        "DistanceCollider": {},
         "Box": {}
       }
     },
