@@ -1,8 +1,5 @@
-from abc import ABC
-
-from kivy.graphics import Canvas
 from kivy.lang import Builder
-from kivy.uix.layout import Layout
+from kivy.uix.floatlayout import FloatLayout
 
 from NTEngineClasses import *
 
@@ -13,12 +10,8 @@ for module in os.listdir(os.path.dirname(__file__) + "\\Scripts"):
 del module
 
 from kivy.app import App
-from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.button import Button
-from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.scatter import Scatter
-from kivy.uix.widget import Widget
 
 HORIZONTAL = 'horizontal'
 VERTICAL = 'vertical'
@@ -59,50 +52,62 @@ Builder.load_string('''
 ''')
 
 
+class ObjButton(Button):
+    def __init__(self, obj: Obj, **kwargs):
+        super().__init__(**kwargs)
+        self.obj = obj
 
-class LineRectangle(Widget):
-    pass
 
-
-class Inspector(Layout):
+class Inspector(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.selected_obj = None
-        #self.add_widget(self.update())
+        self.update()
 
-    def update(self) -> Widget:
-        return Canvas(background_color=(1, 0, 0, 1), background_normal='')
+    def update(self):
+        self.clear_widgets()
+        ...
 
 
-class Hierarchy(Layout):
+class Hierarchy(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        #self.add_widget(self.update())
+        self.update()
 
-    def update(self) -> Widget:
-        a = BoxLayout(orientation=VERTICAL)
+    def update(self):
+        self.clear_widgets()
         for i in main_map:
-            a.add_widget(Button(text=i.name))
-        return a
+            self.add_widget(Button(
+                text=f"{i.name}: {i.GetComponent(Drawer).symbol if i.GetComponent(Drawer) is not None else 'None'}"))
 
 
-class Map(Scatter):
+class Map(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.do_rotation = False
         self.do_scale = False
-        #self.add_widget(self.update())
+        self.update()
 
-    def update(self) -> Widget:
-        return Canvas(background_color=(0, 1, 0, 1), background_normal='')
+    def update(self):
+        self.clear_widgets()
+        for i in main_map:
+            self.add_widget(ObjButton(i, pos_hint={'x': i.transform.local_position.x,
+                                                   'y': i.transform.local_position.y},
+                                      size_hint=(0.1, 0.05)))
+
+
+hierarchy = Hierarchy()
+mapp = Map()
+inspector = Inspector()
+main_map_add(Obj, mapp, hierarchy)
 
 
 class MyApp(App):
     def build(self):
         bl = BoxLayout(orientation=HORIZONTAL)
-        bl.add_widget(Hierarchy())
-        bl.add_widget(Map())
-        bl.add_widget(Inspector())
+        bl.add_widget(hierarchy)
+        bl.add_widget(mapp)
+        bl.add_widget(inspector)
         return bl
 
 
