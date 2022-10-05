@@ -1,6 +1,7 @@
 from abc import ABC
 
 from kivy.graphics import Canvas
+from kivy.lang import Builder
 from kivy.uix.layout import Layout
 
 from NTEngineClasses import *
@@ -43,11 +44,31 @@ def main_map_remove(ob: Obj, mp, hr, insp):
     insp.update()
 
 
+Builder.load_string('''
+<LineRectangle>:
+    canvas:
+        Color:
+            rgba: .1, .1, 1, .9
+        Line:
+            width: 2.
+            height: 2.
+            rectangle: (self.x, self.y, self.width, self.height)
+    Label:
+        center: root.center
+        text: 'text'
+''')
+
+
+
+class LineRectangle(Widget):
+    pass
+
+
 class Inspector(Layout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.selected_obj = None
-        self.add_widget(self.update())
+        #self.add_widget(self.update())
 
     def update(self) -> Widget:
         return Canvas(background_color=(1, 0, 0, 1), background_normal='')
@@ -56,7 +77,7 @@ class Inspector(Layout):
 class Hierarchy(Layout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.add_widget(self.update())
+        #self.add_widget(self.update())
 
     def update(self) -> Widget:
         a = BoxLayout(orientation=VERTICAL)
@@ -70,10 +91,10 @@ class Map(Scatter):
         super().__init__(**kwargs)
         self.do_rotation = False
         self.do_scale = False
-        self.add_widget(self.update())
+        #self.add_widget(self.update())
 
     def update(self) -> Widget:
-        return BackgroundLabel(text='Map', background_color=(0, 1, 0, 1), background_normal='')
+        return Canvas(background_color=(0, 1, 0, 1), background_normal='')
 
 
 class MyApp(App):
