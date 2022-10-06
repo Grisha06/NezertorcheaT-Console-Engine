@@ -3,14 +3,11 @@ import re
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
-from kivy.uix.dropdown import DropDown
-from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.checkbox import CheckBox
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.relativelayout import RelativeLayout
-from kivy.uix.stacklayout import StackLayout
 from kivy.uix.textinput import TextInput
-from kivy.uix.widget import Widget
 
 from NTEngineClasses import *
 
@@ -40,6 +37,29 @@ def ValueErrorMessange(text='', ok_text='', title=''):
                             content=content,
                             size_hint=(None, None), size=(400, 400), auto_dismiss=False)
     content_b.bind(on_press=ValueErrorPopup.dismiss)
+    ValueErrorPopup.open()
+
+
+def v(ValueErrorPopup: Popup, i, o, inspectr):
+    o.AddComponent(i)
+    ValueErrorPopup.dismiss()
+    inspectr.update()
+
+
+def AddComponent(o: Obj, inspectr):
+    content = BoxLayout(orientation=VERTICAL)
+    ValueErrorPopup = Popup(title="Add Component",
+                            content=content,
+                            size_hint=(None, None), size=(400, 400), auto_dismiss=False)
+    for i in all_subclasses(Component) + all_subclasses(Behavior) + all_subclasses(Collider) + all_subclasses(
+            RigidBody):
+        if i == Transform and i == Collider:
+            continue
+        print(i)
+        content.add_widget(
+            Button(text=i.__name__,
+                   on_press=lambda r, ValueErrorPopup=ValueErrorPopup, i=i, o=o: v(ValueErrorPopup=ValueErrorPopup, i=i,
+                                                                                   o=o, inspectr=inspectr)))
     ValueErrorPopup.open()
 
 
@@ -89,17 +109,17 @@ class ParameterEntry(BoxLayout):
         self.name = name
         self.comp = comp
         print(type(self.value))
-        if isinstance(self.value, (int, float)):
+        if isinstance(self.value, (int, float)) and not isinstance(self.value, bool):
             self.add_widget(Label(text=str(name)))
             self.add_widget(FloatInput(text=str(self.value), multiline=False,
                                        on_text_validate=lambda instance: inspector.setcompparam(name, instance.text,
                                                                                                 comp)))
             return
-        if isinstance(self.value, bool):
+        if isinstance(self.value, type(True)):
             self.add_widget(Label(text=str(name)))
-            self.add_widget(FloatInput(text=str(1 if value else 0), multiline=False,
-                                       on_text_validate=lambda instance: inspector.setcompparamBool(name, instance.text,
-                                                                                                    comp)))
+            c = CheckBox(active=value)
+            c.bind(active=lambda checkbox, value=value: inspector.setcompparamBool(name, value, comp))
+            self.add_widget(c)
             return
         if isinstance(self.value, str):
             self.add_widget(Label(text=str(name)))
@@ -123,10 +143,6 @@ class ParameterEntry(BoxLayout):
                                                                                                       comp, 'z')))
             return
 
-    def on_press(self):
-        # inspector.select(self.obj)
-        ...
-
 
 class Inspector(BoxLayout):
     def __init__(self, **kwargs):
@@ -134,6 +150,10 @@ class Inspector(BoxLayout):
         # self.orientation = 'tb-lr'
         self.orientation = VERTICAL
         self.selected_obj = None
+        self.update()
+
+    def remcomp(self, i):
+        self.selected_obj.RemoveComponentCreated(i)
         self.update()
 
     def update(self):
@@ -152,13 +172,21 @@ class Inspector(BoxLayout):
                           on_text_validate=lambda instance: self.setparam('tag', instance.text)))
             self.add_widget(bb2)
             for i in self.selected_obj.GetAllComponents():
-                print(i.__class__.__name__ + ": ")
-                self.add_widget(Label(text=i.__class__.__name__ + ": "))
+                # print(i.__class__.__name__ + ": ")
+                aa = BoxLayout(orientation=HORIZONTAL)
+                aa.add_widget(Label(text=i.__class__.__name__ + ": "))
+                if not isinstance(i, Transform):
+                    aa.add_widget(Button(text="Delete", on_press=lambda l: self.remcomp(i)))
+                self.add_widget(aa)
                 for index in i.__dict__:
+                    if '__' in index:
+                        continue
                     if isinstance(i.__getattribute__(index), (int, float, Vector3, str, bool)) and not isinstance(
                             i.__getattribute__(index), (dict, list, tuple, Component)):
                         print(str(index) + "= " + str(i.__getattribute__(index)))
                         self.add_widget(ParameterEntry(i.__getattribute__(index), index, i))
+            self.add_widget(
+                Button(text='Add New Component', on_press=lambda instance: AddComponent(self.selected_obj, inspector)))
         else:
             ...
 
@@ -252,11 +280,11 @@ mapp = Map()
 inspector = Inspector()
 main_map_add(Obj("pp"), mapp, hierarchy, inspector)
 main_map[0].transform.local_position = Vector3(1, 0)
-main_map[0].AddComponent(BoxCollider)
 
 
 class MyApp(App):
     def build(self):
+        self.theme_cls.theme_style = "Dark"
         bl = BoxLayout(orientation=HORIZONTAL)
         bl.add_widget(hierarchy)
         bl.add_widget(mapp)
