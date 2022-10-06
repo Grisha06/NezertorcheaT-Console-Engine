@@ -75,13 +75,10 @@ class Component:
 
 class Collider(Component):
     """Standard Collider"""
-
-    def after_init(self):
+    def __init__(self, gameobject):
+        super().__init__(gameobject)
         self.collide = False
         self.angle = 0.0
-
-    collide = False
-    angle = 0.0
 
     def updColl(self):
         ...
@@ -134,8 +131,6 @@ class BoxCollider(Collider):
     def after_init(self):
         self.width = 1
         self.height = 1
-        self.collide = False
-        self.angle = 0.0
 
     def updColl(self):
         for i in self.gameobject.transform.nears:
@@ -220,13 +215,13 @@ class Transform(Component):
 class Obj:
     """Object representation"""
     name = ''
-    tag = None
+    tag = ""
     __components = []
     isInstantiated = False
 
     def __init__(self, name: str, parent: Transform = None):
         self.name = name
-        self.tag = None
+        self.tag = ''
         self.isInstantiated = False
         self.__components = []
         self.AddComponent(Transform)
@@ -309,6 +304,10 @@ class Obj:
         a = comp(self)
         self.__components.append(a)
         return a
+
+    @final
+    def GetComponentByID(self, i):
+        return self.__components[i]
 
     @final
     def AddCreatedComponent(self, comp):

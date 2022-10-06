@@ -10,9 +10,10 @@ for i in [f for f in listdir(dirname(abspath(__file__)) + "\\Maps\\") if
           isfile(join(dirname(abspath(__file__)) + "\\Maps\\", f))]:
     with open(f"Maps\\{i}") as json_file:
         objMaps.update(json.load(json_file))
-
+del i
 images = {}
 for i in [f for f in listdir(dirname(abspath(__file__)) + "\\TextImages\\") if
           isfile(join(dirname(abspath(__file__)) + "\\TextImages\\", f))]:
     with open(f"TextImages\\{i}") as json_file:
         images.update(json.load(json_file))
+del i
