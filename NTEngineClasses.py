@@ -1,9 +1,9 @@
 from typing import final
 
 import ObjList as ol
-from NTETime import *
 from Border import *
 from Color import *
+from NTETime import *
 from UI import *
 from Vector3 import *
 
@@ -19,8 +19,8 @@ LEFT = "left"
 
 
 def all_subclasses(clss):
-    return set(clss.__subclasses__()).union(
-        [s for c in clss.__subclasses__() for s in all_subclasses(c)])
+    return list(set(clss.__subclasses__()).union(
+        [s for c in clss.__subclasses__() for s in all_subclasses(c)]))
 
 
 def cls(): os.system('cls' if os.name == 'nt' else 'clear')
@@ -75,6 +75,7 @@ class Component:
 
 class Collider(Component):
     """Standard Collider"""
+
     def __init__(self, gameobject):
         super().__init__(gameobject)
         self.collide = False
@@ -457,6 +458,16 @@ class Obj:
                     self.__components.remove(i)
                     return
 
+    @final
+    def RemoveComponentCreated(self, typ: Component):
+        if settings["USE RECURSION"]:
+            return self.__rcRecC(typ)
+        else:
+            for i in self.__components:
+                if i == typ:
+                    self.__components.remove(i)
+                    return
+
     def __rcRec(self, typ: Component, i=0):
         if i >= len(self.__components):
             return
@@ -464,6 +475,14 @@ class Obj:
             self.__components.pop(i)
             return
         return self.__gcRec(typ, i + 1)
+
+    def __rcRecC(self, typ: Component, i=0):
+        if i >= len(self.__components):
+            return
+        if self.__components[i] == typ:
+            self.__components.pop(i)
+            return
+        return self.__gcRecC(typ, i + 1)
 
     @final
     def PopComponent(self, i: int):
