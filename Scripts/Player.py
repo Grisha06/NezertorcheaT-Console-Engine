@@ -6,6 +6,9 @@ from NTEngineClasses import *
 class Player(Behavior):
     speed = 0.5
     coll = None
+    def __init__(self, gameobject):
+        super().__init__(gameobject)
+        self.speed = 0.5
 
     def start(self):
         ui.add("", True)

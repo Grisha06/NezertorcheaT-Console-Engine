@@ -1,5 +1,6 @@
 class BaceColor:
     """All available colors"""
+
     def __init__(self, color: str = ""):
         self.colors = {
             "Black": "\u001b[30m",
@@ -50,8 +51,70 @@ class BaceColor:
         return self.colors[self.color]
 
 
+class BaceColorRGBPlus:
+    """All available colors + rgb"""
+
+    def __init__(self, color: str = ""):
+        self.colors = {
+            "Black": (0, 0, 0, 1),
+            "Red": (1, 0, 0, 1),
+            "Green": (0, 1, 0, 1),
+            "Yellow": (1, 1, 0, 1),
+            "Blue": (0, 0, 1, 1),
+            "Magenta": (1, 0, 1, 1),
+            "Cyan": (0, 1, 1, 1),
+            "White": (1, 1, 1, 1),
+            "Bright Red": (1, 0.5, 0.5, 1),
+            "Bright Green": (0.5, 1, 0.5, 1),
+            "Bright Yellow": (1, 1, 0.5, 1),
+            "Bright Blue": (0.5, 0.5, 1, 1),
+            "Bright Magenta": (1, 0.5, 1, 1),
+            "Bright Cyan": (0.5, 1, 1, 1),
+            "": ""
+        }
+        self.color = ''
+        self.set(color)
+
+    def set(self, color: str = ""):
+        self.color = color
+
+    def get(self):
+        return self.colors[self.color]
+
+
+class BaceColorHEXPlus:
+    """All available colors + rgb"""
+
+    def __init__(self, color: str = "White"):
+        self.colors = {
+            "Black": "#000000",
+            "Red": "#ff0000",
+            "Green": "#00ff00",
+            "Yellow": "#ffff00",
+            "Blue": "#0000ff",
+            "Magenta": "#ff00ff",
+            "Cyan": "#00ffff",
+            "White": "#ffffff",
+            "Bright Red": "#ff7f7f",
+            "Bright Green": "#7fff7f",
+            "Bright Yellow": "#ffff7f",
+            "Bright Blue": "#7f7fff",
+            "Bright Magenta": "#ff7fff",
+            "Bright Cyan": "#7fffff"
+        }
+        self.color = ''
+        self.set(color)
+
+    def set(self, color: str = ""):
+        self.color = color
+
+    def get(self):
+        return self.colors[self.color]
+
+
 class StyleColor(BaceColor):
     """All available styles"""
+
     def __init__(self, color: str = ""):
         self.colors = {
             "Style Bold": "\u001b[1m",
@@ -65,6 +128,7 @@ class StyleColor(BaceColor):
 
 class Color(BaceColor):
     """All colors"""
+
     def __init__(self, color: str = ""):
         self.colors = {
             "Black": "\u001b[30m",
@@ -92,6 +156,7 @@ class Color(BaceColor):
 
 class BackgroundColor(BaceColor):
     """All available background colors"""
+
     def __init__(self, color: str = ""):
         self.colors = {
             "Background Black": "\u001b[40m",

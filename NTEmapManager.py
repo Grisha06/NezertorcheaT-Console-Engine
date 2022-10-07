@@ -10,10 +10,7 @@ del module
 isWork = True
 
 
-def getcls(n: str):
-    for jj in all_subclasses(Component):
-        if jj.__name__ == n:
-            return jj
+
 
 
 def loadLevel(mapname: str = "globalMap"):

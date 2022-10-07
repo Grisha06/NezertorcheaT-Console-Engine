@@ -17,6 +17,10 @@ DOWN = "down"
 RIGHT = "right"
 LEFT = "left"
 
+def getcls(n: str):
+    for jj in all_subclasses(Component):
+        if jj.__name__ == n:
+            return jj
 
 def all_subclasses(clss):
     return list(set(clss.__subclasses__()).union(
