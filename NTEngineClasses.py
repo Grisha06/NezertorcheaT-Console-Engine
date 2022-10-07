@@ -17,10 +17,12 @@ DOWN = "down"
 RIGHT = "right"
 LEFT = "left"
 
+
 def getcls(n: str):
     for jj in all_subclasses(Component):
         if jj.__name__ == n:
             return jj
+
 
 def all_subclasses(clss):
     return list(set(clss.__subclasses__()).union(
@@ -227,6 +229,7 @@ class Obj:
     def __init__(self, name: str, parent: Transform = None):
         self.name = name
         self.tag = ''
+        self.layer = 0
         self.isInstantiated = False
         self.__components = []
         self.AddComponent(Transform)
@@ -263,7 +266,7 @@ class Obj:
             pass
         try:
             for i in self.GetAllComponentsOfType(Drawer):
-                i.drawSymb(a, i.symb, BaceColor(i.color).get(), self.transform.position)
+                i.drawSymb(a, i.symb, BaceColor(i.color).get(), self.transform.position, self.layer)
                 try:
                     for j in i.gameobject.GetAllComponentsOfType(Behavior):
                         j.onDraw(a)
@@ -503,8 +506,10 @@ class Obj:
 class Camera(Component):
     """Camera representation"""
     offset = Vector3()
+    draw_layers = [0]
 
     def after_init(self):
+        self.draw_layers = [0]
         self.offset = Vector3(settings["WIDTH"] / 2, settings["HEIGHT"] / 2)
 
 
@@ -518,7 +523,7 @@ class Drawer(Component):
         self.color = ""
 
     @final
-    def drawSymb(self, a, symb: str, color: str, pos: Vector3):
+    def drawSymb(self, a, symb: str, color: str, pos: Vector3, layer=0):
         c = self.gameobject.FindByTag("MainCamera")
         if c is None:
             c = self.gameobject.FindWithComponent(Camera)
@@ -528,15 +533,15 @@ class Drawer(Component):
         c = c.transform.position
 
         if 0.0 <= pos.y - c.y + co.offset.y < settings['HEIGHT'] and 0.0 <= pos.x - c.x + co.offset.x < settings[
-            'WIDTH'] and symb != "nl":
+            'WIDTH'] and symb != "nl" and layer in co.draw_layers:
             a[int(clamp(pos.y - c.y + co.offset.y, 0.0, settings['HEIGHT'] - 1.0))][
                 int(clamp(pos.x - c.x + co.offset.x, 0.0, settings['WIDTH'] - 1.0))] = color + symb
 
     @final
-    def drawSymbImage(self, a, img: str, pos: Vector3):
+    def drawSymbImage(self, a, img: str, pos: Vector3, layer=0):
         for i in range(len(img)):
             for j in range(len(img[i])):
-                self.drawSymb(a, img[i][j], '', pos + Vector3(j, i))
+                self.drawSymb(a, img[i][j], '', pos + Vector3(j, i), layer=layer)
 
     @final
     def clearSymb(self, a, pos: Vector3):

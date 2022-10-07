@@ -10,12 +10,10 @@ del module
 isWork = True
 
 
-
-
-
 def loadLevel(mapname: str = "globalMap"):
     a = add_matrix()
     mape = objMaps[mapname]
+    global settings
     settings["MAP"] = mapname
     NTEngineClasses.ui.removeAllSpaces()
     ObjList.clearObjs()

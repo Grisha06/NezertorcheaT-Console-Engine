@@ -109,7 +109,7 @@ def main_map_save():
             if not isinstance(j, Transform):
                 return_map["main_map"][i.name]["components"].update({j.__class__.__name__: {}})
                 for ji in j.__dict__:
-                    if not isinstance(j.__getattribute__(ji), (Obj, Component)):
+                    if not isinstance(j.__getattribute__(ji), (Obj, Component)) and '__' not in ji:
                         if isinstance(j.__getattribute__(ji), Vector3):
                             return_map["main_map"][i.name]["components"][j.__class__.__name__].update(
                                 {ji: j.__getattribute__(ji).returnAsDict()})
@@ -123,7 +123,9 @@ def main_map_save():
 
 def main_map_load(map_name="globalMap"):
     mape = objMaps[map_name]
+    global settings
     settings["MAP"] = map_name
+    global main_map
     main_map = []
 
     for im in mape:
@@ -132,7 +134,7 @@ def main_map_load(map_name="globalMap"):
         if mape[im].get("tag") is not None:
             bb.tag = mape[im]["tag"]
         else:
-            bb.tag = None
+            bb.tag = ""
         for j in mape[im]["components"]:
             bbc = getcls(j)(bb)
             for jji in mape[im]["components"][j]:
@@ -418,6 +420,9 @@ main_map[0].AddComponent(Camera)
 class MyApp(App):
     def build(self):
         main_map_load()
+        hierarchy.update()
+        inspector.update()
+        mapp.update()
         bl = BoxLayout(orientation=HORIZONTAL)
         bl.add_widget(hierarchy)
         bl.add_widget(mapp)
