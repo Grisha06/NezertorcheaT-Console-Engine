@@ -187,7 +187,7 @@ class Transform(Component):
         self.position = self.__getPosition()
 
     def __getPosition(self):
-        if self.parent is not None:
+        if self.parent is not None and self.parent != self:
             p = self.__getParents(parents=[self.parent])
             g = self.local_position
             for i in p:
@@ -208,7 +208,7 @@ class Transform(Component):
     def __init__(self, gameobject, parent=None):
         self.gameobject = gameobject
         self.local_position = Vector3()
-        self.parent = parent
+        self.parent: Transform = self
         self.position = self.__getPosition()
         self.nears = []
 
@@ -234,7 +234,10 @@ class Obj:
         self.__components = []
         self.AddComponent(Transform)
         self.transform = self.GetAllComponents()[0]
-        self.transform.parent = parent
+        if parent is None:
+            self.transform.parent = self.transform
+        else:
+            self.transform.parent = parent
 
     def __str__(self):
         return f"Obj(name:{self.name}, tag:{self.tag})"

@@ -1,5 +1,3 @@
-import re
-
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -41,16 +39,10 @@ class Singleton(object):
         return cls._instance
 
 
-def upd():
-    Hierarchy().update()
-    Map().update()
-    Inspector().update()
-
-
 def ValueErrorMessange(text='', ok_text='', title=''):
-    content = BoxLayout(orientation=HORIZONTAL)
+    content = BoxLayout(orientation=VERTICAL)
     content.add_widget(Label(text=text))
-    content_b = Button(text=ok_text, background_color=BACE_COLOR)
+    content_b = Button(text=ok_text, background_color=BACE_COLOR, size_hint=(1, 0.2))
     content.add_widget(content_b)
     ValueErrorPopup = Popup(title=title,
                             content=content,
@@ -81,7 +73,8 @@ def AddComponent(o: Obj, inspectr):
                            ValueErrorPopup=ValueErrorPopup,
                            i=i,
                            o=o, inspectr=inspectr)))
-    content.add_widget(Button(text="Cancel", on_release=ValueErrorPopup.dismiss, background_color=REMOVE_COLOR))
+    content.add_widget(
+        Button(text="Cancel", on_release=ValueErrorPopup.dismiss, background_color=REMOVE_COLOR))
     ValueErrorPopup.open()
 
 
@@ -117,7 +110,7 @@ def main_map_save():
                             return_map["main_map"][i.name]["components"][j.__class__.__name__].update(
                                 {ji: j.__getattribute__(ji)})
     print(return_map)
-    with open('main_map.json', 'w', encoding='utf-8') as f:
+    with open('Maps/main_map.json', 'w', encoding='utf-8') as f:
         json.dump(return_map, f, ensure_ascii=False, indent=4)
 
 
@@ -149,23 +142,9 @@ def main_map_load(map_name="globalMap"):
         del bb
 
 
-class FloatInput(TextInput):
-    pat = re.compile('[^0-9]')
-
-    def insert_text(self, substring, from_undo=False):
-        pat = self.pat
-        if '.' in self.text:
-            s = re.sub(pat, '', substring)
-        else:
-            s = '.'.join(
-                re.sub(pat, '', s)
-                for s in substring.split('.', 1)
-            )
-        return super().insert_text(s, from_undo=from_undo)
-
-
 class ObjButton(Button):
     def __init__(self, i: Obj, **kwargs):
+        # self.label = ap.get_running_app().title
         super().__init__(**kwargs)
         self.obj = i
         self.background_color = DARK_COLOR
@@ -196,6 +175,7 @@ class ObjButton(Button):
 
 class ParameterEntry(BoxLayout):
     def __init__(self, value, name, comp, **kwargs):
+        # self.label = ap.get_running_app().title
         super().__init__(**kwargs)
         self.orientation = HORIZONTAL
         self.value = value
@@ -204,9 +184,9 @@ class ParameterEntry(BoxLayout):
         print(type(self.value))
         if isinstance(self.value, (int, float)) and not isinstance(self.value, bool):
             self.add_widget(Label(text=str(name)))
-            self.add_widget(FloatInput(text=str(self.value), multiline=False,
-                                       on_text_validate=lambda instance: inspector.setcompparam(name, instance.text,
-                                                                                                comp)))
+            self.add_widget(TextInput(text=str(self.value), input_filter='float', multiline=False,
+                                      on_text_validate=lambda instance: inspector.setcompparam(name, instance.text,
+                                                                                               comp)))
             return
         if isinstance(self.value, type(True)):
             self.add_widget(Label(text=str(name)))
@@ -222,23 +202,36 @@ class ParameterEntry(BoxLayout):
             return
         if isinstance(self.value, Vector3):
             self.add_widget(Label(text=str(name)))
-            self.add_widget(FloatInput(text=str(self.value.x), multiline=False,
-                                       on_text_validate=lambda instance: inspector.setcompparamVector(name,
-                                                                                                      instance.text,
-                                                                                                      comp, 'x')))
-            self.add_widget(FloatInput(text=str(self.value.y), multiline=False,
-                                       on_text_validate=lambda instance: inspector.setcompparamVector(name,
-                                                                                                      instance.text,
-                                                                                                      comp, 'y')))
-            self.add_widget(FloatInput(text=str(self.value.z), multiline=False,
-                                       on_text_validate=lambda instance: inspector.setcompparamVector(name,
-                                                                                                      instance.text,
-                                                                                                      comp, 'z')))
+            self.add_widget(TextInput(text=str(self.value.x), input_filter='float', multiline=False,
+                                      on_text_validate=lambda instance: inspector.setcompparamVector(name,
+                                                                                                     instance.text,
+                                                                                                     comp, 'x')))
+            self.add_widget(TextInput(text=str(self.value.y), input_filter='float', multiline=False,
+                                      on_text_validate=lambda instance: inspector.setcompparamVector(name,
+                                                                                                     instance.text,
+                                                                                                     comp, 'y')))
+            self.add_widget(TextInput(text=str(self.value.z), input_filter='float', multiline=False,
+                                      on_text_validate=lambda instance: inspector.setcompparamVector(name,
+                                                                                                     instance.text,
+                                                                                                     comp, 'z')))
             return
+        if isinstance(self.value, Obj):
+            self.add_widget(Label(text=f"{name}(obj name)"))
+            self.add_widget(TextInput(text='', multiline=False,
+                                      on_text_validate=lambda instance: inspector.setcompparamObj(name,
+                                                                                                  instance.text,
+                                                                                                  comp)))
+        if isinstance(self.value, Transform):
+            self.add_widget(Label(text=f"{name}(obj name)"))
+            self.add_widget(TextInput(text='', multiline=False,
+                                      on_text_validate=lambda instance: inspector.setcompparamTr(name,
+                                                                                                 instance.text,
+                                                                                                 comp)))
 
 
 class Inspector(BoxLayout):
     def __init__(self, **kwargs):
+        # self.label = ap.get_running_app().title
         super().__init__(**kwargs)
         # self.orientation = 'tb-lr'
         self.orientation = VERTICAL
@@ -284,10 +277,10 @@ class Inspector(BoxLayout):
                                on_release=lambda instance, ii=i: self.remcomp(ii)))
                 self.add_widget(aa)
                 for index in self.selected_obj.GetComponentByID(i).__dict__:
-                    if '__' in index:
+                    if '__' in index or 'gameobject' in index or 'transform' in index:
                         continue
                     if isinstance(self.selected_obj.GetComponentByID(i).__getattribute__(index),
-                                  (int, float, Vector3, str, bool)) and not isinstance(
+                                  (int, float, Vector3, str, bool, Obj)) and not isinstance(
                         self.selected_obj.GetComponentByID(i).__getattribute__(index),
                         (dict, list, tuple, Component)):
                         print(str(index) + "= " + str(self.selected_obj.GetComponentByID(i).__getattribute__(index)))
@@ -339,6 +332,54 @@ class Inspector(BoxLayout):
         inspector.update()
         hierarchy.update()
 
+    def setcompparamObj(self, name, value, comp):
+        ss = False
+        try:
+            for i in main_map:
+                if i.name == value:
+                    comp.__setattr__(name, i)
+                    ss = True
+                    break
+        except ValueError:
+            ValueErrorMessange(
+                f'You entered an invalid value ({value}). Value must be type "str" and must be name of one of objects on map.',
+                'OK', 'Value Error')
+        except KeyError:
+            ValueErrorMessange(
+                f'This class don\'t have "{name}" field',
+                'OK', 'Key Error')
+        if not ss:
+            ValueErrorMessange(
+                f'Value ({value}) must be name of one of objects on map.',
+                'OK', 'Value Error')
+        mapp.update()
+        inspector.update()
+        hierarchy.update()
+
+    def setcompparamTr(self, name, value, comp):
+        ss = False
+        try:
+            for i in main_map:
+                if i.name == value:
+                    comp.__setattr__(name, i.transform)
+                    ss = True
+                    break
+        except ValueError:
+            ValueErrorMessange(
+                f'You entered an invalid value ({value}). Value must be type "str" and must be name of one of objects on map.',
+                'OK', 'Value Error')
+        except KeyError:
+            ValueErrorMessange(
+                f'This class don\'t have "{name}" field',
+                'OK', 'Key Error')
+        if not ss:
+            ValueErrorMessange(
+                f'Value ({value}) must be name of one of objects on map.',
+                'OK', 'Value Error')
+        mapp.update()
+        inspector.update()
+        hierarchy.update()
+
     def setcompparamBool(self, name, value, comp):
         try:
             comp.__setattr__(name, True if value == 1 else False if value in (1, 0) else value)
@@ -373,6 +414,7 @@ class Inspector(BoxLayout):
 
 class Hierarchy(BoxLayout):
     def __init__(self, **kwargs):
+        # self.label = ap.get_running_app().title
         super().__init__(**kwargs)
         self.orientation = VERTICAL
 
@@ -383,19 +425,23 @@ class Hierarchy(BoxLayout):
         self.clear_widgets()
         print(main_map)
         for i in main_map:
+            print(i)
             self.add_widget(Button(background_color=BACE_COLOR,
                                    text=f"{i.name}: {i.GetComponent(Drawer).symb if i.GetComponent(Drawer) is not None else 'None'}",
                                    on_release=lambda instance, i=i: self.selectt(i)))
         self.add_widget(Button(background_color=ADD_COLOR, text="Add New Object",
-                               on_release=lambda instance: main_map_add(Obj(f"Object ({len(main_map)})"), mapp,
+                               on_release=lambda instance: main_map_add(Obj(f"Object ({len(main_map)})"),
+                                                                        mapp,
                                                                         hierarchy,
                                                                         inspector)))
         self.add_widget(
-            Button(background_color=BACE_COLOR, text="Save Map", on_release=lambda instance: main_map_save()))
+            Button(background_color=BACE_COLOR, text="Save Map",
+                   on_release=lambda instance: main_map_save()))
 
 
 class Map(RelativeLayout):
     def __init__(self, **kwargs):
+        # self.label = ap.get_running_app().title
         super().__init__(**kwargs)
         self.do_rotation = False
         self.do_scale = False
@@ -404,22 +450,20 @@ class Map(RelativeLayout):
         self.clear_widgets()
         for i in main_map:
             self.add_widget(ObjButton(i=i, pos=(i.transform.local_position.x * 25,
-                                                i.transform.local_position.y * 25),
-                                      size_hint=(0.1, 0.05), background_normal=""))
+                                                25 - i.transform.local_position.y * 25),
+                                      size_hint=(0.09, 0.05), background_normal=""))
 
 
 hierarchy = Hierarchy()
 mapp = Map()
 inspector = Inspector()
-
 main_map_add(Obj("Camera"), mapp, hierarchy, inspector)
 main_map[0].tag = "MainCamera"
 main_map[0].AddComponent(Camera)
-
+main_map_load()
 
 class MyApp(App):
     def build(self):
-        main_map_load()
         hierarchy.update()
         inspector.update()
         mapp.update()
