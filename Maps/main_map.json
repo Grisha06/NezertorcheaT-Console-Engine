@@ -1,0 +1,79 @@
+{
+    "main_map": {
+        "player": {
+            "startPos": {
+                "x": 5,
+                "y": 5,
+                "z": 0.0
+            },
+            "tag": "",
+            "components": {
+                "Drawer": {
+                    "symb": "nl",
+                    "color": ""
+                },
+                "DistanceCollider": {
+                    "collide": false,
+                    "angle": 0.0
+                },
+                "RigidBody": {},
+                "Player": {
+                    "speed": 1
+                }
+            }
+        },
+        "dollar": {
+            "startPos": {
+                "x": 3,
+                "y": 1,
+                "z": 0.0
+            },
+            "tag": "",
+            "components": {
+                "Drawer": {
+                    "symb": "$",
+                    "color": "Yellow"
+                }
+            }
+        },
+        "box": {
+            "startPos": {
+                "x": 10,
+                "y": 10,
+                "z": 0.0
+            },
+            "tag": "",
+            "components": {
+                "Drawer": {
+                    "symb": "D",
+                    "color": ""
+                },
+                "DistanceCollider": {
+                    "collide": false,
+                    "angle": 0.0
+                },
+                "Box": {}
+            }
+        },
+        "MainCamera": {
+            "startPos": {
+                "x": 20,
+                "y": 7,
+                "z": 0.0
+            },
+            "tag": "MainCamera",
+            "components": {
+                "Camera": {
+                    "draw_layers": [
+                        0
+                    ],
+                    "offset": {
+                        "x": 18.0,
+                        "y": 7.5,
+                        "z": 0.0
+                    }
+                }
+            }
+        }
+    }
+}

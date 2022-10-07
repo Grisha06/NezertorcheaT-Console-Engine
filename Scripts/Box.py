@@ -3,6 +3,7 @@ from NTEngineClasses import *
 
 class Box(Behavior):
     def start(self):
-        for i in range(5):
-            for j in range(5):
-                Behavior.instantiate(f"{i}", self.transform.position + Vector3(j, i), [BoxCollider])
+        for j in range(20):
+            Behavior.instantiate(f"Ы", self.transform.position + Vector3(j, 0), [DistanceCollider])
+        for j in range(20):
+            Behavior.instantiate(f"S", self.transform.position + Vector3(j, 4), [DistanceCollider])
