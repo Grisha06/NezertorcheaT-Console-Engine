@@ -28,7 +28,7 @@
       "startPos": {"x": 20, "y": 7},
       "tag": "MainCamera",
       "components": {
-        "Camera": {}
+        "Camera": {"draw_layers": {"type_of": "int", "_list": [0]}}
       }
     }
   }

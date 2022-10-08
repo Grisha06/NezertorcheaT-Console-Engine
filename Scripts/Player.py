@@ -44,5 +44,4 @@ class Player(Behavior):
         ui.changeSpace(2, str(Vector3.D2V(self.coll.angle)), True)
         self.gameobject.GetComponent(Drawer).drawSymbImage(a, images["pl"], self.gameobject.transform.position)
 
-    # def afterDraw(self):
-    # UI.printImageAtPos("Scarer", self.transform.position.x, self.transform.position.y)
+    # UI.printImageAtPos("table", self.transform.position.x, self.transform.position.y)

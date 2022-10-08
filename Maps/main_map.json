@@ -7,9 +7,10 @@
                 "z": 0.0
             },
             "tag": "",
+            "layer": 0,
             "components": {
                 "Drawer": {
-                    "symb": "nl",
+                    "symb": "P",
                     "color": ""
                 },
                 "DistanceCollider": {
@@ -29,6 +30,8 @@
                 "z": 0.0
             },
             "tag": "",
+            "layer": 0,
+            "parent": "player",
             "components": {
                 "Drawer": {
                     "symb": "$",
@@ -43,6 +46,7 @@
                 "z": 0.0
             },
             "tag": "",
+            "layer": 0,
             "components": {
                 "Drawer": {
                     "symb": "D",
@@ -62,11 +66,15 @@
                 "z": 0.0
             },
             "tag": "MainCamera",
+            "layer": 0,
             "components": {
                 "Camera": {
-                    "draw_layers": [
-                        0
-                    ],
+                    "draw_layers": {
+                        "type_of": "int",
+                        "_list": [
+                            0
+                        ]
+                    },
                     "offset": {
                         "x": 18.0,
                         "y": 7.5,

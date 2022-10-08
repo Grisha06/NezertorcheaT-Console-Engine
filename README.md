@@ -4,14 +4,40 @@
 
 To try out a test project, run the main.py file.
 
-The map editor is represented by a list of json files in the Maps folder.
-The first field is the name of the card.
-Further there are descriptions of game objects, and more specifically their names.
-Inside the objects are the "**startPos**" and "**components**" fields.
-The first is the representation of the starting position as a vector.
-The second is the list of components.
-It can contain any objects whose types are inherited from the "**Component**" class.
+The map editor is represented by a list of json files in the Maps folder.  
+The first field is the name of the map.  
+Further there are descriptions of game objects, and more specifically their names.  
+Inside the objects are the "**startPos**" and "**components**" fields.  
+The first is the representation of the starting position as a vector.  
+The second is the list of components.  
+It can contain any objects whose types are inherited from the "**Component**" class.  
 And it can contain the properties of these objects.
+
+The map editor is also represented by a graphical script written in python kivy.  
+To use it, you need to run the kivy_redactor.py file.  
+Interface example:  
+![](https://github.com/Grisha06/NezertorcheaT-Console-Engine/blob/main/README_images/image.jpg?raw=true)
+On the left you see a list of available objects.  
+The **Add New Object** button will allow you to create a new object.  
+The **Save Map** button will save the map as a .json file.  
+Clicking on one of the objects in the list will select it.  
+In the middle is an approximate map that should turn out in the game.  
+By clicking on one of the objects on the map you select it.  
+On the right you see the properties panel.  
+The top properties are required.  
+Namely:  
+**Name** - name;  
+**Layer** - rendering layer;  
+**Tag** - tag.  
+These properties are required for an object.  
+There is also a **Transform** component required for an object.
+It cannot be removed.  
+The **local_position** property of the **Transform** component changes the local position of the object.  
+There is also usually a Drawer component.  
+Components can be deleted by clicking the **Delete** button next to the component name.  
+The components are explained below.  
+The **Add Component** button allows you to add one of the available components.  
+The **Delete Object** button will allow you to delete the object.  
 
 ## Now the fun part! Your scripts!
 
@@ -39,7 +65,7 @@ class Name(Behavior):
 
 ### Explanation of common methods and classes:
 
-1. NTE Time:
+1. NTETime:
     - **getTime()** - returns the current frame
 2. ObjList:
     - **getObjs()** - get all objects
@@ -76,7 +102,7 @@ class Name(Behavior):
     - **obj class**:
         - **isInstantiated: bool** - determines if the object was created using the instantiate() method
         - **tr: Transform** - Transform class
-        - **GetComponent(typ: Component)** - allows you to get a component of type "typ"
+        - **GetComponent(typ: Component)** - allows you to get a component of type "type"
         - **AddComponent(comp: Component)** - allows you to create a "comp" type component
         - **AddComponents(comps: list)** - allows you to create "comps" components, of type "Component"
         - **AddCreatedComponent(comp)** - allows you to create a "comp" component
@@ -94,11 +120,10 @@ class Name(Behavior):
 
 ### Explanation of components:
 
-These were ordinary classes and methods used everywhere, and now there are those that I will call
-components, since all are inherited from the "Component" class.
-They are used in describing the behavior of objects.
-They can be interacted with through the methods of the "Obj" class.
-Also, they all have a link to the object to which they are attached.
+These were ordinary classes and methods used everywhere, and now there are those that I will call components, since all are inherited from the "Component" class.  
+They are used in describing the behavior of objects.  
+They can be interacted with through the methods of the "Obj" class.  
+Also, they all have a link to the object to which they are attached.  
 
 1. **Transform class**:
     - **local_position: Vec3** - local position of the object
@@ -128,12 +153,12 @@ Also, they all have a link to the object to which they are attached.
 
 ### Tips:
 
-1. There must be at least one camera on the scene, if there are none, then nothing will be drawn.
-2. There is a "**MainCamera**" tag to define the main camera.
-3. Do not use methods from **ObjList**, use **Obj.Find()** instead, etc.
-4. Don't use **NTETime**.
-5. Collision is still poorly implemented, so you will have to write it yourself.
-7. An example of the implementation of a collision:
+1. There must be at least one camera on the scene, if there are none, then nothing will be drawn.  
+2. There is a "**MainCamera**" tag to define the main camera.  
+3. Do not use methods from **ObjList**, use **Obj.Find()** instead, etc.  
+4. Don't use **NTETime**.  
+5. Collision is still poorly implemented, so you will have to write it yourself.  
+7. An example of the implementation of a collision:  
 ```
 class SomeBody(RigidBody):
     def updRB(self):
@@ -141,7 +166,7 @@ class SomeBody(RigidBody):
             for j in i.GetAllComponentsOfTypes(all_subclasses(RigidBody)):
                 for jj in j.gameobject.GetAllComponentsOfType(Collider):
                     if jj collide:
-                        self.gameobject.transform.moveDir(Vector3.D2V(jj.angle - 1))
+                        self.gameobject.transform.moveDir(Vector3.D2V(jj.angle))
 ```
 
 # That's all! Thanks for reading!
