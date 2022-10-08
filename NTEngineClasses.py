@@ -2,6 +2,8 @@ from typing import final
 
 import ObjList as ol
 from Border import *
+from ClassArray import TypedList
+from ClassArray import all_subclasses
 from Color import *
 from NTETime import *
 from UI import *
@@ -22,11 +24,6 @@ def getcls(n: str):
     for jj in all_subclasses(Component):
         if jj.__name__ == n:
             return jj
-
-
-def all_subclasses(clss):
-    return list(set(clss.__subclasses__()).union(
-        [s for c in clss.__subclasses__() for s in all_subclasses(c)]))
 
 
 def cls(): os.system('cls' if os.name == 'nt' else 'clear')
@@ -231,7 +228,7 @@ class Obj:
         self.tag = ''
         self.layer = 0
         self.isInstantiated = False
-        self.__components = []
+        self.__components = TypedList(type_of=Component, data=[])
         self.AddComponent(Transform)
         self.transform = self.GetAllComponents()[0]
         if parent is None:
@@ -508,11 +505,9 @@ class Obj:
 
 class Camera(Component):
     """Camera representation"""
-    offset = Vector3()
-    draw_layers = [0]
 
     def after_init(self):
-        self.draw_layers = [0]
+        self.draw_layers = TypedList(type_of=int, data=[0])
         self.offset = Vector3(settings["WIDTH"] / 2, settings["HEIGHT"] / 2)
 
 

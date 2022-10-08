@@ -27,7 +27,7 @@ return_map = {
 
     }
 }
-main_map = []
+main_map = TypedList(type_of=Obj, data=[])
 
 
 class Singleton(object):
@@ -42,11 +42,11 @@ class Singleton(object):
 def ValueErrorMessange(text='', ok_text='', title=''):
     content = BoxLayout(orientation=VERTICAL)
     content.add_widget(Label(text=text))
-    content_b = Button(text=ok_text, background_color=BACE_COLOR, size_hint=(1, 0.2))
+    content_b = Button(text=ok_text, background_color=BACE_COLOR, size_hint=(1, 0.5))
     content.add_widget(content_b)
     ValueErrorPopup = Popup(title=title,
                             content=content,
-                            size_hint=(None, None), size=(400, 400), auto_dismiss=False)
+                            size_hint=(None, None), size=(600, 200), auto_dismiss=False)
     content_b.bind(on_release=ValueErrorPopup.dismiss)
     ValueErrorPopup.open()
 
@@ -97,6 +97,7 @@ def main_map_save():
         return_map["main_map"].update({i.name: {}})
         return_map["main_map"][i.name].update({"startPos": i.transform.local_position.returnAsDict()})
         return_map["main_map"][i.name].update({"tag": i.tag})
+        return_map["main_map"][i.name].update({"layer": i.layer})
         return_map["main_map"][i.name].update({"components": {}})
         for j in i.GetAllComponents():
             if not isinstance(j, Transform):
@@ -106,9 +107,13 @@ def main_map_save():
                         if isinstance(j.__getattribute__(ji), Vector3):
                             return_map["main_map"][i.name]["components"][j.__class__.__name__].update(
                                 {ji: j.__getattribute__(ji).returnAsDict()})
-                        else:
+                            continue
+                        if isinstance(j.__getattribute__(ji), TypedList):
                             return_map["main_map"][i.name]["components"][j.__class__.__name__].update(
-                                {ji: j.__getattribute__(ji)})
+                                {ji: j.__getattribute__(ji).returnAsDict()})
+                            continue
+                        return_map["main_map"][i.name]["components"][j.__class__.__name__].update(
+                            {ji: j.__getattribute__(ji)})
     print(return_map)
     with open('Maps/main_map.json', 'w', encoding='utf-8') as f:
         json.dump(return_map, f, ensure_ascii=False, indent=4)
@@ -128,6 +133,10 @@ def main_map_load(map_name="globalMap"):
             bb.tag = mape[im]["tag"]
         else:
             bb.tag = ""
+        if mape[im].get("layer") is not None:
+            bb.layer = mape[im]["layer"]
+        else:
+            bb.layer = 0
         for j in mape[im]["components"]:
             bbc = getcls(j)(bb)
             for jji in mape[im]["components"][j]:
@@ -135,6 +144,9 @@ def main_map_load(map_name="globalMap"):
                     bbc.__setattr__(jji,
                                     Vector3(mape[im]["components"][j][jji]["x"],
                                             mape[im]["components"][j][jji]["y"]))
+                    continue
+                if isinstance(bbc.__getattribute__(jji), TypedList):
+                    bbc.__setattr__(jji, TypedList(from_dict=mape[im]["components"][j][jji]))
                     continue
                 bbc.__setattr__(jji, mape[im]["components"][j][jji])
             bb.AddCreatedComponent(bbc)
@@ -227,6 +239,72 @@ class ParameterEntry(BoxLayout):
                                       on_text_validate=lambda instance: inspector.setcompparamTr(name,
                                                                                                  instance.text,
                                                                                                  comp)))
+        if isinstance(self.value, TypedList):
+            self.add_widget(Label(text=f"{name}(TypedList)"))
+            ar = BoxLayout(orientation=HORIZONTAL)
+            for i, im in enumerate(self.value):
+                ar.add_widget(ListEntry(im, self.name, self.comp, i))
+            ar.add_widget(Button(text="+",
+                                 on_release=lambda instance: inspector.addcompparamTypedList(self.name,
+                                                                                             self.value.type_of(),
+                                                                                             self.comp)))
+            self.add_widget(ar)
+
+
+class ListEntry(BoxLayout):
+    def __init__(self, value, name, comp, index, **kwargs):
+        # self.label = ap.get_running_app().title
+        super().__init__(**kwargs)
+        self.orientation = HORIZONTAL
+        self.value = value
+        self.name = name
+        self.comp = comp
+        self.index = index
+        print(type(self.value))
+        self.add_widget(Label(text=str(self.index)))
+        if isinstance(self.value, (int, float)) and not isinstance(self.value, bool):
+            self.add_widget(TextInput(text=str(self.value), input_filter='float', multiline=False,
+                                      on_text_validate=lambda instance: inspector.setcompparamTypedList(name,
+                                                                                                        instance.text,
+                                                                                                        comp, index)))
+            self.add_widget(
+                Button(text='-', on_release=lambda instance: inspector.delcompparamTypedList(name, comp, index)))
+            return
+        if isinstance(self.value, type(True)):
+            c = CheckBox(active=value)
+            c.bind(active=lambda checkbox, value=value: inspector.setcompparamTypedList(name, value, comp, index))
+            self.add_widget(c)
+            self.add_widget(
+                Button(text='-', on_release=lambda instance: inspector.delcompparamTypedList(name, comp, index)))
+            return
+        if isinstance(self.value, str):
+            self.add_widget(TextInput(text=str(self.value), multiline=False,
+                                      on_text_validate=lambda instance: inspector.setcompparamTypedList(name,
+                                                                                                        instance.text,
+                                                                                                        comp, index)))
+            self.add_widget(
+                Button(text='-', on_release=lambda instance: inspector.delcompparamTypedList(name, comp, index)))
+            return
+        if isinstance(self.value, Vector3):
+            self.add_widget(TextInput(text=str(self.value.x), input_filter='float', multiline=False,
+                                      on_text_validate=lambda instance: inspector.setcompparamTypedListVec3(name,
+                                                                                                            instance.text,
+                                                                                                            comp, index,
+                                                                                                            'x')))
+            self.add_widget(TextInput(text=str(self.value.y), input_filter='float', multiline=False,
+                                      on_text_validate=lambda instance: inspector.setcompparamTypedListVec3(name,
+                                                                                                            instance.text,
+                                                                                                            comp, index,
+                                                                                                            'y')))
+            self.add_widget(TextInput(text=str(self.value.z), input_filter='float', multiline=False,
+                                      on_text_validate=lambda instance: inspector.setcompparamTypedListVec3(name,
+                                                                                                            instance.text,
+                                                                                                            comp, index,
+                                                                                                            'z')))
+            self.add_widget(
+                Button(text='-', on_release=lambda instance: inspector.delcompparamTypedList(name, comp, index)))
+            return
+
 
 
 class Inspector(BoxLayout):
@@ -267,6 +345,12 @@ class Inspector(BoxLayout):
                 TextInput(text=self.selected_obj.tag, multiline=False,
                           on_text_validate=lambda instance: self.setparam('tag', instance.text)))
             self.add_widget(bb2)
+            bb3 = BoxLayout(orientation=HORIZONTAL)
+            bb3.add_widget(Label(text="Layer: "))
+            bb3.add_widget(
+                TextInput(text=str(self.selected_obj.layer), multiline=False,
+                          on_text_validate=lambda instance: self.setparam('layer', instance.text)))
+            self.add_widget(bb3)
             for i in range(len(self.selected_obj.GetAllComponents())):
                 # print(self.selected_obj.GetComponentByID(i).__class__.__name__ + ": ")
                 aa = BoxLayout(orientation=HORIZONTAL)
@@ -279,10 +363,11 @@ class Inspector(BoxLayout):
                 for index in self.selected_obj.GetComponentByID(i).__dict__:
                     if '__' in index or 'gameobject' in index or 'transform' in index:
                         continue
-                    if isinstance(self.selected_obj.GetComponentByID(i).__getattribute__(index),
-                                  (int, float, Vector3, str, bool, Obj)) and not isinstance(
+                    if (isinstance(self.selected_obj.GetComponentByID(i).__getattribute__(index),
+                                   (int, float, Vector3, str, bool, Obj)) and not isinstance(
                         self.selected_obj.GetComponentByID(i).__getattribute__(index),
-                        (dict, list, tuple, Component)):
+                        (dict, list, tuple, Component))) or isinstance(
+                        self.selected_obj.GetComponentByID(i).__getattribute__(index), TypedList):
                         print(str(index) + "= " + str(self.selected_obj.GetComponentByID(i).__getattribute__(index)))
                         self.add_widget(
                             ParameterEntry(self.selected_obj.GetComponentByID(i).__getattribute__(index), index,
@@ -319,6 +404,71 @@ class Inspector(BoxLayout):
         try:
             comp.__setattr__(name, type(
                 comp.__getattribute__(name))(value))
+        except ValueError:
+            ValueErrorMessange(
+                f'You entered an invalid value ({value}). Value must be type ' +
+                f'"{comp.__getattribute__(name)}"',
+                'OK', 'Value Error')
+        except KeyError:
+            ValueErrorMessange(
+                f'This class don\'t have "{name}" field',
+                'OK', 'Key Error')
+        mapp.update()
+        inspector.update()
+        hierarchy.update()
+
+    def setcompparamTypedListVec3(self, name, value, comp, ind: int, p: str):
+        try:
+            comp.__getattribute__(name)[int(ind)].__setattr__(p, float(value))
+        except ValueError:
+            ValueErrorMessange(
+                f'You entered an invalid value ({value}). Value must be type ' +
+                f'"{comp.__getattribute__(name)}"',
+                'OK', 'Value Error')
+        except KeyError:
+            ValueErrorMessange(
+                f'This class don\'t have "{name}" field',
+                'OK', 'Key Error')
+        mapp.update()
+        inspector.update()
+        hierarchy.update()
+
+    def setcompparamTypedList(self, name, value, comp, ind: int):
+        try:
+            comp.__getattribute__(name)[int(ind)] = comp.__getattribute__(name).type_of(value)
+        except ValueError or AttributeError:
+            ValueErrorMessange(
+                f'You entered an invalid value ({value}). Value must be type ' +
+                f'"{comp.__getattribute__(name)}"',
+                'OK', 'Value Error')
+        except KeyError:
+            ValueErrorMessange(
+                f'This class don\'t have "{name}" field',
+                'OK', 'Key Error')
+        mapp.update()
+        inspector.update()
+        hierarchy.update()
+
+    def delcompparamTypedList(self, name, comp, ind: int):
+        try:
+            comp.__getattribute__(name).pop(int(ind))
+        except ValueError:
+            ValueErrorMessange(
+                f'You entered an invalid value ({value}). Value must be type ' +
+                f'"{comp.__getattribute__(name)}"',
+                'OK', 'Value Error')
+        except KeyError:
+            ValueErrorMessange(
+                f'This class don\'t have "{name}" field',
+                'OK', 'Key Error')
+        mapp.update()
+        inspector.update()
+        hierarchy.update()
+
+    def addcompparamTypedList(self, name, value, comp):
+        try:
+            comp.__getattribute__(name).append(comp.__getattribute__(name).type_of(value))
+            print(comp.__getattribute__(name))
         except ValueError:
             ValueErrorMessange(
                 f'You entered an invalid value ({value}). Value must be type ' +
@@ -461,6 +611,7 @@ main_map_add(Obj("Camera"), mapp, hierarchy, inspector)
 main_map[0].tag = "MainCamera"
 main_map[0].AddComponent(Camera)
 main_map_load()
+
 
 class MyApp(App):
     def build(self):

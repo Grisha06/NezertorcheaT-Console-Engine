@@ -10,11 +10,10 @@ del module
 isWork = True
 
 
-def loadLevel(mapname: str = "globalMap"):
+def loadLevel():
     a = add_matrix()
+    mapname = settings["MAP"]
     mape = objMaps[mapname]
-    global settings
-    settings["MAP"] = mapname
     NTEngineClasses.ui.removeAllSpaces()
     ObjList.clearObjs()
 
@@ -26,6 +25,10 @@ def loadLevel(mapname: str = "globalMap"):
             bb.tag = mape[im]["tag"]
         else:
             bb.tag = None
+        if mape[im].get("layer") is not None:
+            bb.layer = mape[im]["layer"]
+        else:
+            bb.layer = None
         for j in mape[im]["components"]:
             bbc = getcls(j)(bb)
             for jji in mape[im]["components"][j]:
@@ -33,6 +36,9 @@ def loadLevel(mapname: str = "globalMap"):
                     bbc.__setattr__(jji,
                                     Vector3(mape[im]["components"][j][jji]["x"],
                                             mape[im]["components"][j][jji]["y"]))
+                    continue
+                if isinstance(bbc.__getattribute__(jji), TypedList):
+                    bbc.__setattr__(jji, TypedList(from_dict=mape[im]["components"][j][jji]))
                     continue
                 bbc.__setattr__(jji, mape[im]["components"][j][jji])
             bb.AddCreatedComponent(bbc)

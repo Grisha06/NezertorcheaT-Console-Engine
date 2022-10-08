@@ -1,6 +1,6 @@
 {
   "HEIGHT": 15,
   "WIDTH": 36,
-  "MAP": "globalMap",
+  "MAP": "main_map",
   "USE RECURSION": false
 }
