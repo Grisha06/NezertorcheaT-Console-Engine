@@ -24,6 +24,15 @@
         "Box": {}
       }
     },
+    "enem": {
+      "startPos": {"x": 10, "y": 8},
+      "components": {
+        "Drawer": {"symb": "nl"},
+        "DistanceCollider": {},
+        "RigidBody": {},
+        "Enemy": {"speed": 0.5}
+      }
+    },
     "MainCamera": {
       "startPos": {"x": 20, "y": 7},
       "tag": "MainCamera",
