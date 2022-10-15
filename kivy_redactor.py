@@ -1,4 +1,6 @@
+import kivy
 from kivy.app import App
+from kivy.graphics import Rectangle
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.checkbox import CheckBox
@@ -306,7 +308,6 @@ class ListEntry(BoxLayout):
             return
 
 
-
 class Inspector(BoxLayout):
     def __init__(self, **kwargs):
         # self.label = ap.get_running_app().title
@@ -599,9 +600,15 @@ class Map(RelativeLayout):
     def update(self, frm=''):
         self.clear_widgets()
         for i in main_map:
+            '''try:
+                self.canvas.add(kivy.graphics.Color(BaceColorRGBPlus(i.GetComponent(Drawer).color)))
+            except:
+                self.canvas.add(kivy.graphics.Color(1, 1, 1))
+            self.canvas.add(Rectangle(pos=(i.transform.local_position.x * 25,
+                                                25 - i.transform.local_position.y * 25), size=self.size))'''
             self.add_widget(ObjButton(i=i, pos=(i.transform.local_position.x * 25,
-                                                25 - i.transform.local_position.y * 25),
-                                      size_hint=(0.09, 0.05), background_normal=""))
+                                               25 - i.transform.local_position.y * 25),
+                                     size_hint=(0.09, 0.05), background_normal=""))
 
 
 hierarchy = Hierarchy()

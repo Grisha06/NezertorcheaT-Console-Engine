@@ -10,7 +10,7 @@
             "layer": 0,
             "components": {
                 "Drawer": {
-                    "symb": "P",
+                    "symb": "nl",
                     "color": ""
                 },
                 "DistanceCollider": {
@@ -31,7 +31,6 @@
             },
             "tag": "",
             "layer": 0,
-            "parent": "player",
             "components": {
                 "Drawer": {
                     "symb": "$",
@@ -59,14 +58,38 @@
                 "Box": {}
             }
         },
+        "enem": {
+            "startPos": {
+                "x": 10,
+                "y": 8,
+                "z": 0.0
+            },
+            "tag": "",
+            "layer": 0,
+            "components": {
+                "Drawer": {
+                    "symb": "nl",
+                    "color": ""
+                },
+                "DistanceCollider": {
+                    "collide": false,
+                    "angle": 0.0
+                },
+                "RigidBody": {},
+                "Enemy": {
+                    "speed": 0.25
+                }
+            }
+        },
         "MainCamera": {
             "startPos": {
-                "x": 20,
-                "y": 7,
+                "x": 0,
+                "y": 0,
                 "z": 0.0
             },
             "tag": "MainCamera",
             "layer": 0,
+            "parent": "player",
             "components": {
                 "Camera": {
                     "draw_layers": {

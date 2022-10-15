@@ -1,5 +1,4 @@
 import math
-import os
 
 
 class Vector3:
@@ -85,7 +84,7 @@ class Vector3:
         return Vector3(a.x * n, a.y * n, a.z * n)
 
     def length(self):
-        return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
+        return math.sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
 
     def abs(self):
         return Vector3(math.fabs(self.x), math.fabs(self.y), math.fabs(self.z))
@@ -100,7 +99,7 @@ class Vector3:
 
     def norm(self):
         if self.length() != 0.0:
-            return self // self.length()
+            return Vector3.dev_by_float(self, self.length())
         else:
             return Vector3.zero()
 
