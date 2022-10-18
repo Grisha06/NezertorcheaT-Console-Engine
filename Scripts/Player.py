@@ -51,14 +51,15 @@ class Player(Behavior):
             self.f = self.f + Vector3(self.speed, 0)
             self.wa = True
             self.fr = not self.fr
-        self.fram += 1
-        if self.fram == len(self.anim):
-            self.fram = 0
+
 
         if keyboard.is_pressed("r"):
             Behavior.instantiate("r", self.transform.position + Vector3(0, 1), [BoxCollider])
 
     def onDraw(self, a):
+        self.fram += 1
+        if self.fram == len(self.anim):
+            self.fram = 0
         ui.changeSpace(0, str(self.transform.position), True)
         ui.changeSpace(1, str(self.coll), True)
         ui.changeSpace(2, str(Vector3.D2V(self.coll.angle)), True)
