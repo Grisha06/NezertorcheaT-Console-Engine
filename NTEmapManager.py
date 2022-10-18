@@ -1,4 +1,6 @@
 import NTEngineClasses
+if NTEngineClasses.settings.get("USE SERVER UTILITIES"):
+    import serverUtilities.Client
 from NTEngineClasses import *
 
 for module in os.listdir(os.path.dirname(__file__) + "\\Scripts"):
@@ -18,7 +20,10 @@ def loadLevel():
     ObjList.clearObjs()
 
     for im in mape:
-        bb = Obj(im)
+        if settings.get("USE SERVER UTILITIES"):
+            bb = Obj(im, client=serverUtilities.Client.client, send_f=serverUtilities.Client.send)
+        else:
+            bb = Obj(im)
         print(bb)
         bb.transform.local_position = Vector3(mape[im]["startPos"]['x'], mape[im]["startPos"]['y'])
         if mape[im].get("tag") is not None:
@@ -65,3 +70,5 @@ def stopMainLoop(func=None):
         func()
     global isWork
     isWork = False
+    if settings.get("USE SERVER UTILITIES"):
+        serverUtilities.Client.send(serverUtilities.Client.DISCONNECT_MESSAGE)

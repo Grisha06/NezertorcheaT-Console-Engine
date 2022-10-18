@@ -25,12 +25,13 @@
         },
         "dollar": {
             "startPos": {
-                "x": 3,
-                "y": 1,
+                "x": 2.0,
+                "y": 0.0,
                 "z": 0.0
             },
             "tag": "",
             "layer": 0,
+            "parent": "player",
             "components": {
                 "Drawer": {
                     "symb": "$",
@@ -49,7 +50,7 @@
             "components": {
                 "Drawer": {
                     "symb": "D",
-                    "color": ""
+                    "color": "Blue"
                 },
                 "DistanceCollider": {
                     "collide": false,

@@ -10,6 +10,9 @@ from NTETime import *
 from UI import *
 from Vector3 import *
 
+if settings.get("USE SERVER UTILITIES"):
+    pass
+
 ObjList = ol.GlobalObjList()
 ui = UI()
 game_border = Border()
@@ -19,6 +22,7 @@ UP = "up"
 DOWN = "down"
 RIGHT = "right"
 LEFT = "left"
+NSG = 'not a server game'
 
 
 def getcls(n: str):
@@ -74,7 +78,10 @@ class Component:
 
     def __str__(self):
         return "{0}({1}null)".format(self.__class__.__name__,
-                                     "".join([f"{i}: {self.__dict__[i]}; " for i in self.__dict__]))
+                                     "".join(
+                                         [
+                                             f"{i}: {str(self.__dict__[i])}; " if i != 'gameobject' and i != 'parent' and i != 'nears' else ''
+                                             for i in self.__dict__]))
 
 
 class Collider(Component):
@@ -217,6 +224,17 @@ class Transform(Component):
         self.local_position = V
 
 
+class NTCTransform(Component):
+    """Network Transform Component representation"""
+
+    def upd(self):
+        if not self.gameobject.client == NSG:
+            self.gameobject.send_f((str(self.gameobject) + ' ' + str(self.gameobject.transform)).encode('utf-8'))
+            # print(str(self.gameobject).encode('utf-8'))
+        else:
+            raise TypeError(NSG)
+
+
 class Obj:
     """Object representation"""
     name = ''
@@ -224,7 +242,7 @@ class Obj:
     __components = []
     isInstantiated = False
 
-    def __init__(self, name: str, parent: Transform = None):
+    def __init__(self, name: str, parent: Transform = None, client=NSG, send_f=NSG):
         self.name = name
         self.tag = ''
         self.layer = 0
@@ -236,9 +254,15 @@ class Obj:
             self.transform.parent = self.transform
         else:
             self.transform.parent = parent
+        if settings.get("USE SERVER UTILITIES"):
+            self.client = client
+            self.send_f = send_f
+        else:
+            self.client = NSG
+            self.send_f = NSG
 
     def __str__(self):
-        return f"Obj(name:{self.name}, tag:{self.tag})"
+        return f"Obj(name:{self.name}, tag:{self.tag}, layer:{self.layer})"
 
     @final
     def upd(self, a):
@@ -275,6 +299,12 @@ class Obj:
                     pass
         except KeyError:
             pass
+        if settings.get("USE SERVER UTILITIES"):
+            try:
+                for i in self.GetAllComponentsOfType(NTCTransform):
+                    i.upd()
+            except KeyError:
+                pass
 
     @final
     def updAfterDraw(self):
@@ -537,10 +567,11 @@ class Drawer(Component):
                 int(clamp(pos.x - c.x + co.offset.x, 0.0, settings['WIDTH'] - 1.0))] = color + symb
 
     @final
-    def drawSymbImage(self, a, img: str, pos: Vector3, layer=0):
-        for i in range(len(img)):
-            for j in range(len(img[i])):
-                self.drawSymb(a, img[i][j], '', pos + Vector3(j, i), layer=layer)
+    def drawSymbImage(self, a, img: str, pos: Vector3, layer=0, flip_h=False, flip_v=False):
+        for i in range(len(img)) if not flip_h else range(len(img) - 1, -1, -1):
+            for j in range(len(img[i])) if not flip_v else range(len(img[i]) - 1, -1, -1):
+                self.drawSymb(a, img[i][j], '', pos + Vector3(j if not flip_h else -j, i if not flip_v else -i),
+                              layer=layer)
 
     @final
     def clearSymb(self, a, pos: Vector3):
