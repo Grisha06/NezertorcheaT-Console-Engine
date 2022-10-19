@@ -50,5 +50,6 @@ class Enemy(Behavior):
             self.gameobject.GetComponent(Drawer).drawSymbImage(a, self.anim[self.fram],
                                                                self.gameobject.transform.position - Vector3(2, 2))
         else:
-            self.gameobject.GetComponent(Drawer).drawSymbImage(a, images["enem"], self.gameobject.transform.position - Vector3(2, 2))
+            self.gameobject.GetComponent(Drawer).drawSymbImage(a, images["enem"],
+                                                               self.gameobject.transform.position - Vector3(2, 2))
         # ui.printStrAtPos(str(self.f), 0, 25)
