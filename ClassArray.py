@@ -48,7 +48,6 @@ class TypedList(MutableSequence):
                     raise ValueError(
                         f"Value ({from_dict['_list'][i]}; class: {from_dict['_list'][i].__class__.__name__}; position: {i}) must be of type \"{self.type_of.__name__}\"")
 
-
             if from_dict['_list'] is not None:
                 self._list = from_dict['_list']
             else:
@@ -106,6 +105,9 @@ class TypedList(MutableSequence):
 
     def returnAsDict(self):
         return {"type_of": self.type_of.__name__, "_list": self._list}
+
+    def returnAsList(self):
+        return self._list
 
 
 if __name__ == '__main__':

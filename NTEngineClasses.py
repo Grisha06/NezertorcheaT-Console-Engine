@@ -3,7 +3,6 @@ from typing import final
 
 import ObjList as ol
 from Border import *
-from ClassArray import TypedList
 from ClassArray import all_subclasses
 from Color import *
 from NTETime import *
@@ -567,10 +566,10 @@ class Drawer(Component):
                 int(clamp(pos.x - c.x + co.offset.x, 0.0, settings['WIDTH'] - 1.0))] = color + symb
 
     @final
-    def drawSymbImage(self, a, img: str, pos: Vector3, layer=0, flip_h=False, flip_v=False):
-        for i in range(len(img)) if not flip_h else range(len(img) - 1, -1, -1):
-            for j in range(len(img[i])) if not flip_v else range(len(img[i]) - 1, -1, -1):
-                self.drawSymb(a, img[i][j], '', pos + Vector3(j if not flip_h else -j, i if not flip_v else -i),
+    def drawSymbImage(self, a, img: SymbolImage, pos: Vector3, layer=0, flip_h=False, flip_v=False):
+        for i in range(len(img.get())) if not flip_h else range(len(img.get()) - 1, -1, -1):
+            for j in range(len(img.get()[i])) if not flip_v else range(len(img.get()[i]) - 1, -1, -1):
+                self.drawSymb(a, img.get()[i][j], '', pos + Vector3(j if not flip_h else -j, i if not flip_v else -i),
                               layer=layer)
 
     @final
