@@ -16,19 +16,8 @@ class Enemy(Behavior):
         ui.add("", True)
         self.coll = self.gameobject.GetComponent(Collider)
         self.f = Vector3()
-        self.anim = TypedList(type_of=list, data=[])
-        self.fram = 0
+        self.anim = SymbolImageAnimation(anim=[], speed=(1 / 7))
         self.anim.append(images["enemw1"])
-        self.anim.append(images["enemw1"])
-        self.anim.append(images["enemw1"])
-        self.anim.append(images["enemw1"])
-        self.anim.append(images["enemw1"])
-        self.anim.append(images["enemw1"])
-        self.anim.append(images["enemw2"])
-        self.anim.append(images["enemw2"])
-        self.anim.append(images["enemw2"])
-        self.anim.append(images["enemw2"])
-        self.anim.append(images["enemw2"])
         self.anim.append(images["enemw2"])
         # self.gameobject.GetComponent(Drawer).color = "Blue"
 
@@ -43,11 +32,9 @@ class Enemy(Behavior):
 
     def onDraw(self, a):
         self.fr = not self.fr
-        self.fram += 1
-        if self.fram == len(self.anim):
-            self.fram = 0
+        self.anim.update()
         if not self.coll.collide:
-            self.gameobject.GetComponent(Drawer).drawSymbImage(a, self.anim[self.fram],
+            self.gameobject.GetComponent(Drawer).drawSymbImage(a, self.anim.get(),
                                                                self.gameobject.transform.position - Vector3(2, 2))
         else:
             self.gameobject.GetComponent(Drawer).drawSymbImage(a, images["enem"],

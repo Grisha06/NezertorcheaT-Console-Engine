@@ -19,13 +19,8 @@ class Player(Behavior):
         ui.add("", True)
         self.coll = self.gameobject.GetComponent(Collider)
         self.f = Vector3()
-        self.anim = TypedList(type_of=list, data=[])
-        self.fram = 0
+        self.anim = SymbolImageAnimation(anim=[], speed=(1 / 4))
         self.anim.append(images["plw1"])
-        self.anim.append(images["plw1"])
-        self.anim.append(images["plw1"])
-        self.anim.append(images["plw2"])
-        self.anim.append(images["plw2"])
         self.anim.append(images["plw2"])
         # self.gameobject.GetComponent(Drawer).color = "Blue"
 
@@ -38,33 +33,26 @@ class Player(Behavior):
         if keyboard.is_pressed("w"):
             self.f = self.f + Vector3(0, -self.speed)
             self.wa = True
-            self.fr = not self.fr
         if keyboard.is_pressed("a"):
             self.f = self.f + Vector3(-self.speed, 0)
             self.wa = True
-            self.fr = not self.fr
         if keyboard.is_pressed("s"):
             self.f = self.f + Vector3(0, self.speed)
             self.wa = True
-            self.fr = not self.fr
         if keyboard.is_pressed("d"):
             self.f = self.f + Vector3(self.speed, 0)
             self.wa = True
-            self.fr = not self.fr
-
 
         if keyboard.is_pressed("r"):
             Behavior.instantiate("r", self.transform.position + Vector3(0, 1), [BoxCollider])
 
     def onDraw(self, a):
-        self.fram += 1
-        if self.fram == len(self.anim):
-            self.fram = 0
         ui.changeSpace(0, str(self.transform.position), True)
         ui.changeSpace(1, str(self.coll), True)
         ui.changeSpace(2, str(Vector3.D2V(self.coll.angle)), True)
         if self.wa:
-            self.gameobject.GetComponent(Drawer).drawSymbImage(a, self.anim[self.fram],
+            self.anim.update()
+            self.gameobject.GetComponent(Drawer).drawSymbImage(a, self.anim.get(),
                                                                self.gameobject.transform.position)
         else:
             self.gameobject.GetComponent(Drawer).drawSymbImage(a, images["pl"], self.gameobject.transform.position)
