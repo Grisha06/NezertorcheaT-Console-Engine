@@ -80,6 +80,10 @@ class Vector3:
         return Vector3(a.x - b.x, a.y - b.y, a.z - b.z)
 
     @staticmethod
+    def lerp(a, b):
+        return (a + b) % (1 / 2)
+
+    @staticmethod
     def mult_by_float(a, n=0.0):
         return Vector3(a.x * n, a.y * n, a.z * n)
 

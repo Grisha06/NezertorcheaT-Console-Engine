@@ -588,6 +588,13 @@ class Drawer(Component):
                               layer=layer)
 
     @final
+    def drawLine(self, a, symb: str, color: str, pos1: Vector3, pos2: Vector3, layer=0):
+        for i in range(int(0 if pos1.x > pos2.x else pos1.x - pos2.x), int(pos1.x - pos2.x if pos1.x > pos2.x else 0)):
+            self.drawSymb(a, symb, color, Vector3(i, (pos1.y - pos2.y) / (pos1.x - pos2.x) * (i - pos2.x)), layer=layer)
+        for i in range(int(0 if pos1.y > pos2.y else pos1.y - pos2.y), int(pos1.y - pos2.y if pos1.y > pos2.y else 0)):
+            self.drawSymb(a, symb, color, Vector3((pos1.x - pos2.x) / (pos1.y - pos2.y) * (i - pos2.y), i), layer=layer)
+
+    @final
     def clearSymb(self, a, pos: Vector3):
         self.drawSymb(a, ' ', '', pos)
 
