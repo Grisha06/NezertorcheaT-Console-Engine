@@ -6,7 +6,7 @@
                 "y": 5,
                 "z": 0.0
             },
-            "tag": "",
+            "tag": "Player",
             "layer": 0,
             "components": {
                 "Drawer": {
@@ -41,21 +41,11 @@
         },
         "box": {
             "startPos": {
-                "x": 10,
-                "y": 10,
+                "x": 0,
+                "y": 0,
                 "z": 0.0
             },
-            "tag": "",
-            "layer": 0,
             "components": {
-                "Drawer": {
-                    "symb": "D",
-                    "color": "Blue"
-                },
-                "DistanceCollider": {
-                    "collide": false,
-                    "angle": 0.0
-                },
                 "Box": {}
             }
         },
@@ -65,7 +55,7 @@
                 "y": 8,
                 "z": 0.0
             },
-            "tag": "",
+            "tag": "enemy",
             "layer": 0,
             "components": {
                 "Drawer": {
