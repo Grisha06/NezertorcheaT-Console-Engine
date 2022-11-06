@@ -2,5 +2,5 @@
   "HEIGHT": 15,
   "WIDTH": 36,
   "MAP": "main_map",
-  "USE RECURSION": false
+  "USE RECURSION": true
 }

@@ -1,6 +1,7 @@
 from time import perf_counter
 
 import keyboard
+import traceback
 
 import NTEmapManager
 if NTEmapManager.settings.get("USE SERVER UTILITIES"):
@@ -8,7 +9,7 @@ if NTEmapManager.settings.get("USE SERVER UTILITIES"):
 from NTEmapManager import *
 
 
-def main():
+def MainLoop():
     a = loadLevel()
     try:
         while isWork:
@@ -29,12 +30,21 @@ def main():
             all_time = perf_counter() - t_start
             NTETimeManager.setDeltaTime(all_time)
         NTEmapManager.stopMainLoop()
-    except KeyboardInterrupt as e:
+    except (Exception, BaseException) as e:
         if settings.get("USE SERVER UTILITIES"):
             serverUtilities.Client.send(str(e))
         NTEmapManager.stopMainLoop()
-    print("Program is over")
+        print()
+        print("|- Exception text: ")
+        #raise e
+        traceback.print_tb(e.__traceback__)
+        print(f'|- "{str(e)}"')
+        print("|- Exception text end")
+    print()
+    print("|- Program is over")
+    input()
+
 
 
 if __name__ == '__main__':
-    main()
+    MainLoop()

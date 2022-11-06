@@ -95,7 +95,7 @@ class Vector3:
 
     @staticmethod
     def reflect(rd, n):
-        return rd - ((n % (n ** rd)) * 2)
+        return rd - ((n % (n ** rd)) % 2)
 
     def norm(self):
         if self.length() != 0.0:

@@ -1,4 +1,5 @@
 import NTEngineClasses
+
 if NTEngineClasses.settings.get("USE SERVER UTILITIES"):
     import serverUtilities.Client
 from NTEngineClasses import *
@@ -8,7 +9,6 @@ for module in os.listdir(os.path.dirname(__file__) + "\\Scripts"):
         continue
     __import__("Scripts." + module[:-3], locals(), globals())
 del module
-
 isWork = True
 
 

@@ -1,9 +1,11 @@
+import time
+
 import Scripts.Player
 from NTEngineClasses import *
 
 
 class Enemy(Behavior):
-    speed = 0.5
+    speed = 0.25
     coll = None
     anim = None
     f: Vector3
@@ -11,12 +13,9 @@ class Enemy(Behavior):
     fram = 0
 
     def start(self):
-        ui.add("", True)
-        ui.add("", True)
-        ui.add("", True)
         self.coll = self.gameobject.GetComponent(Collider)
         self.f = Vector3()
-        self.anim = SymbolImageAnimation(anim=[], speed=(1 / 7))
+        self.anim = Symbols.SymbolImageAnimation(anim=[], speed=(1 / 7))
         self.anim.append(images["enemw1"])
         self.anim.append(images["enemw2"])
         # self.gameobject.GetComponent(Drawer).color = "Blue"
@@ -39,4 +38,8 @@ class Enemy(Behavior):
         else:
             self.gameobject.GetComponent(Drawer).drawSymbImage(a, images["enem"],
                                                                self.gameobject.transform.position - Vector3(2, 2))
-        # ui.printStrAtPos(str(self.f), 0, 25)
+
+    def onCollide(self, collider: Collider):
+        if collider.gameobject.tag == "Player":
+            time.sleep(2)
+            raise ValueError("you lose")

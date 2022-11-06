@@ -2,8 +2,7 @@ import os
 from typing import final
 
 import ObjList as ol
-from Border import *
-from ClassArray import all_subclasses
+from ClassArray import all_subclasses, TypedList
 from Color import *
 from NTETime import *
 from UI import *
@@ -14,7 +13,7 @@ if settings.get("USE SERVER UTILITIES"):
 
 ObjList = ol.GlobalObjList()
 ui = UI()
-game_border = Border()
+game_border = Symbols.Border()
 NTETimeManager = NTETime()
 
 UP = "up"
@@ -114,24 +113,40 @@ class DistanceCollider(Collider):
             if r.GetComponent(Collider) is not None:
                 self.collide = True
                 self.angle = 180
+                self.__c(r)
                 return
         if (r := findNearObjByRad(self.gameobject.transform.position + Vector3(-1, 0, 0), 0.5)) is not None:
             if r.GetComponent(Collider) is not None:
                 self.collide = True
                 self.angle = 0
+                self.__c(r)
                 return
         if (r := findNearObjByRad(self.gameobject.transform.position + Vector3(0, 1, 0), 0.5)) is not None:
             if r.GetComponent(Collider) is not None:
                 self.collide = True
                 self.angle = 270
+                self.__c(r)
                 return
         if (r := findNearObjByRad(self.gameobject.transform.position + Vector3(0, -1, 0), 0.5)) is not None:
             if r.GetComponent(Collider) is not None:
                 self.collide = True
                 self.angle = 90
+                self.__c(r)
                 return
         self.collide = False
         self.angle = 0
+
+    def __c(self, i):
+        try:
+            for se in self.gameobject.GetAllComponentsOfType(Behavior):
+                se.onCollide(i.GetComponent(Collider))
+        except KeyError:
+            pass
+        try:
+            for ig in i.GetAllComponentsOfType(Behavior):
+                ig.onCollide(self)
+        except KeyError:
+            pass
 
 
 class BoxCollider(Collider):
@@ -455,10 +470,10 @@ class Obj:
             return l
 
     def __fabtRec(self, tag: str, l=[], i=0):
-        if i >= len(self.__components):
+        if i >= len(ObjList.getObjs()):
             return l
-        if self.__components[i].tag == tag:
-            return self.__fabtRec(tag, l=l + [self.__components[i]], i=i + 1)
+        if ObjList.getObjs()[i].tag == tag:
+            return self.__fabtRec(tag, l=l + [ObjList.getObjs()[i]], i=i + 1)
         return self.__fabtRec(tag, l=l, i=i + 1)
 
     def __gacotRec(self, typ, l=[], i=0):
@@ -566,7 +581,7 @@ class Drawer(Component):
                 int(clamp(pos.x - c.x + co.offset.x, 0.0, settings['WIDTH'] - 1.0))] = color + symb
 
     @final
-    def drawSymbImage(self, a, img: SymbolImage, pos: Vector3, layer=0, flip_h=False, flip_v=False):
+    def drawSymbImage(self, a, img: Symbols.SymbolImage, pos: Vector3, layer=0, flip_h=False, flip_v=False):
         for i in range(len(img.get())) if not flip_h else range(len(img.get()) - 1, -1, -1):
             for j in range(len(img.get()[i])) if not flip_v else range(len(img.get()[i]) - 1, -1, -1):
                 self.drawSymb(a, img.get()[i][j], '', pos + Vector3(j if not flip_h else -j, i if not flip_v else -i),
@@ -632,7 +647,7 @@ class Behavior(Component):
                     self.__passingS = False
                     self.__passingFrT = 0.0
                 else:
-                    self.__passT += NTETime.getDeltaTime()
+                    self.__passT += NTETimeManager.getDeltaTime()
             else:
                 if self.__passT >= self.__passingFrT:
                     self.__passT = 0.0
@@ -662,8 +677,9 @@ class Behavior(Component):
         pass
 
     @staticmethod
-    def instantiate(symb: str, Pos=Vector3(), comps=[]) -> Obj:
+    def instantiate(symb: str, Pos=Vector3(), comps=[], tag='') -> Obj:
         b = Obj(f"obj_({str(len(ObjList.getObjs()))})")
+        b.tag = tag
         b.transform.local_position = Pos
         b.AddComponent(Drawer)
         b.GetAllComponents()[1].symb = symb
