@@ -2,7 +2,7 @@ from ClassArray import TypedList
 
 
 class SymbolImage:
-    def __init__(self, dirr: list | TypedList, name: str = ""):
+    def __init__(self, dirr: "list | TypedList", name: str = ""):
         self.dirr: list = dirr if isinstance(dirr, list) else dirr.returnAsList()
         self.name: str = name
 
