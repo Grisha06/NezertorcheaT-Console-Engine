@@ -51,14 +51,15 @@ def add_matrix():
 
 
 def print_matrix(a, arr: list):
-    print(arr[6] + arr[2] * len(a[0]) + arr[7])
+    s=arr[6] + arr[2] * len(a[0]) + arr[7]+'\n'
     for x in range(len(a)):
-        print(arr[1], end='')
+        s+=arr[1]
         for y in range(len(a[0])):
             # print(BaceColor('Red').get() + a[x][y], end=BaceColor('White').get())
-            print(a[x][y], end=BaceColor("Reset").get())
-        print(arr[0])
-    print(arr[5] + arr[3] * len(a[0]) + arr[4])
+            s+=a[x][y]+BaceColor("Reset").get()
+        s+=arr[0]+'\n'
+    s+=arr[5] + arr[3] * len(a[0]) + arr[4]+'\n'
+    print(s)
 
 
 class Component:
