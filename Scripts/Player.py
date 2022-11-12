@@ -39,28 +39,28 @@ class Player(Behavior):
         # self.transform.local_position = Vec3.int(self.transform.local_position)
         self.f = Vector3()
         self.wa = False
-        if keyboard.is_pressed("w"):
+        if keyboard.is_pressed("w") and self.gameobject.transform.position.y > -20:
             self.f = self.f + Vector3(0, -self.curspeed)
             self.wa = True
-        if keyboard.is_pressed("a"):
+        if keyboard.is_pressed("a") and self.gameobject.transform.position.x > -20:
             self.f = self.f + Vector3(-self.curspeed, 0)
             self.wa = True
-        if keyboard.is_pressed("s"):
+        if keyboard.is_pressed("s") and self.gameobject.transform.position.y < 20:
             self.f = self.f + Vector3(0, self.curspeed)
             self.wa = True
-        if keyboard.is_pressed("d"):
+        if keyboard.is_pressed("d") and self.gameobject.transform.position.x < 20:
             self.f = self.f + Vector3(self.curspeed, 0)
             self.wa = True
 
         if keyboard.is_pressed("1") and self.rocks > 0:
-            Behavior.instantiate("W", self.transform.position + Vector3(0, 1), [BoxCollider], tag='R')
+            Behavior.instantiate("█", self.transform.position + Vector3(0, 1), [BoxCollider], tag='R')
             self.rocks -= 1
         if keyboard.is_pressed("2") and self.metals > 0:
             Behavior.instantiate("T", self.transform.position + Vector3(0, 1), [BoxCollider, Scripts.Turret.Turret],
                                  tag='M')
             self.metals -= 1
         if keyboard.is_pressed("3") and self.wood > 0:
-            Behavior.instantiate("C", self.transform.position + Vector3(0, 1), [BoxCollider, Scripts.Chest.Chest],
+            Behavior.instantiate("▯", self.transform.position + Vector3(0, 1), [BoxCollider, Scripts.Chest.Chest],
                                  tag='W')
             self.wood -= 1
         if keyboard.is_pressed("f"):
@@ -106,7 +106,7 @@ class Player(Behavior):
                     continue
 
     def onDraw(self, a):
-        # self.rr.drawLine(a, 'э', '', self.transform.position, )
+        # self.rr.drawLine(a, 'э', '', self.transform.position, Vector3())
         ui.changeSpace(0, f'rocks = {str(self.rocks)}', True)
         ui.changeSpace(1, f'metals = {str(self.metals)}', True)
         ui.changeSpace(2, f'woods = {str(self.wood)}', True)

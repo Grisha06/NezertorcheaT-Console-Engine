@@ -2,8 +2,8 @@
     "main_map": {
         "player": {
             "startPos": {
-                "x": 5,
-                "y": 5,
+                "x": 0.0,
+                "y": 0.0,
                 "z": 0.0
             },
             "tag": "Player",
@@ -41,12 +41,16 @@
         },
         "box": {
             "startPos": {
-                "x": 0,
-                "y": 0,
+                "x": 0.0,
+                "y": 0.0,
                 "z": 0.0
             },
             "components": {
-                "Box": {}
+                "Box": {},
+                "Drawer": {
+                    "symb": "nl",
+                    "color": ""
+                }
             }
         },
         "enem": {
@@ -86,7 +90,8 @@
                     "draw_layers": {
                         "type_of": "int",
                         "_list": [
-                            0
+                            0,
+                            1
                         ]
                     },
                     "offset": {

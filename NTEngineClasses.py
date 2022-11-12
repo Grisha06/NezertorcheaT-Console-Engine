@@ -29,7 +29,11 @@ def getcls(n: str):
             return jj
 
 
-def cls(): os.system('cls' if os.name == 'nt' else 'clear')
+def cls():
+    os.system('cls||clear')
+    # _ = call('cls' if os.name == 'nt' else 'clear')
+    # print(chr(27) + "[2J")
+    # print("\033c")
 
 
 def clamp(num, min_value, max_value):
@@ -46,22 +50,15 @@ def add_matrix():
     return a
 
 
-def print_matrix(a):
-    print(game_border.border_angle_lu, end='')
-    for y in range(len(a[0])):
-        print(game_border.border_u, end='')
-    print(game_border.border_angle_ur)
-
+def print_matrix(a, arr: list):
+    print(arr[6] + arr[2] * len(a[0]) + arr[7])
     for x in range(len(a)):
-        print(game_border.border_l, end='')
+        print(arr[1], end='')
         for y in range(len(a[0])):
             # print(BaceColor('Red').get() + a[x][y], end=BaceColor('White').get())
             print(a[x][y], end=BaceColor("Reset").get())
-        print(game_border.border_r)
-    print(game_border.border_angle_dl, end='')
-    for y in range(len(a[0])):
-        print(game_border.border_d, end='')
-    print(game_border.border_angle_rd)
+        print(arr[0])
+    print(arr[5] + arr[3] * len(a[0]) + arr[4])
 
 
 class Component:
@@ -264,6 +261,7 @@ class Obj:
         self.__components = TypedList(type_of=Component, data=[])
         self.AddComponent(Transform)
         self.transform = self.GetAllComponents()[0]
+        self.lifetime = 0
         if parent is None:
             self.transform.parent = self.transform
         else:
@@ -319,6 +317,7 @@ class Obj:
                     i.upd()
             except KeyError:
                 pass
+        self.lifetime += NTETimeManager.getDeltaTime()
 
     @final
     def updAfterDraw(self):
@@ -589,10 +588,19 @@ class Drawer(Component):
 
     @final
     def drawLine(self, a, symb: str, color: str, pos1: Vector3, pos2: Vector3, layer=0):
-        for i in range(int(0 if pos1.x > pos2.x else pos1.x - pos2.x), int(pos1.x - pos2.x if pos1.x > pos2.x else 0)):
-            self.drawSymb(a, symb, color, Vector3(i, (pos1.y - pos2.y) / (pos1.x - pos2.x) * (i - pos2.x)), layer=layer)
-        for i in range(int(0 if pos1.y > pos2.y else pos1.y - pos2.y), int(pos1.y - pos2.y if pos1.y > pos2.y else 0)):
-            self.drawSymb(a, symb, color, Vector3((pos1.x - pos2.x) / (pos1.y - pos2.y) * (i - pos2.y), i), layer=layer)
+        #UI.printStrAtPos(Vector3.angleB2V((pos1 - pos2).norm(), Vector3(1)), 0, 50)
+        if 45 > (p := Vector3.angleB2V(pos1 - pos2, Vector3(1))) or 135 < p:
+            for i in range(int(0 if pos1.x > pos2.x else pos1.x - pos2.x),
+                           int(pos1.x - pos2.x if pos1.x > pos2.x else 0)):
+                self.drawSymb(a, symb[i % len(symb)], color,
+                              Vector3(i, (pos1.y - pos2.y) / (pos1.x - pos2.x) * (i - pos2.x)),
+                              layer=layer)
+        else:
+            for i in range(int(0 if pos1.y > pos2.y else pos1.y - pos2.y),
+                           int(pos1.y - pos2.y if pos1.y > pos2.y else 0)):
+                self.drawSymb(a, symb[i % len(symb)], color,
+                              Vector3((pos1.x - pos2.x) / (pos1.y - pos2.y) * (i - pos2.y), i),
+                              layer=layer)
 
     @final
     def clearSymb(self, a, pos: Vector3):

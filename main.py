@@ -21,7 +21,7 @@ def MainLoop():
             for i in ObjList.getObjs():
                 i.upd(a)
             cls()
-            print_matrix(a)
+            print_matrix(a,game_border.get_Arr())
             ui.print()
             for i in ObjList.getObjs():
                 i.updAfterDraw()
@@ -36,10 +36,11 @@ def MainLoop():
         NTEmapManager.stopMainLoop()
         print()
         print("|- Exception text: ")
-        #raise e
         traceback.print_tb(e.__traceback__)
         print(f'|- "{str(e)}"')
         print("|- Exception text end")
+        if input("|- Print exception? y/n ")=='y':
+            raise e
     print()
     print("|- Program is over")
     input()

@@ -55,6 +55,12 @@ class Vector3:
     @staticmethod
     def angleB2V(a, b):
         try:
+            #print(a)
+            #print(b)
+            #print(a ** b)
+            #print(Vector3.length(a) * Vector3.length(b))
+            #print((a ** b) / (Vector3.length(a) * Vector3.length(b)))
+            #print(math.acos((a ** b) / (Vector3.length(a) * Vector3.length(b))))
             return math.degrees(math.acos((a ** b) / (Vector3.length(a) * Vector3.length(b))))
         except ZeroDivisionError:
             return 0

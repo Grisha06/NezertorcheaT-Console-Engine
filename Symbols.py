@@ -105,3 +105,6 @@ class Border:
             f[self.height].append(self.border_d)
         f[self.height].append(self.border_angle_rd)
         return SymbolImage(f, name=self.name)
+
+    def get_Arr(self):
+        return [self.border_r,self.border_l,self.border_u,self.border_d,self.border_angle_rd,self.border_angle_dl,self.border_angle_lu,self.border_angle_ur]
