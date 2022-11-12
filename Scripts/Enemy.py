@@ -43,3 +43,5 @@ class Enemy(Behavior):
         if collider.gameobject.tag == "Player":
             time.sleep(2)
             raise ValueError("you lose")
+        if collider.gameobject.tag in ('M', 'R', 'W'):
+            self.destroy(collider.gameobject)

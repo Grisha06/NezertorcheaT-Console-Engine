@@ -11,6 +11,8 @@ class Ball(Behavior):
 
     def update(self, a):
         self.transform.moveDir(self.f % self.speed)
+        if self.gameobject.lifetime > 5:
+            self.destroy(self.gameobject)
 
     def onCollide(self, collider: Collider):
         if collider.gameobject.tag == "Player":
