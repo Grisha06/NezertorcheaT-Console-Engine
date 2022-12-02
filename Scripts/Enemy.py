@@ -21,12 +21,12 @@ class Enemy(Behavior):
         # self.gameobject.GetComponent(Drawer).color = "Blue"
 
     def update(self, a):
-        self.transform.moveDir(self.f % self.speed)
+        self.transform.moveDir(self.f * self.speed)
         self.f = Vector3()
 
         for i in findAllObjsAtRad(self.transform.position, 1000):
             if i.GetComponent(Scripts.Player.Player) is not None:
-                self.f = (i.transform.position - self.gameobject.transform.position).norm()
+                self.f = (i.transform.position - self.gameobject.transform.position).norm
                 break
 
     def onDraw(self, a):

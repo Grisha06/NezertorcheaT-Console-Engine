@@ -1,6 +1,7 @@
-import kivy
+from pathlib import Path
+
 from kivy.app import App
-from kivy.graphics import Rectangle
+from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.checkbox import CheckBox
@@ -63,11 +64,11 @@ def AddComponent(o: Obj, inspectr):
     content = BoxLayout(orientation=VERTICAL)
     ValueErrorPopup = Popup(title="Add Component",
                             content=content,
-                            size_hint=(None, None), size=(400, 400), auto_dismiss=False)
+                            size_hint=(None, None), size=(400, 600), auto_dismiss=False)
     print("components: ")
-    for i in all_subclasses(Component) + all_subclasses(Behavior) + all_subclasses(Collider) + all_subclasses(
-            RigidBody):
-        if i.__name__ != Transform.__name__ and i.__name__ != Collider.__name__:
+    for i in list(set(all_subclasses(Component) + all_subclasses(Behavior) + all_subclasses(Collider) + all_subclasses(
+            RigidBody))):
+        if i.__name__ != Transform.__name__ and i.__name__ != Collider.__name__ and i.__name__ != Behavior.__name__:
             print(i.__name__)
             content.add_widget(
                 Button(text=i.__name__, background_color=BACE_COLOR,
@@ -75,6 +76,27 @@ def AddComponent(o: Obj, inspectr):
                            ValueErrorPopup=ValueErrorPopup,
                            i=i,
                            o=o, inspectr=inspectr)))
+    content.add_widget(
+        Button(text="Cancel", on_release=ValueErrorPopup.dismiss, background_color=REMOVE_COLOR))
+    ValueErrorPopup.open()
+
+
+def opppppppppp(p: Popup, t: str):
+    lm(t)
+    p.dismiss()
+
+
+def opmp():
+    content = BoxLayout(orientation=VERTICAL)
+    ValueErrorPopup = Popup(title="Open map by path",
+                            content=content,
+                            size_hint=(None, None), size=(600, 300), auto_dismiss=False)
+    t = TextInput()
+    content.add_widget(t)
+    content.add_widget(
+        Button(text="Open",
+               on_release=lambda instance, ValueErrorPopup=ValueErrorPopup, t=t: opppppppppp(ValueErrorPopup, t.text),
+               background_color=ADD_COLOR))
     content.add_widget(
         Button(text="Cancel", on_release=ValueErrorPopup.dismiss, background_color=REMOVE_COLOR))
     ValueErrorPopup.open()
@@ -122,12 +144,14 @@ def main_map_save():
 
 
 def main_map_load(map_name="globalMap"):
-    mape = objMaps[map_name]
-    global settings
-    settings["MAP"] = map_name
+    lm(f'Maps/{map_name}.json')
+
+
+def lm(path=''):
+    with open(path) as json_file:
+        mape = json.load(json_file)[Path(path).stem]
     global main_map
     main_map = []
-
     for im in mape:
         bb = Obj(im)
         bb.transform.local_position = Vector3(mape[im]["startPos"]['x'], mape[im]["startPos"]['y'])
@@ -312,6 +336,7 @@ class Inspector(BoxLayout):
     def __init__(self, **kwargs):
         # self.label = ap.get_running_app().title
         super().__init__(**kwargs)
+        self.size_hint = (0.5, 1)
         # self.orientation = 'tb-lr'
         self.orientation = VERTICAL
         self.selected_obj = None
@@ -568,6 +593,7 @@ class Hierarchy(BoxLayout):
         # self.label = ap.get_running_app().title
         super().__init__(**kwargs)
         self.orientation = VERTICAL
+        self.size_hint = (0.5, 1)
 
     def selectt(self, i):
         inspector.select(i)
@@ -575,19 +601,16 @@ class Hierarchy(BoxLayout):
     def update(self, frm=''):
         self.clear_widgets()
         print(main_map)
-        for i in main_map:
-            print(i)
-            self.add_widget(Button(background_color=BACE_COLOR,
-                                   text=f"{i.name}: {i.GetComponent(Drawer).symb if i.GetComponent(Drawer) is not None else 'None'}",
-                                   on_release=lambda instance, i=i: self.selectt(i)))
         self.add_widget(Button(background_color=ADD_COLOR, text="Add New Object",
                                on_release=lambda instance: main_map_add(Obj(f"Object ({len(main_map)})"),
                                                                         mapp,
                                                                         hierarchy,
                                                                         inspector)))
-        self.add_widget(
-            Button(background_color=BACE_COLOR, text="Save Map",
-                   on_release=lambda instance: main_map_save()))
+        for i in main_map:
+            print(i)
+            self.add_widget(Button(background_color=BACE_COLOR,
+                                   text=f"{i.name}: {i.GetComponent(Drawer).symb if i.GetComponent(Drawer) is not None else 'None'}",
+                                   on_release=lambda instance, i=i: self.selectt(i)))
 
 
 class Map(RelativeLayout):
@@ -596,6 +619,7 @@ class Map(RelativeLayout):
         super().__init__(**kwargs)
         self.do_rotation = False
         self.do_scale = False
+        self.update()
 
     def update(self, frm=''):
         self.clear_widgets()
@@ -606,9 +630,23 @@ class Map(RelativeLayout):
                 self.canvas.add(kivy.graphics.Color(1, 1, 1))
             self.canvas.add(Rectangle(pos=(i.transform.local_position.x * 25,
                                                 25 - i.transform.local_position.y * 25), size=self.size))'''
-            self.add_widget(ObjButton(i=i, pos=(i.transform.local_position.x * 25,
-                                               25 - i.transform.local_position.y * 25),
-                                     size_hint=(0.09, 0.05), background_normal=""))
+            self.add_widget(ObjButton(i=i, pos=(i.transform.local_position.x * Window.size[0] / 25,
+                                                Window.size[1] - (i.transform.local_position.y + 2) * Window.size[
+                                                    1] / 25),
+                                      size_hint=(0.025, 0.025), background_normal=""))
+
+
+class HotBar(BoxLayout):
+    def __init__(self, **kwargs):
+        # self.label = ap.get_running_app().title
+        super().__init__(**kwargs)
+        self.size_hint = (1, 0.03)
+        self.add_widget(
+            Button(background_color=BACE_COLOR, text="Save Map",
+                   on_release=lambda instance: main_map_save()))
+        self.add_widget(
+            Button(background_color=BACE_COLOR, text="Open Map",
+                   on_release=lambda instance: opmp()))
 
 
 hierarchy = Hierarchy()
@@ -629,7 +667,10 @@ class MyApp(App):
         bl.add_widget(hierarchy)
         bl.add_widget(mapp)
         bl.add_widget(inspector)
-        return bl
+        bl2 = BoxLayout(orientation=VERTICAL)
+        bl2.add_widget(HotBar())
+        bl2.add_widget(bl)
+        return bl2
 
 
 if __name__ == "__main__":

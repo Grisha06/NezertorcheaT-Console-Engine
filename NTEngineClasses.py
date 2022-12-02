@@ -589,7 +589,7 @@ class Drawer(Component):
 
     @final
     def drawLine(self, a, symb: str, color: str, pos1: Vector3, pos2: Vector3, layer=0):
-        #UI.printStrAtPos(Vector3.angleB2V((pos1 - pos2).norm(), Vector3(1)), 0, 50)
+        #UI.printStrAtPos(Vector3.angleB2V((pos1 - pos2).norm, Vector3(1)), 0, 50)
         if 45 > (p := Vector3.angleB2V(pos1 - pos2, Vector3(1))) or 135 < p:
             for i in range(int(0 if pos1.x > pos2.x else pos1.x - pos2.x),
                            int(pos1.x - pos2.x if pos1.x > pos2.x else 0)):

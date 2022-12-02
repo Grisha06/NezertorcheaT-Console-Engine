@@ -17,26 +17,27 @@ class Vector3:
 
     def __add__(self, other):
         """Sum of 2 Vectors"""
-        return Vector3.sum(self, other)
+        return Vector3(self.x + other.x, self.y + other.y, self.z + other.z)
 
     def __sub__(self, other):
         """Difference between two Vectors"""
-        return Vector3.substr(self, other)
+        return self + (-other)
 
     def __mul__(self, other):
-        return Vector3.mult(self, other)
+        if isinstance(other, Vector3):
+            return Vector3.dot(self, other)
+        if isinstance(other, (int, float)):
+            return Vector3(self.x * other, self.y * other, self.z * other)
 
-    def __pow__(self, other):
-        """Dot product of two Vectors"""
-        return Vector3.dot(self, other)
+    def __rmul__(self, other):
+        return self * other
 
     def __truediv__(self, other):
         """Divide every component of Vector by float"""
-        return Vector3.dev_by_float(self, other)
+        return Vector3(self.x / other, self.y / other, self.z / other)
 
-    def __mod__(self, other):
-        """Multiple every component of Vector by float"""
-        return Vector3.mult_by_float(self, other)
+    def __neg__(self):
+        return self * -1
 
     def returnAsArray(self):
         return [self.x, self.y, self.z]
@@ -46,7 +47,7 @@ class Vector3:
 
     @classmethod
     def __check(cls, n):
-        return type(n) in (int, float)
+        return isinstance(n, (int, float))
 
     @staticmethod
     def sign_value(a):
@@ -55,13 +56,13 @@ class Vector3:
     @staticmethod
     def angleB2V(a, b):
         try:
-            #print(a)
-            #print(b)
-            #print(a ** b)
-            #print(Vector3.length(a) * Vector3.length(b))
-            #print((a ** b) / (Vector3.length(a) * Vector3.length(b)))
-            #print(math.acos((a ** b) / (Vector3.length(a) * Vector3.length(b))))
-            return math.degrees(math.acos((a ** b) / (Vector3.length(a) * Vector3.length(b))))
+            # print(a)
+            # print(b)
+            # print(a ** b)
+            # print(Vector3.length(a) * Vector3.length(b))
+            # print((a ** b) / (Vector3.length(a) * Vector3.length(b)))
+            # print(math.acos((a ** b) / (Vector3.length(a) * Vector3.length(b))))
+            return math.degrees(math.acos((a * b) / (a.length * b.length)))
         except ZeroDivisionError:
             return 0
 
@@ -74,25 +75,14 @@ class Vector3:
         return Vector3(0)
 
     @staticmethod
-    def dev_by_float(a, n=1):
-        return Vector3(a.x / n, a.y / n, a.z / n)
-
-    @staticmethod
-    def sum(a, b):
-        return Vector3(a.x + b.x, a.y + b.y, a.z + b.z)
-
-    @staticmethod
-    def substr(a, b):
-        return Vector3(a.x - b.x, a.y - b.y, a.z - b.z)
-
-    @staticmethod
     def lerp(a, b):
         return (a + b) % (1 / 2)
 
     @staticmethod
     def mult_by_float(a, n=0.0):
-        return Vector3(a.x * n, a.y * n, a.z * n)
+        return
 
+    @property
     def length(self):
         return math.sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
 
@@ -107,9 +97,10 @@ class Vector3:
     def reflect(rd, n):
         return rd - ((n % (n ** rd)) % 2)
 
+    @property
     def norm(self):
-        if self.length() != 0.0:
-            return Vector3.dev_by_float(self, self.length())
+        if self.length != 0.0:
+            return self / self.length
         else:
             return Vector3.zero()
 
@@ -143,3 +134,17 @@ class Vector3:
 
     def sign(self):
         return Vector3(self.sign_value(self.x), self.sign_value(self.y), self.sign_value(self.z))
+
+
+if __name__ == '__main__':
+    a = Vector3(2, 2, 3)
+    b = Vector3(1, 4, 0.2)
+    print(a+b)
+    print(a-b)
+    print(-b)
+    print(a*b)
+    print(b*a)
+    print(a*4)
+    print(a.length)
+    print(a.norm)
+    print(a)

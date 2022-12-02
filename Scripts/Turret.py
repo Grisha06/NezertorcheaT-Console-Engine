@@ -15,8 +15,8 @@ class Turret(Behavior):
 
         for i in findAllObjsAtRad(self.transform.position, 100):
             if i.GetComponent(Scripts.Enemy.Enemy) is not None:
-                self.f = (i.transform.position - self.gameobject.transform.position).norm()
-                s = self.instantiate("*", self.transform.position + (self.f % 4),
+                self.f = (i.transform.position - self.gameobject.transform.position).norm
+                s = self.instantiate("*", self.transform.position + (self.f * 4),
                                      comps=[DistanceCollider, Scripts.Ball.Ball])
                 ss = s.GetComponent(Scripts.Ball.Ball)
                 ss.f = self.f
