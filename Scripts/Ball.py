@@ -10,7 +10,7 @@ class Ball(Behavior):
         self.f = Vector3()
 
     def update(self, a):
-        self.transform.moveDir(self.f % self.speed)
+        self.transform.moveDir(self.f * self.speed)
         if self.gameobject.lifetime > 5:
             self.destroy(self.gameobject)
 

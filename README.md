@@ -86,20 +86,17 @@ class Name(Behavior):
     - **Component class**:
         - **gameobject: Obj** - object reference
     - **Vector3 class**:
-        - **Vector3.dev_by_float(a, n=1)** - operator "**//**" - divides vector "a" by number "n"
-        - **Vec3.mult_by_float(a, n=0)** - operator "**%**" - multiplies vector "a" by number "n"
-        - **Vector3.sum(a, b)** - operator "**+**" - sum of vectors "a" and "b"
-        - **Vector3.substr(a, b)** - operator "**-**" - subtracts vector "b" from vector "a"
-        - **Vector3.mult(a, b)** - operator "*" - multiplies the components of the vector "a" by the components of the vector "b"
+        - operator "**//**" - divides vector "a" by number "n"
+        - operator "*" - multiplies vector "a" by number or Vector3 "b" - Scalar product of vectors "a" and "b"
+        - operator "**+**" - sum of vectors "a" and "b"
+        - operator "**-**" - subtracts vector "b" from vector "a"
+        - **Vector3.mult(a, b)** - multiplies the components of the vector "a" by the components of the vector "b"
         - **Vector3.div(a, b)** - divides the components of the vector "a" into the components of the vector "b"
         - **Vector3.distance(v1, v2)** - distance between vectors "v1" and "v2"
-        - **Vector3.dot(a, b)** - operator "**" - Scalar product of vectors "a" and "b"
-        - **Vector3.reflect(rd, n)**
-        - **length()** - vector length
-        - **abs()**
-        - **normal()**
-        - **sign()**
-    - **obj class**:
+        - **Vector3.reflect(v, normal)**
+        - **length: float** - vector length
+        - **norm: Vector3** - normalised Vector3
+    - **Obj class**:
         - **isInstantiated: bool** - determines if the object was created using the instantiate() method
         - **tr: Transform** - Transform class
         - **GetComponent(typ: Component)** - allows you to get a component of type "type"
