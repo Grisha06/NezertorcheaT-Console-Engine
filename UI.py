@@ -1,7 +1,7 @@
 import sys
 
 from globalSettings import *
-
+from Symbols import *
 
 class UI:
     """User Interface"""
@@ -27,11 +27,11 @@ class UI:
         sys.stdout.flush()
 
     @staticmethod
-    def printImageAtPos(img: str, x: int, y: int):
-        for j in range(len(images[img])):
-            for i in range(len(images[img][0])):
-                if len(images[img][j][i]) == 1:
-                    UI.printStrAtPos(images[img][j][i], int(x) + i+len(images[img])//2, int(y) + j+len(images[img][0])//2-1)
+    def printImageAtPos(img: SymbolImage, x: int, y: int):
+        for j in range(len(img.get())):
+            for i in range(len(img.get()[j])):
+                if len(img.get()[j][i]) == 1:
+                    UI.printStrAtPos(img.get()[j][i], int(x) + i+len(img.get())//2, int(y) + j+len(img.get()[0])//2-1)
 
     def add(self, text, createNewLine: bool) -> int:
         self.__text.append([str(text), createNewLine])

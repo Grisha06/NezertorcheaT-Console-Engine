@@ -31,9 +31,6 @@ def getcls(n: str):
 
 def cls():
     os.system('cls||clear')
-    # _ = call('cls' if os.name == 'nt' else 'clear')
-    # print(chr(27) + "[2J")
-    # print("\033c")
 
 
 def clamp(num, min_value, max_value):
@@ -51,14 +48,14 @@ def add_matrix():
 
 
 def print_matrix(a, arr: list):
-    s=arr[6] + arr[2] * len(a[0]) + arr[7]+'\n'
+    s = arr[6] + arr[2] * len(a[0]) + arr[7] + '\n'
     for x in range(len(a)):
-        s+=arr[1]
+        s += arr[1]
         for y in range(len(a[0])):
             # print(BaceColor('Red').get() + a[x][y], end=BaceColor('White').get())
-            s+=a[x][y]+BaceColor("Reset").get()
-        s+=arr[0]+'\n'
-    s+=arr[5] + arr[3] * len(a[0]) + arr[4]+'\n'
+            s += a[x][y] + BaceColor("Reset").get()
+        s += arr[0] + '\n'
+    s += arr[5] + arr[3] * len(a[0]) + arr[4] + '\n'
     print(s)
 
 
@@ -91,6 +88,18 @@ class Collider(Component):
     def updColl(self):
         ...
 
+    def _c(self, i, typ):
+        try:
+            for se in self.gameobject.GetAllComponentsOfType(Behavior):
+                se.onCollide(i.GetComponent(typ))
+        except KeyError:
+            pass
+        try:
+            for ig in i.GetAllComponentsOfType(Behavior):
+                ig.onCollide(self)
+        except KeyError:
+            pass
+
 
 class RigidBody(Component):
     """Representation of physics"""
@@ -108,43 +117,31 @@ class DistanceCollider(Collider):
 
     def updColl(self):
         if (r := findNearObjByRad(self.gameobject.transform.position + Vector3(1, 0, 0), 0.5)) is not None:
-            if r.GetComponent(Collider) is not None:
+            if r.GetComponent(DistanceCollider) is not None:
                 self.collide = True
                 self.angle = 180
-                self.__c(r)
+                self._c(r, DistanceCollider)
                 return
         if (r := findNearObjByRad(self.gameobject.transform.position + Vector3(-1, 0, 0), 0.5)) is not None:
-            if r.GetComponent(Collider) is not None:
+            if r.GetComponent(DistanceCollider) is not None:
                 self.collide = True
                 self.angle = 0
-                self.__c(r)
+                self._c(r, DistanceCollider)
                 return
         if (r := findNearObjByRad(self.gameobject.transform.position + Vector3(0, 1, 0), 0.5)) is not None:
-            if r.GetComponent(Collider) is not None:
+            if r.GetComponent(DistanceCollider) is not None:
                 self.collide = True
                 self.angle = 270
-                self.__c(r)
+                self._c(r, DistanceCollider)
                 return
         if (r := findNearObjByRad(self.gameobject.transform.position + Vector3(0, -1, 0), 0.5)) is not None:
-            if r.GetComponent(Collider) is not None:
+            if r.GetComponent(DistanceCollider) is not None:
                 self.collide = True
                 self.angle = 90
-                self.__c(r)
+                self._c(r, DistanceCollider)
                 return
         self.collide = False
         self.angle = 0
-
-    def __c(self, i):
-        try:
-            for se in self.gameobject.GetAllComponentsOfType(Behavior):
-                se.onCollide(i.GetComponent(Collider))
-        except KeyError:
-            pass
-        try:
-            for ig in i.GetAllComponentsOfType(Behavior):
-                ig.onCollide(self)
-        except KeyError:
-            pass
 
 
 class BoxCollider(Collider):
@@ -174,13 +171,13 @@ class BoxCollider(Collider):
                         (cy + self.height >= xy <= cy <= xy + self.height <= cy + self.height) or (
                         cy + self.height >= xy >= cy <= xy + self.height >= cy + self.height) or (
                                 cy + self.height >= xy <= cy <= xy + self.height >= cy + self.height)):
+
                     self.collide = True
                     ang = float(Vector3.angleB2V(self.gameobject.transform.position - i.transform.position,
                                                  Vector3(1, 0, 0)))
-                    angle = int(ang - ((ang // 360) * 360))
-                    self.angle = angle
+                    self.angle = int(ang - ((ang // 360) * 360))
                     if self.gameobject.transform.position.y > i.transform.position.y:
-                        self.angle = 360 - angle
+                        self.angle = 360 - self.angle
                     try:
                         for se in self.gameobject.GetAllComponentsOfType(Behavior):
                             se.onCollide(j)
@@ -589,7 +586,7 @@ class Drawer(Component):
 
     @final
     def drawLine(self, a, symb: str, color: str, pos1: Vector3, pos2: Vector3, layer=0):
-        #UI.printStrAtPos(Vector3.angleB2V((pos1 - pos2).norm, Vector3(1)), 0, 50)
+        # UI.printStrAtPos(Vector3.angleB2V((pos1 - pos2).norm, Vector3(1)), 0, 50)
         if 45 > (p := Vector3.angleB2V(pos1 - pos2, Vector3(1))) or 135 < p:
             for i in range(int(0 if pos1.x > pos2.x else pos1.x - pos2.x),
                            int(pos1.x - pos2.x if pos1.x > pos2.x else 0)):
@@ -606,6 +603,12 @@ class Drawer(Component):
     @final
     def clearSymb(self, a, pos: Vector3):
         self.drawSymb(a, ' ', '', pos)
+
+    @final
+    def clearAll(self, a):
+        for i in len(a):
+            for j in len(a[i]):
+                self.clearSymb(Vector3(i, j))
 
 
 class Behavior(Component):

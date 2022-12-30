@@ -19,7 +19,7 @@ class TypedList(MutableSequence):
     def __init__(self, type_of=int, data=None, from_dict: dict = None):
         """Initialize the class"""
         super(TypedList, self).__init__()
-        if from_dict == None:
+        if from_dict is None:
             self.type_of = type_of
             for i in range(len(list(data))):
                 if not isinstance(list(data)[i], self.type_of):

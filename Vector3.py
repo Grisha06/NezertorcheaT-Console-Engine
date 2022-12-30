@@ -95,7 +95,7 @@ class Vector3:
 
     @staticmethod
     def reflect(rd, n):
-        return rd - ((n % (n ** rd)) % 2)
+        return rd - (n * (1 / (n * rd) * 0.5))
 
     @property
     def norm(self):
@@ -128,6 +128,9 @@ class Vector3:
     def int(v1):
         return Vector3(int(v1.x), int(v1.y), int(v1.z))
 
+    def __int__(self):
+        return Vector3.int(self)
+
     @staticmethod
     def round(v1):
         return Vector3(round(v1.x), round(v1.y), round(v1.z))
@@ -139,12 +142,14 @@ class Vector3:
 if __name__ == '__main__':
     a = Vector3(2, 2, 3)
     b = Vector3(1, 4, 0.2)
-    print(a+b)
-    print(a-b)
+    print(a + b)
+    print(a - b)
     print(-b)
-    print(a*b)
-    print(b*a)
-    print(a*4)
+    print(a * b)
+    print(b * a)
+    print(a * 4)
     print(a.length)
     print(a.norm)
     print(a)
+    print(Vector3.distance(a, b))
+    print(Vector3.reflect(a, b))

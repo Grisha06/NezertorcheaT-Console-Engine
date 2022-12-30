@@ -1,13 +1,14 @@
+import traceback
 from time import perf_counter
 
 import keyboard
-import traceback
 
 import NTEmapManager
+
 if NTEmapManager.settings.get("USE SERVER UTILITIES"):
     import serverUtilities.Client
 from NTEmapManager import *
-
+import NTEngineClasses
 
 def MainLoop():
     a = loadLevel()
@@ -21,7 +22,7 @@ def MainLoop():
             for i in ObjList.getObjs():
                 i.upd(a)
             cls()
-            print_matrix(a,game_border.get_Arr())
+            print_matrix(a, game_border.get_Arr())
             ui.print()
             for i in ObjList.getObjs():
                 i.updAfterDraw()
@@ -39,12 +40,11 @@ def MainLoop():
         traceback.print_tb(e.__traceback__)
         print(f'|- "{str(e)}"')
         print("|- Exception text end")
-        if input("|- Print exception? y/n ")=='y':
+        if input("|- Print exception? y/n ") == 'y':
             raise e
     print()
     print("|- Program is over")
     input()
-
 
 
 if __name__ == '__main__':
